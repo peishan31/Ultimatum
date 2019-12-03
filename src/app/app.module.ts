@@ -18,6 +18,8 @@ import { AngularFirestore, AngularFirestoreModule,FirestoreSettingsToken } from 
 import { AngularFireModule } from '@angular/fire';
 firebase.initializeApp(firebaseConfig);
 
+import { FormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -29,6 +31,7 @@ firebase.initializeApp(firebaseConfig);
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     IonicModule.forRoot(MyApp),
     AngularFirestoreModule,
     AngularFireModule,
