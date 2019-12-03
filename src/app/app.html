@@ -1,0 +1,24 @@
+<ion-menu [content]="mainContent">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        Menu
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content id="side-menu21">
+    <ion-list id="menu-list1">
+      <ion-item color="none" menuClose="" on-click="goToUltimatum()" id="menu-list-item1">
+        Home
+      </ion-item>
+      <ion-item color="none" menuClose="" on-click="goToProposer()" id="menu-list-item2">
+        Cart
+      </ion-item>
+      <ion-item color="none" menuClose="" on-click="goToRespondant()" id="menu-list-item3">
+        Cloud
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-nav #mainContent [root]="rootPage"></ion-nav>
