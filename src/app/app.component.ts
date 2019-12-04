@@ -14,7 +14,7 @@ import { ScoreboardPage } from '../pages/scoreboard/scoreboard';
 })
 export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
-    rootPage:any = ScoreboardPage;
+    rootPage:any = UltimatumPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
