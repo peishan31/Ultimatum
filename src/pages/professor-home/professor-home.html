@@ -11,7 +11,7 @@
 <ion-content id="page4">
   <body> 
     <!-- <button ion-button (click)="gamecode()"></button> -->
-  <div (click)="gamecode()" *ngIf="code==0" style="text-align: center;"><h4>Generate game code <ion-icon name="color-wand"  style="color:cornflowerblue;font-size:25px;"></ion-icon></h4></div>
+  <div (click)="gamecode()" *ngIf="code==0" style="text-align: center;"><br><br><br><br><br><h4>Generate game code <ion-icon name="color-wand"  style="color:cornflowerblue;font-size:25px;"></ion-icon></h4></div>
   <div *ngIf="code!=0"> 
       <div style="text-align: center;">
         <h2>Game code: {{code}} &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>

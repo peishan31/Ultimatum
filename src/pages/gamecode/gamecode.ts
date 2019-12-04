@@ -25,6 +25,7 @@ submitted=false;
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GamecodePage');
+ 
   }
 
   Next(form: NgForm){

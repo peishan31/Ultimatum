@@ -30,7 +30,6 @@ export class UltimatumPage {
   }
 
   Next(form: NgForm){
-
     this.submitted = true;
 
     if (form.valid && this.Username!= '' && this.Username!=null) {
