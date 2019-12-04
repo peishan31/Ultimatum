@@ -10,6 +10,10 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class ProfessorHomePage {
 code=0;
+studentnum=0;
+itemDoc:any;
+item:any;
+list=[];
   constructor(public navCtrl: NavController,public afs: AngularFirestore) {
     
   }
@@ -23,7 +27,20 @@ code=0;
     console.log(this.code);
     let date=new Date();
 
-    this.createProCode({gameId:this.code,dateTime:date.toISOString});
+    this.createProCode({gameId:this.code,dateTime:date.toISOString()});
+     this.itemDoc = this.afs.collection<any>('Participant')
+  this.item = this.itemDoc.valueChanges();
+  this.item.length=0;
+  this.item.subscribe(res=>{
+    this.list.length=0;
+console.log(res)
+      for (let i=0; i<res.length;i++){
+        this.list.push(res[i].username);
+        this.studentnum=this.list.length;
+      }
+      console.log(this.list)
+    
+    })
   }
 
   createProCode(value){

@@ -11,7 +11,7 @@
 <ion-content id="page4">
   <body> 
     <!-- <button ion-button (click)="gamecode()"></button> -->
-  <div (click)="gamecode()" *ngIf="code==0" style="text-align: center;"><br><br><br><br><br><h4>Generate game code <ion-icon name="color-wand"  style="color:cornflowerblue;font-size:25px;"></ion-icon></h4></div>
+  <div (click)="gamecode()" *ngIf="code==0" style="text-align: center;"><br><br><br><br><br><button ion-button>Generate game code &nbsp;<ion-icon name="color-wand"  style="color:white;font-size:25px;"></ion-icon></button></div>
   <div *ngIf="code!=0"> 
       <div style="text-align: center;">
         <h2>Game code: {{code}} &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
@@ -19,7 +19,7 @@
       </div>
  
   <h4 id="professorHome-heading1" style="color:#000000;text-align: center;">
-    No. of students joined: 5
+    No. of students joined:  {{studentnum}}
   </h4>
  
   <h5 id="professorHome-heading2" style="color:#000000;">
@@ -29,31 +29,11 @@
   <ion-card>
     <ion-list>
       <ion-item id="professorHome-list-item-container3">
-        <div id="professorHome-markdown3" class="show-list-numbers-and-dots">
+        <div id="professorHome-markdown3" *ngFor="let u of list" class="show-list-numbers-and-dots">
           <p style="margin-top:0px;color:#000000;">
-            thelegend27
+            {{u}}
           </p>
-        </div>
-        <div id="professorHome-markdown4" class="show-list-numbers-and-dots">
-          <p style="margin-top:0px;color:#000000;">
-            lettersthy
-          </p>
-        </div>
-        <div id="professorHome-markdown6" class="show-list-numbers-and-dots">
-          <p style="margin-top:0px;color:#000000;">
-            colonel
-          </p>
-        </div>
-        <div id="professorHome-markdown7" class="show-list-numbers-and-dots">
-          <p style="margin-top:0px;color:#000000;">
-            magichands23
-          </p>
-        </div>
-        <div id="professorHome-markdown5" class="show-list-numbers-and-dots">
-          <p style="margin-top:0px;color:#000000;">
-            thelegend299999
-          </p>
-        </div>
+        </div> 
       </ion-item>
     </ion-list>
   </ion-card>
