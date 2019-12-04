@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { ProposerPage } from '../pages/proposer/proposer';
 import { RespondantPage } from '../pages/respondant/respondant';
 import { UltimatumPage } from '../pages/ultimatum/ultimatum';
+import { ScoreboardPage } from '../pages/scoreboard/scoreboard';
 
 
 
@@ -13,7 +14,7 @@ import { UltimatumPage } from '../pages/ultimatum/ultimatum';
 })
 export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
-    rootPage:any = UltimatumPage;
+    rootPage:any = ScoreboardPage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
