@@ -68,7 +68,7 @@ Leaderboard
   width: 20px;
   height: 20px;
   line-height: 20px;
-  color: #c24448;
+  color: #0e1f3b;
   background: #fff;
   border-radius: 20px;
   text-align: center;
@@ -91,7 +91,7 @@ Leaderboard
   z-index: 1;
   bottom: -11px;
   left: -9px;
-  border-top: 10px solid #c24448;
+  border-top: 10px solid #0e1f3b;
   border-left: 10px solid transparent;
   transition: all .1s ease-in-out;
   opacity: 0;
