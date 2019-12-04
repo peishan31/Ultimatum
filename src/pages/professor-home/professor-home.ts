@@ -35,8 +35,11 @@ list=[];
     this.list.length=0;
 console.log(res)
       for (let i=0; i<res.length;i++){
+        if (res[i].gameId==this.code){
         this.list.push(res[i].username);
         this.studentnum=this.list.length;
+        }
+        
       }
       console.log(this.list)
     
