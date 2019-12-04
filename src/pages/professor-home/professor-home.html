@@ -9,8 +9,16 @@
   </ion-navbar> -->
 </ion-header>
 <ion-content id="page4">
-  <body>
-  <h4 id="professorHome-heading1" style="color:#000000;">
+  <body> 
+    <!-- <button ion-button (click)="gamecode()"></button> -->
+  <div (click)="gamecode()" *ngIf="code==0" style="text-align: center;"><h4>Generate game code <ion-icon name="color-wand"  style="color:cornflowerblue;font-size:25px;"></ion-icon></h4></div>
+  <div *ngIf="code!=0"> 
+      <div style="text-align: center;">
+        <h2>Game code: {{code}} &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
+        
+      </div>
+ 
+  <h4 id="professorHome-heading1" style="color:#000000;text-align: center;">
     No. of students joined: 5
   </h4>
  
@@ -52,5 +60,6 @@
   <button id="professorHome-button2" (click)="Next()" ion-button color="positive" block>
     Start game
   </button>
+</div>
 </body>
 </ion-content>

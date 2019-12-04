@@ -6,6 +6,7 @@ import * as firebase from 'firebase';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { NgForm } from '@angular/forms';
+import { GamecodePage } from '../gamecode/gamecode';
 
 @Component({
   selector: 'page-ultimatum',
@@ -39,24 +40,11 @@ export class UltimatumPage {
       else{
         let date=new Date();
         this.datetime=date.toISOString();
-        this.createParticipant({UUID:this.random,username:this.Username,dateTime:this.datetime})
-        this.navCtrl.setRoot(ProposerPage);
+        let passnextpg={UUID:this.random,username:this.Username,dateTime:this.datetime};
+        this.navCtrl.setRoot(GamecodePage,passnextpg);
       }
     }
   }
 
-   createParticipant(value){
-    return new Promise<any>((resolve, reject) => {
-      this.afs.collection('Participant').add({
-        UUID:value.UUID,
-        username:value.username,
-        dateTime:value.dateTime
-
-      })
-      .then(
-        res => resolve(res),
-        err => reject(err)
-      )
-    })
-  }
+  
 }
