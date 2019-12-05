@@ -7,6 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { GamecodePage } from '../gamecode/gamecode';
+import {LoadingController} from 'ionic-angular';
 
 @Component({
   selector: 'page-ultimatum',
@@ -45,5 +46,5 @@ export class UltimatumPage {
     }
   }
 
-  
+
 }

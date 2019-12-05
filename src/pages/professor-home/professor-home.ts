@@ -15,13 +15,13 @@ itemDoc:any;
 item:any;
 list=[];
   constructor(public navCtrl: NavController,public afs: AngularFirestore) {
-    
+
   }
 
   Next(){
     this.navCtrl.setRoot(ScoreboardPage);
   }
-  
+
   gamecode(){
     this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
     console.log(this.code);
@@ -39,10 +39,10 @@ console.log(res)
         this.list.push(res[i].username);
         this.studentnum=this.list.length;
         }
-        
+
       }
       console.log(this.list)
-    
+
     })
   }
 
@@ -50,7 +50,8 @@ console.log(res)
     return new Promise<any>((resolve, reject) => {
       this.afs.collection('Professor').add({
         gameId:value.gameId,
-        dateTime:value.dateTime
+        dateTime:value.dateTime,
+        gameStatus: "Ready"
        })
       .then(
         res => resolve(res),
