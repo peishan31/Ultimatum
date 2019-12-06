@@ -21,7 +21,8 @@ export class UltimatumPage {
   submitted = false;
 
   constructor(public navCtrl: NavController,
-    public afs: AngularFirestore
+    public afs: AngularFirestore,
+    public loadingCtrl:LoadingController
     ) {
   }
 
@@ -38,13 +39,21 @@ export class UltimatumPage {
         this.navCtrl.setRoot(ProfessorHomePage);
       }
       else{
+        const loading = this.loadingCtrl.create({
+     
+        });
+        this.presentLoading(loading);
         let date=new Date();
         this.datetime=date.toISOString();
         let passnextpg={UUID:this.random,username:this.Username,dateTime:this.datetime};
+        loading.dismiss();
         this.navCtrl.setRoot(GamecodePage,passnextpg);
       }
     }
   }
 
+  async presentLoading(loading) {
+    return await loading.present();
+  }
 
 }
