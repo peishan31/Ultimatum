@@ -9,19 +9,19 @@
   </ion-navbar> -->
 </ion-header>
 <ion-content id="page4">
-  <body> 
+  <body>
     <!-- <button ion-button (click)="gamecode()"></button> -->
   <div (click)="gamecode()" *ngIf="code==0" style="text-align: center;"><br><br><br><br><br><button ion-button>Generate game code &nbsp;<ion-icon name="color-wand"  style="color:white;font-size:25px;"></ion-icon></button></div>
-  <div *ngIf="code!=0"> 
+  <div *ngIf="code!=0">
       <div style="text-align: center;">
-        <h2>Game code: {{code}} &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
-        
+        <h2>Game code: <p id="gameId">{{code}}</p> &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
+
       </div>
- 
+
   <h4 id="professorHome-heading1" style="color:#000000;text-align: center;">
     No. of students joined:  {{studentnum}}
   </h4>
- 
+
   <h5 id="professorHome-heading2" style="color:#000000;">
     List of students:
   </h5>
@@ -33,7 +33,7 @@
           <h5 style="margin-top:0px;color:#000000;font-size:17px;">
             {{u}}
           </h5>
-        </div> 
+        </div>
       </ion-item>
     </ion-list>
   </ion-card>

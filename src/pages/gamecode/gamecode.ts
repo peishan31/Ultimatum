@@ -25,17 +25,17 @@ submitted=false;
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad GamecodePage');
- 
+
   }
 
   Next(form: NgForm){
     this.submitted = true;
 
     if (form.valid && this.gamecode!= '' && this.gamecode!=null) {
-    let all=this.navParams.data;
-    all["gameId"]=this.gamecode;
-    this.createParticipant(all);
-    this.navCtrl.setRoot(ProposerPage);
+      let all=this.navParams.data;
+      all["gameId"]=this.gamecode;
+      this.createParticipant(all);
+      this.navCtrl.setRoot(ProposerPage);
     }
   }
 
