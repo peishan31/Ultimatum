@@ -10,7 +10,7 @@ import {LoadingController} from 'ionic-angular';
   templateUrl: 'professor-home.html'
 })
 export class ProfessorHomePage {
-code=0;
+code="";
 studentnum=0;
 itemDoc:any;
 item:any;
@@ -59,7 +59,8 @@ studentsList={"username": [], "UUID": []};
   }
 
   gamecode(){
-    this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
+    //this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
+    this.code = this.randomGeneratedGameCode();
     console.log(this.code);
     let date=new Date();
 
@@ -80,6 +81,13 @@ studentsList={"username": [], "UUID": []};
       console.log(this.list)
     })
   }
+
+  randomGeneratedGameCode() {
+		return 'xxxxxx'.replace(/[xy]/g, function(c) {
+		  var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+		  return v.toString(16);
+		});
+	}
 
   createProCode(value){
     return new Promise<any>((resolve, reject) => {
@@ -138,8 +146,8 @@ studentsList={"username": [], "UUID": []};
 
       if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
       {
-        this.studentsList["username"][this.studentsList["username"].length] = "AI";
-        this.studentsList["UUID"].push(100);
+        this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
+        this.studentsList["UUID"].push("101");
         //this.studentsIdList[this.studentsList.length] = 1;
       }
 
