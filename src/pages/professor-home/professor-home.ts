@@ -15,7 +15,7 @@ studentnum=0;
 itemDoc:any;
 item:any;
 list=[];
-studentsList={"username": [], "UUID": []};
+studentsList={"username": [], "UUID": [], "totalRound": 0};
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController
@@ -141,7 +141,7 @@ studentsList={"username": [], "UUID": []};
           this.studentnum=this.studentsList["username"].length;
         }
       }
-
+      this.studentsList["totalRound"] = this.studentsList["username"].length;
       console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
       if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
@@ -163,12 +163,12 @@ studentsList={"username": [], "UUID": []};
       console.log("areaB's id: "+ areaBUUID);
 
       // calculating how many rounds it would take for all users to play against each other in 2 groups.
-      this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length);
+      this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
       //this.assignProposerAndResponder (areaB, areaA,  half_length);
     });
   }
 
-  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, half_length){
+  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, half_length, totalRound){
     // calculating how many rounds it would take for all users to play against each other in 2 groups.
     for (var j = 0; j < half_length; j++)
     {
@@ -183,6 +183,7 @@ studentsList={"username": [], "UUID": []};
         this.afs.collection('Game').doc(id).set({
           gameId:this.code,
           round: j,
+          totalRound: totalRound,
           dateTime: new Date().toISOString(),
           proposerUUID: proposerUUID[i],
           proposerName: proposer[i],
