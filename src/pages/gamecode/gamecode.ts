@@ -23,8 +23,8 @@ itemDoc:any;
 item:any;
 list=[];
 
-  constructor(public navCtrl: NavController, 
-    public navParams: NavParams,  
+  constructor(public navCtrl: NavController,
+    public navParams: NavParams,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController
     ) {
@@ -41,33 +41,33 @@ list=[];
 
     if (form.valid && this.gamecode!= '' && this.gamecode!=null) {
       const loading = this.loadingCtrl.create({
-     
+
       });
       this.presentLoading(loading);
       let all=this.navParams.data;
       all["gameId"]=this.gamecode;
       this.createParticipant(all);
       this.itemDoc = this.afs.collection<any>('Professor')
-    this.item = this.itemDoc.valueChanges();
-    this.item.subscribe(res=>{
-      console.log(res);
-      for (let p=0;p<res.length;p++){
-        if (res[p]==undefined || res[p]==null){
-          console.log("BYE");
+      this.item = this.itemDoc.valueChanges();
+      this.item.subscribe(res=>{
+        console.log(res);
+        for (let p=0;p<res.length;p++){
+          if (res[p]==undefined || res[p]==null){
+            console.log("BYE");
+          }
+            else{
+              if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
+                loading.dismiss();
+
+                
+                this.navCtrl.setRoot(ProposerPage);
+              }
+          }
+
         }
-          else{
-            if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
-          loading.dismiss();
-          this.navCtrl.setRoot(ProposerPage);
-        } 
-          
-           
-        }
-         
-      }
-      
-    })
-     
+
+      })
+
     }
   }
 
