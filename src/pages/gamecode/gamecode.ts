@@ -59,7 +59,7 @@ list=[];
               if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
                 loading.dismiss();
 
-                
+                // find out who the user is playing with
                 this.navCtrl.setRoot(ProposerPage);
               }
           }

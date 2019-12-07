@@ -15,8 +15,7 @@ studentnum=0;
 itemDoc:any;
 item:any;
 list=[];
-studentsList=[];
-studentsIdList=[];
+studentsList={"username": [], "UUID": []};
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController
@@ -129,33 +128,39 @@ studentsIdList=[];
     this.item.subscribe(res=>{
       for (let i=0; i<res.length;i++){
         if (res[i].gameId==this.code){
-          this.studentsList.push(res[i].username);
-          this.studentnum=this.studentsList.length;
+          this.studentsList["username"].push(res[i].username);
+          this.studentsList["UUID"].push(res[i].UUID);
+          this.studentnum=this.studentsList["username"].length;
         }
       }
 
-      console.log("Student List: "+this.studentsList); // push users in this id
+      console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
-      if (this.studentsList.length % 2 != 0) // odd number; needs to generate AI
+      if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
       {
-        this.studentsList[this.studentsList.length] = "AI";
-        this.studentsIdList[this.studentsList.length] = 1;
+        this.studentsList["username"][this.studentsList["username"].length] = "AI";
+        this.studentsList["UUID"].push(100);
+        //this.studentsIdList[this.studentsList.length] = 1;
       }
 
       // splitting users into 2 groups
-      var half_length = Math.ceil(this.studentsList.length / 2);
-      var areaA = this.studentsList.splice(0, half_length);
-      var areaB = this.studentsList;
+      var half_length = Math.ceil(this.studentsList["username"].length / 2);
+      var areaA = this.studentsList["username"].splice(0, half_length);
+      var areaB = this.studentsList["username"];
+      var areaAUUID = this.studentsList["UUID"].splice(0, half_length);
+      var areaBUUID = this.studentsList["UUID"];
       console.log("areaA: "+ areaA);
       console.log("areaB: "+ areaB);
+      console.log("areaA's id: "+ areaAUUID);
+      console.log("areaB's id: "+ areaBUUID);
 
       // calculating how many rounds it would take for all users to play against each other in 2 groups.
-      this.assignProposerAndResponder (areaA, areaB, half_length);
-      this.assignProposerAndResponder (areaB, areaA,  half_length);
+      this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length);
+      //this.assignProposerAndResponder (areaB, areaA,  half_length);
     });
   }
 
-  assignProposerAndResponder (proposer, responder, half_length){
+  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, half_length){
     // calculating how many rounds it would take for all users to play against each other in 2 groups.
     for (var j = 0; j < half_length; j++)
     {
@@ -171,7 +176,9 @@ studentsIdList=[];
           gameId:this.code,
           round: j,
           dateTime: new Date().toISOString(),
+          proposerUUID: proposerUUID[i],
           proposerName: proposer[i],
+          responderUUID: responderUUID[i],
           responderName: responder[temp],
           proposerAmount: 0,
           responderResponder: false,
