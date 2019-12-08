@@ -18,10 +18,10 @@ export class RespondantPage {
     public afs: AngularFirestore,
     public navParams: NavParams) {
 
-      const loading = this.loadingCtrl.create({
+      // const loading = this.loadingCtrl.create({
 
-      });
-      loading.dismiss();
+      // });
+      // loading.dismiss();
       //this.CheckIfProposerStatusChange();
   }
 
@@ -63,7 +63,7 @@ export class RespondantPage {
     this.navCtrl.setRoot(ProfessorHomePage);
   }
 
-  async presentLoading(loading) {
-    return await loading.present();
-  }
+  // async presentLoading(loading) {
+  //   return await loading.present();
+  // }
 }

@@ -58,8 +58,8 @@ list=[];
           }
             else{
               if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
-                loading.dismiss()
                 // find out if user is a proposer or responder
+                loading.dismiss();
                 this.responderOrProposal(this.navParams.data);
 
               }
@@ -94,25 +94,33 @@ list=[];
     this.item = this.itemDoc.valueChanges();
 
     this.item.subscribe(res=>{
-      console.log("Yoooo: "+res);
-      for (let p=0;p<res.length;p++){
-        if (res[p]==undefined || res[p]==null){
-        }
-        else{
-          let passnextpg={UUID: all.UUID, username: all.username}
 
-          if (res[p].proposerUUID == all.UUID && res[p].gameId==this.gamecode){
-            // user is a proposer in the next round
-            this.navCtrl.setRoot(ProposerPage, passnextpg);
-          }
-          else if (res[p].responderUUID == all.UUID && res[p].gameId==this.gamecode) {
+      const loadingg = this.loadingCtrl.create({
+
+      });
+    this.presentLoading(loadingg);
+      
+      for (let p=0;p<res.length;p++){
+  
+          let passnextpg={UUID: all.UUID, username: all.username}
+          if (res[p].responderUUID == all.UUID && res[p].gameId==this.gamecode && res[p].proposerStatus=="Ready") {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
-            this.navCtrl.setRoot(RespondantPage, passnextpg);
+            loadingg.dismiss();
+            loadingg.dismissAll();
+            console.log("ok")
+            this.navCtrl.push(RespondantPage, passnextpg);
+       
+          
           }
+          if (res[p].proposerUUID == all.UUID && res[p].gameId==this.gamecode){
+            // user is a proposer in the next round
+            loadingg.dismiss();
+            
+            this.navCtrl.push(ProposerPage, passnextpg);
+          }
+         
         }
-
-      }
 
     })
   }
