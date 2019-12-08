@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ProposerPage } from '../proposer/proposer';
+import { RespondantPage } from '../respondant/respondant';
 import { NgForm } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
@@ -57,10 +58,10 @@ list=[];
           }
             else{
               if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
-                loading.dismiss();
+                loading.dismiss()
+                // find out if user is a proposer or responder
+                this.responderOrProposal(this.navParams.data);
 
-                // find out who the user is playing with
-                this.navCtrl.setRoot(ProposerPage);
               }
           }
 
@@ -84,6 +85,35 @@ list=[];
         res => resolve(res),
         err => reject(err)
       )
+    })
+  }
+
+  responderOrProposal(all){
+
+    this.itemDoc = this.afs.collection<any>('Game');
+    this.item = this.itemDoc.valueChanges();
+
+    this.item.subscribe(res=>{
+      console.log("Yoooo: "+res);
+      for (let p=0;p<res.length;p++){
+        if (res[p]==undefined || res[p]==null){
+        }
+        else{
+          let passnextpg={UUID: all.UUID, username: all.username}
+
+          if (res[p].proposerUUID == all.UUID && res[p].gameId==this.gamecode){
+            // user is a proposer in the next round
+            this.navCtrl.setRoot(ProposerPage, passnextpg);
+          }
+          else if (res[p].responderUUID == all.UUID && res[p].gameId==this.gamecode) {
+            // user is a responder in the next round
+            // **** needs to create a loader and wait for the proposer to submit their values
+            this.navCtrl.setRoot(RespondantPage, passnextpg);
+          }
+        }
+
+      }
+
     })
   }
 
