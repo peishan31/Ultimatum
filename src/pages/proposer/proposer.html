@@ -18,9 +18,9 @@
     </h5>
     <img src="assets/img/aKQqu3WrSKSojrAxfjsf_piechart.PNG" style="display:block;width:50%;height:auto;margin-left:auto;margin-right:auto;" />
     <ion-item id="proposer-range2">
-      <ion-range min="0" max="100" step="1" color="positive" value="50">
+      <ion-range min="0" max="100" step="1" color="positive" value="50" pin="true" [(ngModel)]="range" [ngModelOptions]="{standalone:true}">
         <ion-label range-left>
-          % to respondant
+         {{range}}% to respondant
         </ion-label>
       </ion-range>
     </ion-item>

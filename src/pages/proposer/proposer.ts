@@ -7,8 +7,9 @@ import { RespondantPage } from '../respondant/respondant';
   templateUrl: 'proposer.html'
 })
 export class ProposerPage {
-
+range:number;
   constructor(public navCtrl: NavController) {
+    
   }
   
   Next(){
