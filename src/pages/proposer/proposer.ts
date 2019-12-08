@@ -9,11 +9,12 @@ import {LoadingController} from 'ionic-angular';
   templateUrl: 'proposer.html'
 })
 export class ProposerPage {
+  range:number;
   itemDoc:any;
   item:any;
   proposerData:any;
   firebaseId = "";
-  proposerAmount = "";
+
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
@@ -39,7 +40,7 @@ export class ProposerPage {
     let all=this.navParams.data;
 
     this.item.subscribe(res=>{
-      console.log("Yoooo: "+JSON.stringify(res));
+
       console.log("My UUID: "+ all.UUID);
       for (let p=0;p<res.length;p++){
         if (res[p]==undefined || res[p]==null){
@@ -63,7 +64,7 @@ export class ProposerPage {
     // Updating the game status to "Ready"
     this.afs.collection('Game').doc(dbid).update({
       proposerStatus: "Ready",
-      proposerAmount: this.proposerAmount // ** temp hardcoding
+      proposerAmount: this.range // ** temp hardcoding
      })
     .then((data) => {
       //console.log("Data: "+data);
