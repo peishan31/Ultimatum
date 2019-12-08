@@ -17,7 +17,7 @@ export class UltimatumPage {
 
   Username:string;
   datetime:string;
-  random:number;
+  random:string;
   submitted = false;
 
   constructor(public navCtrl: NavController,
@@ -27,7 +27,8 @@ export class UltimatumPage {
   }
 
   ionViewWillEnter() {
-    this.random = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1;
+    //this.random = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1;
+    this.random = this.uuidv4();
     console.log(this.random)
   }
 
@@ -40,7 +41,7 @@ export class UltimatumPage {
       }
       else{
         const loading = this.loadingCtrl.create({
-     
+
         });
         this.presentLoading(loading);
         let date=new Date();
@@ -50,6 +51,13 @@ export class UltimatumPage {
         this.navCtrl.setRoot(GamecodePage,passnextpg);
       }
     }
+  }
+
+  uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
   }
 
   async presentLoading(loading) {
