@@ -190,7 +190,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
           responderUUID: responderUUID[i],
           responderName: responder[temp],
           proposerAmount: 0,
-          responderResponder: false,
+          responderResponse: "",
           proposerStatus: "Not Ready",
           responderStatus: "Not Ready",
           gameStatus: "Not Ready"

@@ -10,18 +10,18 @@
 </ion-header>
 <ion-content padding id="page3">
   <h3 id="respondant-heading6" style="color:#000000;">
-    Amount: 18 EUR
+    Amount: {{proposerAmt}} EUR
   </h3>
   <div class="spacer" style="width:300px;height:28px;" id="respondant-spacer2"></div>
   <h4 id="respondant-heading7" style="color:#000000;">
-    the legend27 has offered you 9 EUR.
+    {{proposerUsername}} has offered you {{proposerAmt}} EUR.
   </h4>
   <div class="spacer" style="width:300px;height:52px;" id="respondant-spacer3"></div>
   <div style="text-align: center;">
-  <button id="respondant-button6" (click)="Next()" ion-button color="positive" item-left>
+  <button id="respondant-button6" (click)="Accept()" ion-button color="positive" item-left>
     Accept offer
   </button>
-  <button id="respondant-button7" ion-button color="positive" item-right>
+  <button id="respondant-button7" (click)="Decline()" ion-button color="positive" item-right>
     Decline offer
   </button>
 </div>

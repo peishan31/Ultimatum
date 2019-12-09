@@ -27,7 +27,7 @@ export class ProposerPage {
     const loading = this.loadingCtrl.create({
 
     });
-    this.presentLoading(loading);
+    //this.presentLoading(loading);
     //this.navCtrl.setRoot(RespondantPage);
   }
 
@@ -64,7 +64,7 @@ export class ProposerPage {
     // Updating the game status to "Ready"
     this.afs.collection('Game').doc(dbid).update({
       proposerStatus: "Ready",
-      proposerAmount: this.range // ** temp hardcoding
+      proposerAmount: this.range
      })
     .then((data) => {
       //console.log("Data: "+data);

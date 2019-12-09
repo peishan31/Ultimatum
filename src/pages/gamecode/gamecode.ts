@@ -99,10 +99,10 @@ list=[];
 
       });
     this.presentLoading(loadingg);
-      
+
       for (let p=0;p<res.length;p++){
-  
-          let passnextpg={UUID: all.UUID, username: all.username}
+
+          let passnextpg={UUID: all.UUID, username: all.username, gamecode: this.gamecode}
           if (res[p].responderUUID == all.UUID && res[p].gameId==this.gamecode && res[p].proposerStatus=="Ready") {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
@@ -110,16 +110,16 @@ list=[];
             loadingg.dismissAll();
             console.log("ok")
             this.navCtrl.push(RespondantPage, passnextpg);
-       
-          
+
+
           }
           if (res[p].proposerUUID == all.UUID && res[p].gameId==this.gamecode){
             // user is a proposer in the next round
             loadingg.dismiss();
-            
+
             this.navCtrl.push(ProposerPage, passnextpg);
           }
-         
+
         }
 
     })
