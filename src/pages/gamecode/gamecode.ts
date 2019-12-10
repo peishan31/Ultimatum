@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { ProposerPage } from '../proposer/proposer';
 import { RespondantPage } from '../respondant/respondant';
 import { NgForm } from '@angular/forms';
@@ -27,7 +27,8 @@ list=[];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public afs: AngularFirestore,
-    public loadingCtrl:LoadingController
+    public loadingCtrl:LoadingController,
+    public toastCtrl:ToastController
     ) {
     console.log(navParams.data);
   }
@@ -45,6 +46,13 @@ list=[];
 
       });
       this.presentLoading(loading);
+
+      const toast = this.toastCtrl.create({
+        message: 'See your name on the screen..',
+        duration:3000
+      });
+      toast.present();
+
       let all=this.navParams.data;
       all["gameId"]=this.gamecode;
       this.createParticipant(all);
@@ -89,7 +97,8 @@ list=[];
   }
 
   responderOrProposal(all){
-
+    // let shand = document.getElementsByClassName('errormsg') as HTMLCollectionOf<HTMLElement>;
+    // shand[0].style.display="none";
     this.itemDoc = this.afs.collection<any>('Game');
     this.item = this.itemDoc.valueChanges();
 

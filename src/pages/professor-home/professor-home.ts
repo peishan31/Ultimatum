@@ -3,7 +3,7 @@ import { NavController } from 'ionic-angular';
 import { ScoreboardPage } from '../scoreboard/scoreboard';
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
-import {LoadingController} from 'ionic-angular';
+import {LoadingController,ToastController} from 'ionic-angular';
 
 @Component({
   selector: 'page-professor-home',
@@ -18,7 +18,8 @@ list=[];
 studentsList={"username": [], "UUID": [], "totalRound": 0};
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
-    public loadingCtrl:LoadingController
+    public loadingCtrl:LoadingController,
+    public toastCtrl:ToastController
     ) {
 
   }
@@ -35,6 +36,11 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
 
     });
     this.presentLoading(loading);
+
+    const toast = this.toastCtrl.create({
+      message: 'Waiting for students to finish game'
+    });
+    toast.present();
 
     this.itemDoc = this.afs.collection<any>('Participant');
     this.item = this.itemDoc.valueChanges();
@@ -61,6 +67,13 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
   gamecode(){
     //this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
     this.code = this.randomGeneratedGameCode();
+
+    const toast = this.toastCtrl.create({
+      message: 'Waiting for students...'
+    });
+    toast.present();
+
+
     console.log(this.code);
     let date=new Date();
 
