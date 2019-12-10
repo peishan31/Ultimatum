@@ -10,7 +10,7 @@ import { ScoreboardPage } from '../pages/scoreboard/scoreboard';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {GamecodePage} from '../pages/gamecode/gamecode';
-
+import {ProfessorloginPage} from '../pages/professorlogin/professorlogin';
 //firebase
 //import { AngularFirestore } from '@angular/fire/firestore'
 import * as firebase from 'firebase';
@@ -29,7 +29,8 @@ import { FormsModule } from '@angular/forms';
     RespondantPage,
     ProfessorHomePage,
     ScoreboardPage,
-    GamecodePage
+    GamecodePage,
+    ProfessorloginPage
   ],
   imports: [
     BrowserModule,
@@ -47,7 +48,8 @@ import { FormsModule } from '@angular/forms';
     RespondantPage,
     ProfessorHomePage,
     ScoreboardPage,
-    GamecodePage
+    GamecodePage,
+    ProfessorloginPage
   ],
   providers: [
     StatusBar,

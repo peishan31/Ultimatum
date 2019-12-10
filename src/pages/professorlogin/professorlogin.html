@@ -1,0 +1,32 @@
+<!--
+  Generated template for the ProfessorloginPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <!-- <ion-navbar>
+    <ion-title>Professorlogin</ion-title>
+  </ion-navbar> -->
+</ion-header>
+
+<ion-content padding>
+  <img src="assets/img/F8bSjVZITEiuY4kgVA98_ultimatumlogo.PNG" style="display:block;width:50%;height:auto;margin-left:auto;margin-right:auto;" />
+
+  <form #submitUltimatumForm="ngForm">
+    <ion-item id="ultimatum-input1">
+      <ion-label></ion-label>
+      <img src="assets/img/GiAeXOZRSuS8siHGnzJf_arrow.png" style="width:5%;height:auto;"/>
+      <ion-input type="text" placeholder="USERNAME" [(ngModel)]="Username" [ngModelOptions]="{standalone:true}"></ion-input><br>
+    </ion-item>
+    <ion-item>
+      <ion-input type="password" placeholder="PASSWORD" [(ngModel)]="Password" [ngModelOptions]="{standalone:true}"></ion-input>
+    </ion-item>
+  </form>
+  <button id="ultimatum-button1" ion-button color="positive" block (click)="Next(submitUltimatumForm)">
+    Enter
+  </button>
+  <p ion-text *ngIf="Username != '' && submitted == true" color="danger" padding-left>
+    Please enter your username
+  </p>
+</ion-content>

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { NgForm } from '@angular/forms';
 import { GamecodePage } from '../gamecode/gamecode';
 import {LoadingController} from 'ionic-angular';
+import { ProfessorloginPage } from '../professorlogin/professorlogin';
 
 @Component({
   selector: 'page-ultimatum',
@@ -62,6 +63,10 @@ export class UltimatumPage {
 
   async presentLoading(loading) {
     return await loading.present();
+  }
+
+  ProfessorLogin(){
+    this.navCtrl.setRoot(ProfessorloginPage);
   }
 
 }
