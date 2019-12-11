@@ -28,6 +28,7 @@
     "@ionic/storage": "2.2.0",
     "angularfire2": "^5.2.3",
     "cordova-plugin-firebase": "^2.0.5",
+    "crypto": "^1.0.1",
     "firebase": "^7.5.0",
     "ionic-angular": "3.9.5",
     "ionicons": "3.0.0",
