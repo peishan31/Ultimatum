@@ -225,4 +225,24 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
   async presentLoading(loading) {
     return await loading.present();
   }
+
+  randomall(){
+    let shand = document.getElementsByClassName('randomall') as HTMLCollectionOf<HTMLElement>;
+    shand[0].style.backgroundColor="cornflowerblue";
+    shand[0].style.color="white";
+
+    let shands = document.getElementsByClassName('allsame') as HTMLCollectionOf<HTMLElement>;
+    shands[0].style.backgroundColor="transparent";
+    shands[0].style.color="cornflowerblue";
+  }
+
+  allsame(){
+    let shand = document.getElementsByClassName('allsame') as HTMLCollectionOf<HTMLElement>;
+    shand[0].style.backgroundColor="cornflowerblue";
+    shand[0].style.color="white";
+
+    let shands = document.getElementsByClassName('randomall') as HTMLCollectionOf<HTMLElement>;
+    shands[0].style.backgroundColor="transparent";
+    shands[0].style.color="cornflowerblue";
+  }
 }

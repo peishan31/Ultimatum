@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { UltimatumPage } from '../ultimatum/ultimatum';
 
 /**
  * Generated class for the ProfessorloginPage page.
@@ -22,6 +23,12 @@ export class ProfessorloginPage {
     console.log('ionViewDidLoad ProfessorloginPage');
   }
 
-  Next(){}
+  Next(){
+
+  }
+
+  back(){
+    this.navCtrl.setRoot(UltimatumPage);
+  }
 
 }

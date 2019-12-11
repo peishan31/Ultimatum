@@ -11,7 +11,14 @@
 <ion-content id="page4">
   <body>
     <!-- <button ion-button (click)="gamecode()"></button> -->
-  <div (click)="gamecode()" *ngIf="code==0" style="text-align: center;"><br><br><br><br><br><button ion-button>Generate game code &nbsp;<ion-icon name="color-wand"  style="color:white;font-size:25px;"></ion-icon></button></div>
+  <div *ngIf="code==0" style="text-align: center;"><br><br><br><br><br>
+    <h3>Choose game mode:</h3>
+    
+    <button ion-button style="background-color: transparent;color:cornflowerblue;" outline class="randomall" (click)="randomall()">Random all players</button>
+    <button ion-button style="background-color: transparent;color:cornflowerblue;" outline class="allsame" (click)="allsame()">All same opponents</button><br>
+    <button ion-button (click)="gamecode()">Generate game code &nbsp;<ion-icon name="color-wand"  style="color:white;font-size:25px;"></ion-icon></button>
+  
+  </div>
   <div *ngIf="code!=0">
       <div style="text-align: center;">
         <h2>Game code: <p id="gameId">{{code}}</p> &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>

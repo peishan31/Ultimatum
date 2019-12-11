@@ -66,6 +66,11 @@ export class UltimatumPage {
   }
 
   ProfessorLogin(){
+    const loading = this.loadingCtrl.create({
+
+    });
+    this.presentLoading(loading);
+    loading.dismiss();
     this.navCtrl.setRoot(ProfessorloginPage);
   }
 

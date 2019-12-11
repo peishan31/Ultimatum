@@ -6,6 +6,7 @@ import { ProposerPage } from '../pages/proposer/proposer';
 import { RespondantPage } from '../pages/respondant/respondant';
 import { UltimatumPage } from '../pages/ultimatum/ultimatum';
 import { ScoreboardPage } from '../pages/scoreboard/scoreboard';
+import { ProfessorHomePage } from '../pages/professor-home/professor-home';
 
 
 
