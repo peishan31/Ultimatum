@@ -14,20 +14,42 @@ export class ProposerPage {
   item:any;
   proposerData:any;
   firebaseId = "";
+  maxtime: any=30;
+  timer:any;
 
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public navParams: NavParams) {
+      this.StartTimer()
   }
 
+  StartTimer(){
+    this.timer = setTimeout(x => 
+      {
+          if(this.maxtime <= 0) { }
+          this.maxtime -= 1;
+
+          if(this.maxtime>0){
+           // this.hidevalue = false;
+            this.StartTimer();
+          }
+          
+          else{
+             // this.hidevalue = true;
+          }
+
+      }, 1000);
+ 
+
+  }
   Next(){
     this.submitProposerOffer();
-    // then loading screen for the responder to respond
+   // then loading screen for the responder to respond
     const loading = this.loadingCtrl.create({
 
     });
-    //this.presentLoading(loading);
+    this.presentLoading(loading);
     //this.navCtrl.setRoot(RespondantPage);
   }
 
@@ -49,7 +71,8 @@ export class ProposerPage {
           if (res[p].proposerUUID == all.UUID && res[p].round == 0){ //*** hardcoding round
             // store proposerData here
             this.proposerData = res[p];
-            this.firebaseId = res[p].round + res[p].proposerName + res[p].responderName
+           // this.firebaseId = res[p].round + res[p].proposerName + res[p].responderName //ps code i comment out
+           this.firebaseId= res[p].proposerUUID + res[p].round +  res[p].responderUUID +res[p].round;
             console.log("firebaseId: " + this.firebaseId );
             this.updateProfessorStatus(this.firebaseId);
           }

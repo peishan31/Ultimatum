@@ -21,6 +21,8 @@ firebase.initializeApp(firebaseConfig);
 
 import { FormsModule } from '@angular/forms';
 
+import {CountDown} from "ng4-date-countdown-timer";
+
 @NgModule({
   declarations: [
     MyApp,
@@ -30,7 +32,8 @@ import { FormsModule } from '@angular/forms';
     ProfessorHomePage,
     ScoreboardPage,
     GamecodePage,
-    ProfessorloginPage
+    ProfessorloginPage,
+    CountDown
   ],
   imports: [
     BrowserModule,

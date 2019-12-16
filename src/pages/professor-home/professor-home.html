@@ -7,8 +7,16 @@
       Professor Home
     </ion-title>
   </ion-navbar> -->
+  <style>
+    .selectable{
+      -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text; 
+}
+  </style>
 </ion-header>
-<ion-content id="page4">
+<ion-content id="page4" overflow-scroll="true">
   <body>
     <!-- <button ion-button (click)="gamecode()"></button> -->
   <div *ngIf="code==0" style="text-align: center;"><br><br><br><br><br>
@@ -20,7 +28,7 @@
   
   </div>
   <div *ngIf="code!=0">
-      <div style="text-align: center;">
+      <div style="text-align: center;" class="selectable">
         <h2>Game code: <p id="gameId">{{code}}</p> &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
 
       </div>

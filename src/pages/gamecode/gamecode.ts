@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ToastController, Loading } from 'ionic-angular';
 import { ProposerPage } from '../proposer/proposer';
 import { RespondantPage } from '../respondant/respondant';
 import { NgForm } from '@angular/forms';
@@ -23,6 +23,7 @@ submitted=false;
 itemDoc:any;
 item:any;
 list=[];
+loader:Loading;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -39,13 +40,14 @@ list=[];
   }
 
   Next(form: NgForm){
+   
     this.submitted = true;
 
     if (form.valid && this.gamecode!= '' && this.gamecode!=null) {
-      const loading = this.loadingCtrl.create({
-
+      this.loader =  this.loadingCtrl.create({
+   
       });
-      this.presentLoading(loading);
+      this.loader.present();
 
       const toast = this.toastCtrl.create({
         message: 'See your name on the screen..',
@@ -67,7 +69,7 @@ list=[];
             else{
               if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
                 // find out if user is a proposer or responder
-                loading.dismiss();
+                this.loader.dismiss();
                 this.responderOrProposal(this.navParams.data);
 
               }
@@ -101,32 +103,32 @@ list=[];
     // shand[0].style.display="none";
     this.itemDoc = this.afs.collection<any>('Game');
     this.item = this.itemDoc.valueChanges();
-
+let iu=0;// else if keep getting in
     this.item.subscribe(res=>{
-
-      const loadingg = this.loadingCtrl.create({
-
-      });
-    this.presentLoading(loadingg);
+      // this.loader =  this.loadingCtrl.create({
+   
+      // });
+      // this.loader.present();
 
       for (let p=0;p<res.length;p++){
 
           let passnextpg={UUID: all.UUID, username: all.username, gamecode: this.gamecode}
-          if (res[p].responderUUID == all.UUID && res[p].gameId==this.gamecode && res[p].proposerStatus=="Ready") {
+          if (res[p].responderUUID == all.UUID && res[p].gameId==this.gamecode && res[p].proposerStatus=="Ready" && res[p].round=="0") {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
-            loadingg.dismiss();
-            loadingg.dismissAll();
-            console.log("ok")
+          //  this.loader.dismiss();
+console.log("hi")
             this.navCtrl.push(RespondantPage, passnextpg);
 
 
           }
-          if (res[p].proposerUUID == all.UUID && res[p].gameId==this.gamecode){
+           else if (res[p].proposerUUID == all.UUID && res[p].gameId==this.gamecode && res[p].round=="0" && res[p].proposerStatus=="Not Ready" && iu==0){
             // user is a proposer in the next round
-            loadingg.dismiss();
-
+            // this.loader.dismissAll()
             this.navCtrl.push(ProposerPage, passnextpg);
+          iu+=1
+           console.log("First")
+            
           }
 
         }
@@ -134,7 +136,19 @@ list=[];
     })
   }
 
-  async presentLoading(loading) {
-    return await loading.present();
+  // async presentLoading(loading) {
+  //   return await loading.present();
+  // }
+
+  async presentLoading() {
+    this.loader = await this.loadingCtrl.create({
+   
+    });
+    await this.loader.present();
+  }
+
+  async dismissLoading() {
+    await this.loader.dismiss();
   }
 }
+

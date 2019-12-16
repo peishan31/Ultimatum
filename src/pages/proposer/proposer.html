@@ -7,21 +7,33 @@
       Proposer
     </ion-title>
   </ion-navbar> -->
+  <style>
+  .bottom-right {
+float:right;
+margin-bottom: 10px;
+
+}
+</style>
 </ion-header>
 <ion-content padding id="page2">
+  <!-- <countdown units="Seconds"  end="July 22, 2019"></countdown> -->
+ 
   <h3 id="proposer-heading5" style="color:#000000;">
-    Amount: 18 EUR
+    Amount: 100 EUR
   </h3>
   <form id="proposer-form7">
     <h5 id="proposer-heading4" style="color:#000000;">
       How much would you like to offer?
     </h5>
-    <img src="assets/img/aKQqu3WrSKSojrAxfjsf_piechart.PNG" style="display:block;width:50%;height:auto;margin-left:auto;margin-right:auto;" />
+    <!-- <img src="assets/img/aKQqu3WrSKSojrAxfjsf_piechart.PNG" style="display:block;width:50%;height:auto;margin-left:auto;margin-right:auto;" /> -->
     <ion-item id="proposer-range2">
       <ion-range min="0" max="100" step="1" color="positive" value="50" pin="true" [(ngModel)]="range" [ngModelOptions]="{standalone:true}">
-        <ion-label range-left>
-         {{range}}% to respondant
+        <ion-label range-right *ngIf="range!=null || range!=undefined">
+         {{range}} EUR
         </ion-label>
+        <ion-label range-left >
+          Amount:
+         </ion-label>
       </ion-range>
     </ion-item>
   </form>
@@ -30,4 +42,5 @@
   </button>
   <div class="spacer" style="width:300px;height:22px;" id="proposer-spacer1"></div>
   <img src="assets/img/KSLQgHmBQfqnvxBcXWrt_timer.PNG" style="display:block;width:10%;height:auto;margin-left:auto;" />
+  <div class="bottom-right">{{maxtime}}</div>
 </ion-content>

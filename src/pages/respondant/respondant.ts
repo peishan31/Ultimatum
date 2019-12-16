@@ -29,7 +29,7 @@ export class RespondantPage {
         console.log("Hi: "+ res);
         for (let p=0;p<res.length;p++){
             //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
-            if (res[p].responderUUID == all.UUID) {
+            if (res[p].responderUUID == all.UUID && res[p].round==0) {
               // user is a responder in the next round
               this.proposerAmt = res[p].proposerAmount;
               this.proposerUsername = res[p].proposerName;

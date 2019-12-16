@@ -37,10 +37,7 @@ export class UltimatumPage {
     this.submitted = true;
 
     if (form.valid && this.Username!= '' && this.Username!=null) {
-      if (this.Username=="Professor123"){
-        this.navCtrl.setRoot(ProfessorHomePage);
-      }
-      else{
+     
         const loading = this.loadingCtrl.create({
 
         });
@@ -52,7 +49,7 @@ export class UltimatumPage {
         this.navCtrl.setRoot(GamecodePage,passnextpg);
       }
     }
-  }
+  
 
   uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
