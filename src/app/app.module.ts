@@ -21,9 +21,13 @@ import { AngularFirestore, AngularFirestoreModule,FirestoreSettingsToken } from 
 import { AngularFireModule } from '@angular/fire';
 firebase.initializeApp(firebaseConfig);
 
+import { Network } from '@ionic-native/network';
 import { FormsModule } from '@angular/forms';
 
 import {CountDown} from "ng4-date-countdown-timer";
+import { PresenceProvider } from '../providers/presence/presence';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireDatabase } from '@angular/fire/database';
 
 @NgModule({
   declarations: [
@@ -65,7 +69,11 @@ import {CountDown} from "ng4-date-countdown-timer";
     SplashScreen,
     AngularFirestore,
     { provide: FirestoreSettingsToken, useValue: {} },
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    PresenceProvider,
+    AngularFireAuth,
+    AngularFireDatabase,
+    Network
   ]
 })
 export class AppModule {}

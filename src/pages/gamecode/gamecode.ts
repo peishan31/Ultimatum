@@ -5,6 +5,7 @@ import { RespondantPage } from '../respondant/respondant';
 import { NgForm } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
+
 /**
  * Generated class for the GamecodePage page.
  *

@@ -11,7 +11,7 @@ import { ResultPage } from '../result/result';
   templateUrl: 'proposer.html'
 })
 export class ProposerPage {
-  range:number;
+  range=0;
   itemDoc:any;
   item:any;
   proposerData:any;
@@ -46,7 +46,7 @@ export class ProposerPage {
              console.log(r)
              this.firebaseId=res["proposerUUID"] + res["round"] +  res["responderUUID"] +res["round"];
              this.range=0;
-             this.DidNotRespond(this.firebaseId);
+             this.updateProfessorStatus(this.firebaseId);
              let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range};
              this.navCtrl.push(ResultPage,dict)
              })
@@ -137,18 +137,7 @@ export class ProposerPage {
     })
   }
 
-  DidNotRespond(dbid){
-    // Updating the game status to "Ready"
-    this.afs.collection('Game').doc(dbid).update({
-      proposerStatus: "Ready",
-      proposerAmount: 0
-     })
-    .then((data) => {
-      //console.log("Data: "+data);
-    }).catch((err) => {
-      console.log("Err: "+err);
-    })
-  }
+ 
 
   async presentLoading(loading) {
     return await loading.present();

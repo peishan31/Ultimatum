@@ -150,7 +150,8 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     // Updating the game status to "Ready"
     var id = localStorage.getItem("id");
     this.afs.collection('Professor').doc(id).update({
-      professorStatus: "Ready"
+      professorStatus: "Ready",
+      round:"0"
      })
     .then((data) => {
       //console.log("Data: "+data);
