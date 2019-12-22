@@ -11,6 +11,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {GamecodePage} from '../pages/gamecode/gamecode';
 import {ProfessorloginPage} from '../pages/professorlogin/professorlogin';
+import {ResultPage} from '../pages/result/result';
+import {LoadingPage} from '../pages/loading/loading';
 //firebase
 //import { AngularFirestore } from '@angular/fire/firestore'
 import * as firebase from 'firebase';
@@ -33,7 +35,9 @@ import {CountDown} from "ng4-date-countdown-timer";
     ScoreboardPage,
     GamecodePage,
     ProfessorloginPage,
-    CountDown
+    CountDown,
+    ResultPage,
+    LoadingPage
   ],
   imports: [
     BrowserModule,
@@ -52,7 +56,9 @@ import {CountDown} from "ng4-date-countdown-timer";
     ProfessorHomePage,
     ScoreboardPage,
     GamecodePage,
-    ProfessorloginPage
+    ProfessorloginPage,
+    ResultPage,
+    LoadingPage
   ],
   providers: [
     StatusBar,

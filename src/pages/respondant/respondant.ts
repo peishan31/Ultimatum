@@ -3,6 +3,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ProfessorHomePage } from '../professor-home/professor-home';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
+import { ResultPage } from '../result/result';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'page-respondant',
@@ -15,11 +17,14 @@ export class RespondantPage {
   proposerUsername = "";
   responderData:any;
   firebaseId = "";
+  maxtime: any=30;
+  timer:any;
 
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
     public afs: AngularFirestore,
     public navParams: NavParams) {
+      this.StartTimer()
 
       let all=this.navParams.data;
       this.itemDoc = this.afs.collection<any>('Game');
@@ -84,7 +89,43 @@ export class RespondantPage {
     this.navCtrl.setRoot(ProfessorHomePage);
   }*/
 
-  Accept(){
+  StartTimer(){
+    this.timer = setTimeout(x => 
+      {
+          if(this.maxtime <= 0) { }
+          this.maxtime -= 1;
+
+          if(this.maxtime>0){
+           // this.hidevalue = false;
+            this.StartTimer();
+          }
+
+          else if (this.maxtime==0){
+            // this.hidevalue = true;
+            this.Accept().subscribe((r)=>{
+            console.log(r)
+             this.afs.collection('Game').doc(r).valueChanges().subscribe(res=>{
+    
+      console.log(res);
+            this.firebaseId=res["proposerUUID"] + res["round"] +  res["responderUUID"] +res["round"];
+            this.updateResponderStatus(this.firebaseId,"Accept");
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId};
+            this.navCtrl.push(ResultPage,dict)
+            })})
+
+         }
+          
+          else{
+             // this.hidevalue = true;
+          }
+
+      }, 1000);
+ 
+
+  }
+
+  Accept():Observable<any>{
+    var subject = new Subject<any>();
     // update responder's response as 'Accept'
     this.itemDoc = this.afs.collection<any>('Game');
     this.item = this.itemDoc.valueChanges();
@@ -100,15 +141,20 @@ export class RespondantPage {
           if (res[p].responderUUID == all.UUID && res[p].round == 0){ //*** hardcoding round
             // store responderData here
             this.responderData = res[p];
-            this.firebaseId = res[p].round + res[p].proposerName + res[p].responderName
+            this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
             console.log("firebaseId: " + this.firebaseId );
             this.updateResponderStatus(this.firebaseId, 'Accept');
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Accept"};
+            this.navCtrl.setRoot(ResultPage,dict)
+            subject.next(this.firebaseId);
           }
+
         }
 
       }
 
     })
+    return subject.asObservable();
   }
 
   Decline(){
@@ -127,9 +173,11 @@ export class RespondantPage {
           if (res[p].responderUUID == all.UUID && res[p].round == 0){ //*** hardcoding round
             // store responderData here
             this.responderData = res[p];
-            this.firebaseId = res[p].round + res[p].proposerName + res[p].responderName
+            this.firebaseId =  res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
             console.log("firebaseId: " + this.firebaseId );
             this.updateResponderStatus(this.firebaseId, 'Decline');
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Decline"};
+            this.navCtrl.setRoot(ResultPage,dict)
           }
         }
 

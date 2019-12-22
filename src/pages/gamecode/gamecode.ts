@@ -24,7 +24,7 @@ itemDoc:any;
 item:any;
 list=[];
 loader:Loading;
-
+hide:Boolean;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public afs: AngularFirestore,
@@ -117,11 +117,11 @@ let iu=0;// else if keep getting in
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
           //  this.loader.dismiss();
-console.log("hi")
             this.navCtrl.push(RespondantPage, passnextpg);
 
 
           }
+
            else if (res[p].proposerUUID == all.UUID && res[p].gameId==this.gamecode && res[p].round=="0" && res[p].proposerStatus=="Not Ready" && iu==0){
             // user is a proposer in the next round
             // this.loader.dismissAll()
@@ -129,6 +129,9 @@ console.log("hi")
           iu+=1
            console.log("First")
             
+          }
+          else{
+            this.hide=true;
           }
 
         }

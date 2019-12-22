@@ -3,6 +3,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { RespondantPage } from '../respondant/respondant';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
+import { Subject, Observable } from 'rxjs';
+import { ResultPage } from '../result/result';
 
 @Component({
   selector: 'page-proposer',
@@ -35,8 +37,20 @@ export class ProposerPage {
             this.StartTimer();
           }
           
-          else{
+          else if (this.maxtime==0){
              // this.hidevalue = true;
+             this.submitProposerOffer().subscribe((r)=>{
+                this.afs.collection('Game').doc(r).valueChanges().subscribe(res=>{
+    
+      console.log(res);
+             console.log(r)
+             this.firebaseId=res["proposerUUID"] + res["round"] +  res["responderUUID"] +res["round"];
+             this.range=0;
+             this.DidNotRespond(this.firebaseId);
+             let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range};
+             this.navCtrl.push(ResultPage,dict)
+             })
+            })
           }
 
       }, 1000);
@@ -45,15 +59,35 @@ export class ProposerPage {
   }
   Next(){
     this.submitProposerOffer();
+    
    // then loading screen for the responder to respond
-    const loading = this.loadingCtrl.create({
+    // const loading = this.loadingCtrl.create({
 
-    });
-    this.presentLoading(loading);
+    // });
+   
+    // this.submitProposerOffer().subscribe((r)=>{
+    //   console.log(r)
+    // this.afs.collection('Game').doc(r).valueChanges().subscribe(res=>{
+    
+    //   console.log(res);
+    //   console.log(res["responderResponse"]);
+    //   console.log(res["gameId"]);
+    //   if (res["responderResponse"]!=""){
+    //     this.navCtrl.push(ResultPage)
+    //     loading.dismissAll();
+    //     loading.dismiss();
+    //   }
+    //   else{
+    //     this.presentLoading(loading);
+    //     loading.present();
+    //   }
+  
+    // })});
     //this.navCtrl.setRoot(RespondantPage);
   }
 
-  submitProposerOffer(){
+  submitProposerOffer():Observable<any>{
+    var subject = new Subject<any>();
     // get the data using proposer's UUID
     // then combine the id with current-round+proposer-name+responder-name
     // using this id, update the proposerAmount & proposerStatus
@@ -75,12 +109,19 @@ export class ProposerPage {
            this.firebaseId= res[p].proposerUUID + res[p].round +  res[p].responderUUID +res[p].round;
             console.log("firebaseId: " + this.firebaseId );
             this.updateProfessorStatus(this.firebaseId);
+
+            let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range};
+            this.navCtrl.push(ResultPage,dict);
+
+            subject.next(this.firebaseId);
+           
           }
         }
 
       }
 
-    })
+    }) 
+    return subject.asObservable();
   }
 
   updateProfessorStatus(dbid){
@@ -88,6 +129,19 @@ export class ProposerPage {
     this.afs.collection('Game').doc(dbid).update({
       proposerStatus: "Ready",
       proposerAmount: this.range
+     })
+    .then((data) => {
+      //console.log("Data: "+data);
+    }).catch((err) => {
+      console.log("Err: "+err);
+    })
+  }
+
+  DidNotRespond(dbid){
+    // Updating the game status to "Ready"
+    this.afs.collection('Game').doc(dbid).update({
+      proposerStatus: "Ready",
+      proposerAmount: 0
      })
     .then((data) => {
       //console.log("Data: "+data);

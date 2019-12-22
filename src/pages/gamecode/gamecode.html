@@ -11,6 +11,7 @@
 </ion-header> -->
 
 <ion-content padding>
+  <div *ngIf="hide!=true">
     <img src="assets/img/F8bSjVZITEiuY4kgVA98_ultimatumlogo.PNG" style="display:block;width:40%;margin-left:auto;margin-right:auto;" />
     <form #submitUltimatumForm="ngForm">
         <ion-item id="ultimatum-input1">
@@ -25,4 +26,13 @@
       <!-- <p ion-text *ngIf="gamecode != '' && submitted == true" color="danger" padding-left class="errormsg">
         Please enter game code
       </p> -->
+    </div>
+    <div *ngIf="hide==true">
+      <ion-card>
+        <br>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Symbol_wait_vote.svg/996px-Symbol_wait_vote.svg.png"/>
+        <h4 style="font-size: 18px;">You are a responder, please wait for proposer to make a move...</h4>
+<br>
+   </ion-card> 
+  </div>
 </ion-content>
