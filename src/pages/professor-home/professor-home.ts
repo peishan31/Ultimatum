@@ -143,7 +143,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
         personRefs.on('value', personSnapshot => {
           this.myPerson = personSnapshot.val();
           console.log(this.myPerson);
-          console.log(this.myPerson["online"])
+          //console.log(this.myPerson["online"])
           // verify if user is online
           if ((this.myPerson != null) || (this.myPerson != undefined)){
             if (this.myPerson["online"] == true) {
