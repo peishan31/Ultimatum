@@ -105,7 +105,7 @@ myPerson={};
           online: false
         })
         .then((all) => {
-          ref.on('value', personSnapshot => {
+          /*ref.on('value', personSnapshot => {
             this.myPerson = personSnapshot.val();
             if (personSnapshot["online"] == false){
               //===========================================
@@ -120,7 +120,7 @@ myPerson={};
               })
               //===========================================
             }
-          });
+          });*/
         })
       })
 

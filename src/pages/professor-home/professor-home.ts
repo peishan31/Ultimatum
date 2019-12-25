@@ -25,7 +25,7 @@ usernamelist=[];
 listusername2=[];
 listusername1=[];
 myPerson = {};
-
+listUUID = [];
 
 studentsList={"username": [], "UUID": [], "totalRound": 0};
   constructor(public navCtrl: NavController,
@@ -99,6 +99,33 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     let date=new Date();
 
     this.createProCode({gameId:this.code,dateTime:date.toISOString()});
+
+    // check if user is offline in real time database - Peishan
+    var ref = firebase.database().ref(`/` + "User" + `/`);
+    ref.on('value', snapshot => { // update users that are offline in real time database
+      console.log("This is Peishan: "+ snapshot);
+      //console.log(Object.keys(snapshot))
+      //console.log(Object.keys(snapshot.val()));
+
+      if ((snapshot.val()!=null)||(snapshot.val()!=undefined)) {
+
+        this.listUUID = Object.keys(snapshot.val());
+        this.listUUID.forEach(indvUUID => {
+          console.log("help: "+ indvUUID);
+          var indvRef = firebase.database().ref(`/` + "User" + `/` + indvUUID + `/`);
+          indvRef.on('value', snapshot => {
+            if ((snapshot.val()!=null) || (snapshot.val()!=undefined))
+            if (snapshot.val()["online"] == false) {
+              var id = indvUUID;
+                this.afs.collection('Participant').doc(indvUUID).update({
+                  online: false
+                })
+            }
+          })
+        });
+      }
+    })
+    //=================================================================
     this.itemDoc = this.afs.collection<any>('Participant')
     this.item = this.itemDoc.valueChanges();
     this.item.length=0;
@@ -110,21 +137,23 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
       for (let i=0; i<res.length;i++){
         // retrieve UUID & gameId
         // personRefs contains a specific user's online and gameId
-        console.log("myUUID: "+ res[i].UUID);
+        //console.log("myUUID: "+ res[i].UUID);
         const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
 
         personRefs.on('value', personSnapshot => {
           this.myPerson = personSnapshot.val();
+          console.log(this.myPerson);
+          console.log(this.myPerson["online"])
           // verify if user is online
-          console.log("myPerson: "+ JSON.stringify(this.myPerson));
-          //if ((this.myPerson != null) || (this.myPerson != undefined)){
-            //if (this.myPerson["Online"] == true) {
+          if ((this.myPerson != null) || (this.myPerson != undefined)){
+            if (this.myPerson["online"] == true) {
+              console.log('hi')
               if (res[i].gameId==this.code){
                 this.list.push(res[i].username);
                 this.studentnum=this.list.length;
               }
-            //}
-          //}
+            }
+          }
         });
 
       }
