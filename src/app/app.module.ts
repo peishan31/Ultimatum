@@ -26,8 +26,15 @@ import { FormsModule } from '@angular/forms';
 
 import {CountDown} from "ng4-date-countdown-timer";
 import { PresenceProvider } from '../providers/presence/presence';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireAuth,AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
+
+
+import {PastscoreboardPage} from '../pages/pastscoreboard/pastscoreboard';
+import {ViewpastornewPage} from '../pages/viewpastornew/viewpastornew';
+
+
+const config= {}
 
 @NgModule({
   declarations: [
@@ -41,7 +48,9 @@ import { AngularFireDatabase } from '@angular/fire/database';
     ProfessorloginPage,
     CountDown,
     ResultPage,
-    LoadingPage
+    LoadingPage,
+    PastscoreboardPage,
+    ViewpastornewPage
   ],
   imports: [
     BrowserModule,
@@ -49,7 +58,8 @@ import { AngularFireDatabase } from '@angular/fire/database';
     IonicModule.forRoot(MyApp),
     AngularFirestoreModule,
     AngularFireModule,
-    AngularFireModule.initializeApp(firebaseConfig, 'Ultimatum')
+    AngularFireModule.initializeApp(firebaseConfig, 'Ultimatum'),
+    AngularFireAuthModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -62,7 +72,9 @@ import { AngularFireDatabase } from '@angular/fire/database';
     GamecodePage,
     ProfessorloginPage,
     ResultPage,
-    LoadingPage
+    LoadingPage,
+    PastscoreboardPage,
+    ViewpastornewPage
   ],
   providers: [
     StatusBar,

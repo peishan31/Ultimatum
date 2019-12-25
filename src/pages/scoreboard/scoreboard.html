@@ -12,9 +12,21 @@
 </ion-header>
 <ion-content id="page5">
   <br>
-  <h3 id="scoreboard-heading3" style="color:#000000;">
-    Final scoreboard:
+  <h3 id="scoreboard-heading3" style="color:#000000;text-align: center;">
+    Scoreboard:
   </h3>
+  <div class="span3 control-group">
+    <label>Filter: </label>
+    <select style="height:50%" [(ngModel)]="selecting" [ngModelOptions]="{standalone:true}" >
+    <option>-</option>
+    <option>Individual rounds</option>
+    <option>Speed- Fastest to Slowest</option>
+    <option>Speed- Slowest to Fastest</option>
+    <option>Score- High to low</option>
+    <option>Score- Low to High</option>
+
+    </select>
+  </div>
   <div class="leaderboard">
     <h1>
       <svg class="ico-cup">
@@ -53,9 +65,9 @@
       <button (click)="Home()" ion-button color="positive" style="font-size:15px;height:150%"  item-left>
        <br> Back to home<br><br>
       </button>
-      <button ion-button color="positive" item-right style="font-size:15px;height:150%">
-     <br>   Save to database<br><br>
-      </button>
+      <button ion-button color="positive" (click)="nextround()" item-right style="font-size:15px;height:150%">
+     <br>   Next round<br><br>
+    </button>
     </div>
   </div>
 

@@ -24,6 +24,10 @@ listassgnsame2=[];
 usernamelist=[];
 listusername2=[];
 listusername1=[];
+allgameinround1=[];
+alreadydone=[];
+waitforstudent:Boolean;
+mode:string;
 myPerson = {};
 listUUID = [];
 
@@ -37,49 +41,68 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
   }
 
   Next(){
-    // Update Professor Status
-    this.updateProfessorStatus();
-
-
-    //choosing all same player mode
+    this.waitforstudent=true;
+     //choosing all same player mode
     if (this.alllsame==true){
+      this.mode="All same players";
       this.assignsameplayers()
+      
 
     }
     else{
+      this.mode="All different players";
       // assign users to the respective user
     this.assignUserToPlayWithAnotherUser();
     }
 
-    // loading screen and only change when students have played every rounds
-    const loading = this.loadingCtrl.create({
+       // Update Professor Status
+       this.updateProfessorStatus();
 
-    });
-    this.presentLoading(loading);
+    // loading screen and only change when students have played every rounds
+    // const loading = this.loadingCtrl.create({
+
+    // });
+    // this.presentLoading(loading);
 
     const toast = this.toastCtrl.create({
-      message: 'Waiting for students to finish game'
+      message: 'Waiting for students to finish game',
+      duration:3000
     });
     toast.present();
 
-    this.itemDoc = this.afs.collection<any>('Participant');
+    this.itemDoc = this.afs.collection<any>('Game');
     this.item = this.itemDoc.valueChanges();
 
     this.item.subscribe(res=>{
       console.log(res);
+     this.allgameinround1.length=0;
+     this.alreadydone.length=0;
+   
       for (let p=0;p<res.length;p++){
         if (res[p]==undefined || res[p]==null){
           console.log("BYE");
         }
         else{
-          // check if  online is true
-          if (res[p].gameStatus=='Ready' && res[p].gameId==this.gamecode){
-            loading.dismiss();
-            this.navCtrl.setRoot(ScoreboardPage);
+          if (res[p].gameId==this.code && res[p].round==0){
+            this.allgameinround1.push("1")
+           
+          }
+          if (res[p].responderResponse!="" && res[p].gameId==this.code && res[p].round==0){
+            // loading.dismiss();
+            // console.log("RCHED HERE")
+            // this.navCtrl.setRoot(ScoreboardPage);
+            this.alreadydone.push("1")
           }
         }
-
+       
+    
       }
+     if (this.alreadydone.length==this.allgameinround1.length){
+            //  loading.dismiss();
+              console.log("RCHED HERE")
+              var id = localStorage.getItem("id");
+              this.navCtrl.setRoot(ScoreboardPage,id);
+        }
 
     })
     //this.navCtrl.setRoot(ScoreboardPage);
@@ -90,7 +113,8 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     this.code = this.randomGeneratedGameCode();
 
     const toast = this.toastCtrl.create({
-      message: 'Waiting for students...'
+      message: 'Waiting for students...',
+      duration:3000
     });
     toast.present();
 
@@ -186,6 +210,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
         gameId:value.gameId,
         dateTime:value.dateTime,
         professorStatus: "Not Ready"
+        
        })
       .then((data) => {
         console.log("Data: "+data);
@@ -200,7 +225,8 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     var id = localStorage.getItem("id");
     this.afs.collection('Professor').doc(id).update({
       professorStatus: "Ready",
-      round:"0"
+      round:"0",
+      gameMode:this.mode
      })
     .then((data) => {
       //console.log("Data: "+data);

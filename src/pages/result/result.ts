@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Subscription } from 'rxjs';
+
 /**
  * Generated class for the ResultPage page.
  *
@@ -19,9 +21,10 @@ export class ResultPage {
   Result:String;
   ResponderName:String;
   ProposerName:String;
+  subscription:Subscription;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore) {
     let data=navParams.data;
-      this.afs.collection('Game').doc(data["FirebaseId"]).valueChanges().subscribe(res=>{
+    this.subscription=  this.afs.collection('Game').doc(data["FirebaseId"]).valueChanges().subscribe(res=>{
       this.Result=res["responderResponse"];
       this.ProposerName=res["proposerName"];
       this.ResponderName=res["responderName"];
@@ -50,4 +53,7 @@ export class ResultPage {
    
   }
 
+ ionViewDidLeave(){
+    this.subscription.unsubscribe();
+  } 
 }

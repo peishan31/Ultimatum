@@ -5,6 +5,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { ProfessorHomePage } from '../professor-home/professor-home';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as Crypto from "crypto-browserify";
+import { ViewpastornewPage } from '../viewpastornew/viewpastornew';
 /**
  * Generated class for the ProfessorloginPage page.
  *
@@ -63,7 +64,7 @@ export class ProfessorloginPage {
 
           if (userAttemptPasswordHash == res[p].PasswordHash && this.Username == res[p].Username) {
             console.log("User has entered the correct password!");
-            this.navCtrl.setRoot(ProfessorHomePage);
+            this.navCtrl.setRoot(ViewpastornewPage);
           }
           else {
             this.errorMessage = "Wrong password or username";

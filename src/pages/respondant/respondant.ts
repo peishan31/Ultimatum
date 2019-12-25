@@ -4,7 +4,7 @@ import { ProfessorHomePage } from '../professor-home/professor-home';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
 import { ResultPage } from '../result/result';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 @Component({
   selector: 'page-respondant',
@@ -19,18 +19,19 @@ export class RespondantPage {
   firebaseId = "";
   maxtime: any=30;
   timer:any;
-
+  subscription:Subscription;
+  
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
     public afs: AngularFirestore,
     public navParams: NavParams) {
-      this.StartTimer()
+    
 
       let all=this.navParams.data;
       this.itemDoc = this.afs.collection<any>('Game');
       this.item = this.itemDoc.valueChanges();
 
-      this.item.subscribe(res=>{
+     this.subscription= this.item.subscribe(res=>{
         console.log("Hi: "+ res);
         for (let p=0;p<res.length;p++){
             //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
@@ -89,6 +90,10 @@ export class RespondantPage {
     this.navCtrl.setRoot(ProfessorHomePage);
   }*/
 
+  ionViewDidEnter(){
+     this.StartTimer() 
+  }
+ 
   StartTimer(){
     this.timer = setTimeout(x => 
       {
@@ -101,17 +106,18 @@ export class RespondantPage {
           }
 
           else if (this.maxtime==0){
+          this.Accept();
             // this.hidevalue = true;
-            this.Accept().subscribe((r)=>{
-            console.log(r)
-             this.afs.collection('Game').doc(r).valueChanges().subscribe(res=>{
+      //       this.Accept().subscribe((r)=>{
+      //       console.log(r)
+      //        this.afs.collection('Game').doc(r).valueChanges().subscribe(res=>{
     
-      console.log(res);
-            this.firebaseId=res["proposerUUID"] + res["round"] +  res["responderUUID"] +res["round"];
-            this.updateResponderStatus(this.firebaseId,"Accept");
-            let dict={"Role":"Respondant","FirebaseId":this.firebaseId};
-            this.navCtrl.push(ResultPage,dict)
-            })})
+      // console.log(res);
+      //       this.firebaseId=res["proposerUUID"] + res["round"] +  res["responderUUID"] +res["round"];
+      //       this.updateResponderStatus(this.firebaseId,"Accept");
+      //       let dict={"Role":"Respondant","FirebaseId":this.firebaseId};
+      //       this.navCtrl.setRoot(ResultPage,dict)
+      //       })})
 
          }
           
@@ -124,21 +130,21 @@ export class RespondantPage {
 
   }
 
-  Accept():Observable<any>{
+  Accept(){
     var subject = new Subject<any>();
     // update responder's response as 'Accept'
     this.itemDoc = this.afs.collection<any>('Game');
     this.item = this.itemDoc.valueChanges();
     let all=this.navParams.data;
 
-    this.item.subscribe(res=>{
+    this.subscription= this.item.subscribe(res=>{
 
       console.log("My UUID: "+ all.UUID);
       for (let p=0;p<res.length;p++){
         if (res[p]==undefined || res[p]==null){
         }
         else{
-          if (res[p].responderUUID == all.UUID && res[p].round == 0){ //*** hardcoding round
+          if (res[p].responderUUID == all.UUID && res[p].round == 0 && res[p].responderResponse==""){ //*** hardcoding round
             // store responderData here
             this.responderData = res[p];
             this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
@@ -146,7 +152,7 @@ export class RespondantPage {
             this.updateResponderStatus(this.firebaseId, 'Accept');
             let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Accept"};
             this.navCtrl.setRoot(ResultPage,dict)
-            subject.next(this.firebaseId);
+         //   subject.next(this.firebaseId);
           }
 
         }
@@ -154,7 +160,7 @@ export class RespondantPage {
       }
 
     })
-    return subject.asObservable();
+    //return subject.asObservable();
   }
 
   Decline(){
@@ -163,7 +169,7 @@ export class RespondantPage {
     this.item = this.itemDoc.valueChanges();
     let all=this.navParams.data;
 
-    this.item.subscribe(res=>{
+  this.subscription=  this.item.subscribe(res=>{
 
       console.log("My UUID: "+ all.UUID);
       for (let p=0;p<res.length;p++){
@@ -202,4 +208,8 @@ export class RespondantPage {
   // async presentLoading(loading) {
   //   return await loading.present();
   // }
-}
+
+  ionViewDidLeave(){
+    this.subscription.unsubscribe();
+  } 
+} 

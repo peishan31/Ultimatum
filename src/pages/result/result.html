@@ -12,7 +12,7 @@
 
 <ion-content padding>
   <div style="text-align: center;">
-<h3>Results</h3>
+<h3 *ngIf="Result!=''">Results</h3>
 <ion-card *ngIf="Proposer==false"><br>
   <h3 style="font-size: 18px;">Please wait for {{ResponderName}}'s response...</h3>
 <br>
@@ -31,5 +31,6 @@
 <h3 style="font-size: 18px;">You Have <b>{{Result}}</b> {{ProposerName}}'s Offer</h3>
 <br>
 </ion-card>
+<h4 *ngIf="Result!=''">Please wait for professor to go next round...</h4>
 </div>
 </ion-content>

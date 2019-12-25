@@ -6,7 +6,7 @@ import { NgForm } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
 import * as firebase from 'firebase';
-import functions from 'firebase-functions';
+// import functions from 'firebase-functions';
 
 /**
  * Generated class for the GamecodePage page.
@@ -21,6 +21,7 @@ import functions from 'firebase-functions';
   templateUrl: 'gamecode.html',
 })
 export class GamecodePage {
+  subscription:any;  
 gamecode:string;
 submitted=false;
 itemDoc:any;
@@ -64,8 +65,7 @@ myPerson={};
       this.createParticipant(all);
       this.itemDoc = this.afs.collection<any>('Professor')
       this.item = this.itemDoc.valueChanges();
-      this.item.subscribe(res=>{
-
+      this.subscription=this.item.subscribe(res=>{
         console.log(res);
 
         this.userDisconnectState(all);
@@ -127,6 +127,11 @@ myPerson={};
     })
   }
 
+  ionViewDidLeave(){
+    this.subscription.unsubscribe();
+  }
+  
+
   createParticipant(value){
 
     return new Promise<any>((resolve, reject) => {
@@ -157,8 +162,8 @@ myPerson={};
     // shand[0].style.display="none";
     this.itemDoc = this.afs.collection<any>('Game');
     this.item = this.itemDoc.valueChanges();
-    let iu=0;// else if keep getting in
-    this.item.subscribe(res=>{
+let iu=0;// else if keep getting in
+this.subscription=this.item.subscribe(res=>{
       // this.loader =  this.loadingCtrl.create({
 
       // });

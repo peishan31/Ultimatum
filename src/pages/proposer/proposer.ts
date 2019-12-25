@@ -3,7 +3,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { RespondantPage } from '../respondant/respondant';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, Subscription } from 'rxjs';
 import { ResultPage } from '../result/result';
 
 @Component({
@@ -18,12 +18,15 @@ export class ProposerPage {
   firebaseId = "";
   maxtime: any=30;
   timer:any;
+  subscription:Subscription;
+  offer:Subscription;
+  game:Subscription;
 
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public navParams: NavParams) {
-      this.StartTimer()
+     // this.StartTimer()
   }
 
   StartTimer(){
@@ -39,24 +42,24 @@ export class ProposerPage {
           
           else if (this.maxtime==0){
              // this.hidevalue = true;
-             this.submitProposerOffer().subscribe((r)=>{
-                this.afs.collection('Game').doc(r).valueChanges().subscribe(res=>{
-    
-      console.log(res);
-             console.log(r)
-             this.firebaseId=res["proposerUUID"] + res["round"] +  res["responderUUID"] +res["round"];
-             this.range=0;
-             this.updateProfessorStatus(this.firebaseId);
-             let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range};
-             this.navCtrl.push(ResultPage,dict)
-             })
-            })
+            // this.offer= this.submitProposerOffer().subscribe((r)=>{
+            //             this.range=0;
+            //  this.updateProfessorStatus(r);
+            //  let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":0};
+            //  this.navCtrl.setRoot(ResultPage,dict)
+            //  })
+            this.submitProposerOffer();
           }
 
       }, 1000);
  
 
   }
+
+  ionViewDidEnter(){
+    this.StartTimer();
+  }
+
   Next(){
     this.submitProposerOffer();
     
@@ -95,14 +98,14 @@ export class ProposerPage {
     this.item = this.itemDoc.valueChanges();
     let all=this.navParams.data;
 
-    this.item.subscribe(res=>{
+    this.subscription= this.item.subscribe(res=>{
 
       console.log("My UUID: "+ all.UUID);
       for (let p=0;p<res.length;p++){
         if (res[p]==undefined || res[p]==null){
         }
         else{
-          if (res[p].proposerUUID == all.UUID && res[p].round == 0){ //*** hardcoding round
+          if (res[p].proposerUUID == all.UUID && res[p].round == 0 && res[p].responderResponse==""){ //*** hardcoding round
             // store proposerData here
             this.proposerData = res[p];
            // this.firebaseId = res[p].round + res[p].proposerName + res[p].responderName //ps code i comment out
@@ -111,8 +114,7 @@ export class ProposerPage {
             this.updateProfessorStatus(this.firebaseId);
 
             let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range};
-            this.navCtrl.push(ResultPage,dict);
-
+            this.navCtrl.setRoot(ResultPage,dict);
             subject.next(this.firebaseId);
            
           }
@@ -142,4 +144,11 @@ export class ProposerPage {
   async presentLoading(loading) {
     return await loading.present();
   }
+
+  ionViewDidLeave(){
+    this.subscription.unsubscribe();
+   // this.offer.unsubscribe();
+  //  this.game.unsubscribe();
+  } 
 }
+
