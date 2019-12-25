@@ -4,6 +4,7 @@ import { ScoreboardPage } from '../scoreboard/scoreboard';
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
 import {LoadingController,ToastController} from 'ionic-angular';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'page-professor-home',
@@ -23,6 +24,8 @@ listassgnsame2=[];
 usernamelist=[];
 listusername2=[];
 listusername1=[];
+myPerson = {};
+
 
 studentsList={"username": [], "UUID": [], "totalRound": 0};
   constructor(public navCtrl: NavController,
@@ -69,6 +72,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
           console.log("BYE");
         }
         else{
+          // check if  online is true
           if (res[p].gameStatus=='Ready' && res[p].gameId==this.gamecode){
             loading.dismiss();
             this.navCtrl.setRoot(ScoreboardPage);
@@ -101,11 +105,27 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     this.item.subscribe(res=>{
       this.list.length=0;
       console.log(res)
+
+      // Peishan
       for (let i=0; i<res.length;i++){
-        if (res[i].gameId==this.code){
-        this.list.push(res[i].username);
-        this.studentnum=this.list.length;
-        }
+        // retrieve UUID & gameId
+        // personRefs contains a specific user's online and gameId
+        console.log("myUUID: "+ res[i].UUID);
+        const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
+
+        personRefs.on('value', personSnapshot => {
+          this.myPerson = personSnapshot.val();
+          // verify if user is online
+          console.log("myPerson: "+ JSON.stringify(this.myPerson));
+          //if ((this.myPerson != null) || (this.myPerson != undefined)){
+            //if (this.myPerson["Online"] == true) {
+              if (res[i].gameId==this.code){
+                this.list.push(res[i].username);
+                this.studentnum=this.list.length;
+              }
+            //}
+          //}
+        });
 
       }
       console.log(this.list)
@@ -287,7 +307,7 @@ if (this.assgnsame.length%2==0){
       console.log("Err: "+err);
     })
    }
- 
+
 
  }
 
@@ -320,7 +340,7 @@ if (this.assgnsame.length%2==0){
 
 }
     })
-    
+
 }
 
   async presentLoading(loading) {

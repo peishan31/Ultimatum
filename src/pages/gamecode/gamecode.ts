@@ -5,6 +5,8 @@ import { RespondantPage } from '../respondant/respondant';
 import { NgForm } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
+import * as firebase from 'firebase';
+import functions from 'firebase-functions';
 
 /**
  * Generated class for the GamecodePage page.
@@ -26,6 +28,7 @@ item:any;
 list=[];
 loader:Loading;
 hide:Boolean;
+myPerson={};
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public afs: AngularFirestore,
@@ -41,12 +44,12 @@ hide:Boolean;
   }
 
   Next(form: NgForm){
-   
+
     this.submitted = true;
 
     if (form.valid && this.gamecode!= '' && this.gamecode!=null) {
       this.loader =  this.loadingCtrl.create({
-   
+
       });
       this.loader.present();
 
@@ -62,7 +65,13 @@ hide:Boolean;
       this.itemDoc = this.afs.collection<any>('Professor')
       this.item = this.itemDoc.valueChanges();
       this.item.subscribe(res=>{
+
         console.log(res);
+
+        this.userDisconnectState(all);
+        //var ref = firebase.database().ref(`/` + "User" + `/` + all.UUID + `/`);
+
+
         for (let p=0;p<res.length;p++){
           if (res[p]==undefined || res[p]==null){
             console.log("BYE");
@@ -83,20 +92,64 @@ hide:Boolean;
     }
   }
 
-  createParticipant(value){
+  userDisconnectState(all) {
     return new Promise<any>((resolve, reject) => {
-      this.afs.collection('Participant').add({
+
+      var ref = firebase.database().ref(`/` + "User" + `/` + all.UUID + `/`);
+      ref.on('value', snapshot => {
+        console.log("Yoooo: "+ ref);
+        ref
+        .onDisconnect()
+        .set({
+          gameId: all.gameId,
+          online: false
+        })
+        .then((all) => {
+          ref.on('value', personSnapshot => {
+            this.myPerson = personSnapshot.val();
+            if (personSnapshot["online"] == false){
+              //===========================================
+              //****** unable to update online to false on firestore
+              var id = all.UUID;
+              this.afs.collection('Participant').doc("1000").set({
+                UUID: all.UUID,
+                username: all.username,
+                dateTime: all.dateTime,
+                gameId: all.gameId,
+                online: false
+              })
+              //===========================================
+            }
+          });
+        })
+      })
+
+    })
+  }
+
+  createParticipant(value){
+
+    return new Promise<any>((resolve, reject) => {
+      var id = value.UUID;
+      this.afs.collection('Participant').doc(id).set({
         UUID:value.UUID,
         username:value.username,
         dateTime:value.dateTime,
-        gameId:value.gameId
-
+        gameId:value.gameId,
+        online: true
       })
       .then(
         res => resolve(res),
         err => reject(err)
-      )
+      );
+
+      var ref = firebase.database().ref(`/` + "User" + `/` + value.UUID + `/`);
+      ref.update({
+        online: true,
+        gameId: value.gameId
+      });
     })
+
   }
 
   responderOrProposal(all){
@@ -104,10 +157,10 @@ hide:Boolean;
     // shand[0].style.display="none";
     this.itemDoc = this.afs.collection<any>('Game');
     this.item = this.itemDoc.valueChanges();
-let iu=0;// else if keep getting in
+    let iu=0;// else if keep getting in
     this.item.subscribe(res=>{
       // this.loader =  this.loadingCtrl.create({
-   
+
       // });
       // this.loader.present();
 
@@ -129,7 +182,7 @@ let iu=0;// else if keep getting in
             this.navCtrl.push(ProposerPage, passnextpg);
           iu+=1
            console.log("First")
-            
+
           }
           else{
             this.hide=true;
@@ -146,7 +199,7 @@ let iu=0;// else if keep getting in
 
   async presentLoading() {
     this.loader = await this.loadingCtrl.create({
-   
+
     });
     await this.loader.present();
   }
