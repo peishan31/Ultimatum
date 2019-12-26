@@ -45,18 +45,16 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
      //choosing all same player mode
     if (this.alllsame==true){
       this.mode="All same players";
-      this.assignsameplayers()
-      
-
+      this.assignsameplayers();
     }
     else{
       this.mode="All different players";
       // assign users to the respective user
-    this.assignUserToPlayWithAnotherUser();
+      this.assignUserToPlayWithAnotherUser();
     }
 
-       // Update Professor Status
-       this.updateProfessorStatus();
+    // Update Professor Status
+    this.updateProfessorStatus();
 
     // loading screen and only change when students have played every rounds
     // const loading = this.loadingCtrl.create({
@@ -75,9 +73,9 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
 
     this.item.subscribe(res=>{
       console.log(res);
-     this.allgameinround1.length=0;
-     this.alreadydone.length=0;
-   
+      this.allgameinround1.length=0;
+      this.alreadydone.length=0;
+
       for (let p=0;p<res.length;p++){
         if (res[p]==undefined || res[p]==null){
           console.log("BYE");
@@ -85,7 +83,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
         else{
           if (res[p].gameId==this.code && res[p].round==0){
             this.allgameinround1.push("1")
-           
+
           }
           if (res[p].responderResponse!="" && res[p].gameId==this.code && res[p].round==0){
             // loading.dismiss();
@@ -94,8 +92,6 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
             this.alreadydone.push("1")
           }
         }
-       
-    
       }
      if (this.alreadydone.length==this.allgameinround1.length){
             //  loading.dismiss();
@@ -108,7 +104,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     //this.navCtrl.setRoot(ScoreboardPage);
   }
 
-  gamecode(){
+  gamecode(){ // Aim: Count and display the user
     //this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
     this.code = this.randomGeneratedGameCode();
 
@@ -118,71 +114,82 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     });
     toast.present();
 
-
-    console.log(this.code);
+    //console.log(this.code);
     let date=new Date();
 
     this.createProCode({gameId:this.code,dateTime:date.toISOString()});
 
-    // check if user is offline in real time database - Peishan
-    var ref = firebase.database().ref(`/` + "User" + `/`);
-    ref.on('value', snapshot => { // update users that are offline in real time database
-      console.log("This is Peishan: "+ snapshot);
-      //console.log(Object.keys(snapshot))
-      //console.log(Object.keys(snapshot.val()));
+    this.updateUserPresenceStatus();
 
-      if ((snapshot.val()!=null)||(snapshot.val()!=undefined)) {
-
-        this.listUUID = Object.keys(snapshot.val());
-        this.listUUID.forEach(indvUUID => {
-          console.log("help: "+ indvUUID);
-          var indvRef = firebase.database().ref(`/` + "User" + `/` + indvUUID + `/`);
-          indvRef.on('value', snapshot => {
-            if ((snapshot.val()!=null) || (snapshot.val()!=undefined))
-            if (snapshot.val()["online"] == false) {
-              var id = indvUUID;
-                this.afs.collection('Participant').doc(indvUUID).update({
-                  online: false
-                })
-            }
-          })
-        });
-      }
-    })
-    //=================================================================
+    // Real time update of current participant in the game.
     this.itemDoc = this.afs.collection<any>('Participant')
     this.item = this.itemDoc.valueChanges();
     this.item.length=0;
     this.item.subscribe(res=>{
       this.list.length=0;
-      console.log(res)
+      //console.log(res)
 
       // Peishan
       for (let i=0; i<res.length;i++){
-        // retrieve UUID & gameId
-        // personRefs contains a specific user's online and gameId
-        //console.log("myUUID: "+ res[i].UUID);
+
         const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
 
         personRefs.on('value', personSnapshot => {
+
           this.myPerson = personSnapshot.val();
-          console.log(this.myPerson);
-          //console.log(this.myPerson["online"])
-          // verify if user is online
+
           if ((this.myPerson != null) || (this.myPerson != undefined)){
-            if (this.myPerson["online"] == true) {
-              console.log('hi')
+
+            if (this.myPerson["online"] == true) { // stores only the online users
+
               if (res[i].gameId==this.code){
+
                 this.list.push(res[i].username);
-                this.studentnum=this.list.length;
+
               }
             }
+            this.studentnum = this.list.length;
           }
         });
 
       }
-      console.log(this.list)
+      //console.log(this.list)
     })
+  }
+
+  updateUserPresenceStatus(){
+    // check if user is offline in real time database - Peishan
+    /*
+    Note: I am using both real time database and firestore to update
+    user's presence.
+    OnDisconnect() is only available on real time database.
+    Hence, after using OnDisconnect to detect user's presence, I need to update
+    the status in real time database as well.
+    */
+   var ref = firebase.database().ref(`/` + "User" + `/`); // check if there's any changes here
+   ref.on('value', snapshot => { // update users that are offline in firestore
+     //console.log("snapshot: "+ snapshot);
+
+     if ((snapshot.val()!=null)||(snapshot.val()!=undefined)) {
+
+       this.listUUID = Object.keys(snapshot.val());
+       this.listUUID.forEach(indvUUID => {
+
+         //console.log("help: "+ indvUUID);
+         var indvRef = firebase.database().ref(`/` + "User" + `/` + indvUUID + `/`);
+
+         indvRef.on('value', snapshot => {
+
+           if ((snapshot.val()!=null) || (snapshot.val()!=undefined))
+             if (snapshot.val()["online"] == false) {
+                 this.afs.collection('Participant').doc(indvUUID).update({
+                   online: false // update user's who have disconnected in firestore
+               })
+             }
+         })
+       });
+     }
+   })
   }
 
   randomGeneratedGameCode() {
@@ -210,7 +217,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
         gameId:value.gameId,
         dateTime:value.dateTime,
         professorStatus: "Not Ready"
-        
+
        })
       .then((data) => {
         console.log("Data: "+data);
