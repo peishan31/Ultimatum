@@ -12,12 +12,14 @@ import * as firebase from 'firebase';
 })
 export class ProfessorHomePage {
 code="";
+ok=false;
 studentnum=0;
 itemDoc:any;
 item:any;
 list=[];
-alllsame:boolean;
-randomm:boolean;
+//alllsame:boolean;
+alllsame=false;
+randomm=false;
 assgnsame=[];
 listassgnsame1=[];
 listassgnsame2=[];
@@ -30,6 +32,7 @@ waitforstudent:Boolean;
 mode:string;
 myPerson = {};
 listUUID = [];
+errormsg:string;
 
 studentsList={"username": [], "UUID": [], "totalRound": 0};
   constructor(public navCtrl: NavController,
@@ -41,6 +44,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
   }
 
   Next(){
+
     this.waitforstudent=true;
      //choosing all same player mode
     if (this.alllsame==true){
@@ -105,56 +109,65 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
   }
 
   gamecode(){ // Aim: Count and display the user
-    //this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
-    this.code = this.randomGeneratedGameCode();
 
-    const toast = this.toastCtrl.create({
-      message: 'Waiting for students...',
-      duration:3000
-    });
-    toast.present();
+    if ((this.randomm != false || this.alllsame != false)) {
 
-    //console.log(this.code);
-    let date=new Date();
+      this.ok = false;
+      //this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
+      this.code = this.randomGeneratedGameCode();
 
-    this.createProCode({gameId:this.code,dateTime:date.toISOString()});
+      const toast = this.toastCtrl.create({
+        message: 'Waiting for students...',
+        duration:3000
+      });
+      toast.present();
 
-    this.updateUserPresenceStatus();
+      //console.log(this.code);
+      let date=new Date();
 
-    // Real time update of current participant in the game.
-    this.itemDoc = this.afs.collection<any>('Participant')
-    this.item = this.itemDoc.valueChanges();
-    this.item.length=0;
-    this.item.subscribe(res=>{
-      this.list.length=0;
-      //console.log(res)
+      this.createProCode({gameId:this.code,dateTime:date.toISOString()});
 
-      // Peishan
-      for (let i=0; i<res.length;i++){
+      this.updateUserPresenceStatus();
 
-        const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
+      // Real time update of current participant in the game.
+      this.itemDoc = this.afs.collection<any>('Participant')
+      this.item = this.itemDoc.valueChanges();
+      this.item.length=0;
+      this.item.subscribe(res=>{
+        this.list.length=0;
+        //console.log(res)
 
-        personRefs.on('value', personSnapshot => {
+        // Peishan
+        for (let i=0; i<res.length;i++){
 
-          this.myPerson = personSnapshot.val();
+          const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
 
-          if ((this.myPerson != null) || (this.myPerson != undefined)){
+          personRefs.on('value', personSnapshot => {
 
-            if (this.myPerson["online"] == true) { // stores only the online users
+            this.myPerson = personSnapshot.val();
 
-              if (res[i].gameId==this.code){
+            if ((this.myPerson != null) || (this.myPerson != undefined)){
 
-                this.list.push(res[i].username);
+              if (this.myPerson["online"] == true) { // stores only the online users
 
+                if (res[i].gameId==this.code){
+
+                  this.list.push(res[i].username);
+
+                }
               }
+              this.studentnum = this.list.length;
             }
-            this.studentnum = this.list.length;
-          }
-        });
+          });
 
-      }
-      //console.log(this.list)
-    })
+        }
+        //console.log(this.list)
+      })
+    }
+    else{
+      this.ok=true;
+    }
+
   }
 
   updateUserPresenceStatus(){
