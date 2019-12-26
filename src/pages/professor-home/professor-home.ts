@@ -55,6 +55,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
       this.mode="All different players";
       // assign users to the respective user
       this.assignUserToPlayWithAnotherUser();
+      // check if user i
     }
 
     // Update Professor Status

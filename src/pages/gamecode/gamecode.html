@@ -17,7 +17,7 @@
         <ion-item id="ultimatum-input1">
           <ion-label></ion-label>
           <img src="assets/img/GiAeXOZRSuS8siHGnzJf_arrow.png" style="width:4%;height:auto;" item-left/>
-          <ion-input type="text" placeholder="GAME CODE" item-right [(ngModel)]="gamecode" [ngModelOptions]="{standalone:true}"></ion-input>
+          <ion-input type="text" placeholder="GAME CODE" item-right [(ngModel)]="gamecode" [ngModelOptions]="{standalone:true}" (keyup.enter)="Next(submitUltimatumForm)"></ion-input>
         </ion-item>
       </form>
       <button id="ultimatum-button1" ion-button color="positive" block (click)="Next(submitUltimatumForm)">
