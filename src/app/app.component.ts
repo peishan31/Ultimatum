@@ -7,7 +7,7 @@ import { RespondantPage } from '../pages/respondant/respondant';
 import { UltimatumPage } from '../pages/ultimatum/ultimatum';
 import { ScoreboardPage } from '../pages/scoreboard/scoreboard';
 import { ProfessorHomePage } from '../pages/professor-home/professor-home';
-import { PresenceProvider } from '../providers/presence/presence';
+import { UserPresenceStatusProvider } from '../providers/user-presence-status/user-presence-status';
 
 
 @Component({
@@ -17,7 +17,7 @@ export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
     rootPage:any = UltimatumPage;
 
-  constructor(public presence:PresenceProvider,platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.

@@ -18,7 +18,7 @@
       <ion-input type="text" placeholder="USERNAME" item-right [(ngModel)]="Username" [ngModelOptions]="{standalone:true}" (keyup.enter)="Next(submitUltimatumForm)"></ion-input>
     </ion-item>
   </form>
-  <button id="ultimatum-button1" ion-button color="positive" block (keyup)="Next(submitUltimatumForm)">
+  <button id="ultimatum-button1" ion-button color="positive" block (click)="Next(submitUltimatumForm)">
     Enter
   </button>
   <p ion-text *ngIf="Username != '' && submitted == true" color="danger" padding-left>

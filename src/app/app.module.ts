@@ -25,14 +25,15 @@ import { Network } from '@ionic-native/network';
 import { FormsModule } from '@angular/forms';
 
 import {CountDown} from "ng4-date-countdown-timer";
-import { PresenceProvider } from '../providers/presence/presence';
 import { AngularFireAuth,AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
 
 
 import {PastscoreboardPage} from '../pages/pastscoreboard/pastscoreboard';
 import {ViewpastornewPage} from '../pages/viewpastornew/viewpastornew';
+import { UserPresenceStatusProvider } from '../providers/user-presence-status/user-presence-status';
 
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 const config= {}
 
@@ -82,10 +83,13 @@ const config= {}
     AngularFirestore,
     { provide: FirestoreSettingsToken, useValue: {} },
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    PresenceProvider,
+    UserPresenceStatusProvider,
     AngularFireAuth,
     AngularFireDatabase,
-    Network
+    Network,
+    UserPresenceStatusProvider,
+    HttpClient,
+    HttpHandler
   ]
 })
 export class AppModule {}
