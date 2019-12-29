@@ -18,7 +18,6 @@ export class UserPresenceStatusProvider {
   list=[];
   myPerson = {};
   studentnum=0;
-  code="";
 
   constructor(
     public http: HttpClient,
@@ -63,8 +62,43 @@ export class UserPresenceStatusProvider {
    })
   }
 
-  updateCurrentParticipant() { // Real time update of current participant in the game. ## not working
+  updateCurrentParticipant(gameId) { // Real time update of current participant in the game. ## not working
+    console.log("Weeeee Game code: " + gameId);
+    // Real time update of current participant in the game.
+    this.itemDoc = this.afs.collection<any>('Participant')
+    this.item = this.itemDoc.valueChanges();
+    this.item.length=0;
+    this.item.subscribe(res=>{
+      this.list.length=0;
+      //console.log(res)
 
-    
+      // Peishan
+      for (let i=0; i<res.length;i++){
+
+        const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
+
+        personRefs.on('value', personSnapshot => {
+
+          this.myPerson = personSnapshot.val();
+          if ((this.myPerson != null) || (this.myPerson != undefined)){
+
+            if (this.myPerson["online"] == true) { // stores only the online users
+
+              if (res[i].gameId==gameId){
+
+                this.list.push(res[i].username);
+
+              }
+            }
+            this.studentnum = this.list.length;
+          }
+        });
+
+      }
+    })
+    return {
+      mylist: this.list,
+      mystudentnum: this.studentnum
+    };
   }
 }

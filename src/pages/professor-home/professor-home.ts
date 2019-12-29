@@ -131,42 +131,9 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
       this.createProCode({gameId:this.code,dateTime:date.toISOString()});
 
       this.UserPresenceStatusProvider.updateUserPresenceStatus();
-      //this.UserPresenceStatusProvider.updateCurrentParticipant();
-
-      // Real time update of current participant in the game.
-        this.itemDoc = this.afs.collection<any>('Participant')
-        this.item = this.itemDoc.valueChanges();
-        this.item.length=0;
-        this.item.subscribe(res=>{
-          this.list.length=0;
-          //console.log(res)
-
-          // Peishan
-          for (let i=0; i<res.length;i++){
-
-            const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
-
-            personRefs.on('value', personSnapshot => {
-
-              this.myPerson = personSnapshot.val();
-
-              if ((this.myPerson != null) || (this.myPerson != undefined)){
-
-                if (this.myPerson["online"] == true) { // stores only the online users
-
-                  if (res[i].gameId==this.code){
-
-                    this.list.push(res[i].username);
-
-                  }
-                }
-                this.studentnum = this.list.length;
-              }
-            });
-
-          }
-          //console.log(this.list)
-        })
+      let {mylist, mystudentnum} = this.UserPresenceStatusProvider.updateCurrentParticipant(this.code);
+      this.list = mylist;
+      this.studentnum = mystudentnum;
     }
     else{
       this.ok=true;

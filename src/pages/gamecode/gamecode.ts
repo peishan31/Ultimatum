@@ -21,7 +21,7 @@ import * as firebase from 'firebase';
   templateUrl: 'gamecode.html',
 })
 export class GamecodePage {
-  subscription:any;  
+  subscription:any;
 gamecode:string;
 submitted=false;
 itemDoc:any;
@@ -76,13 +76,12 @@ myPerson={};
           if (res[p]==undefined || res[p]==null){
             console.log("BYE");
           }
-            else{
-              if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
-                // find out if user is a proposer or responder
-                this.loader.dismiss();
-                this.responderOrProposal(this.navParams.data);
-
-              }
+          else{
+            if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
+              // find out if user is a proposer or responder
+              this.loader.dismiss();
+              this.responderOrProposal(this.navParams.data);
+            }
           }
 
         }
@@ -130,7 +129,7 @@ myPerson={};
   ionViewDidLeave(){
     this.subscription.unsubscribe();
   }
-  
+
 
   createParticipant(value){
 
