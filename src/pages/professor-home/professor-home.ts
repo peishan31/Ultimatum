@@ -5,7 +5,6 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
 import {LoadingController,ToastController} from 'ionic-angular';
 import * as firebase from 'firebase';
-import { UserPresenceStatusProvider } from '../../providers/user-presence-status/user-presence-status';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -42,13 +41,12 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public toastCtrl:ToastController,
-    public navParams:NavParams,
-    public UserPresenceStatusProvider: UserPresenceStatusProvider
+    public navParams:NavParams
     ) {
 let data=this.navParams.data;
 if (data==true){
   this.waitforstudent=true;
-  this.code="1";
+ 
 }
   }
 
@@ -137,15 +135,82 @@ if (data==true){
 
       this.createProCode({gameId:this.code,dateTime:date.toISOString()});
 
-      this.UserPresenceStatusProvider.updateUserPresenceStatus();
-      let {mylist, mystudentnum} = this.UserPresenceStatusProvider.updateCurrentParticipant(this.code);
-      this.list = mylist;
-      this.studentnum = mystudentnum;
+      this.updateUserPresenceStatus();
+
+      // Real time update of current participant in the game.
+      this.itemDoc = this.afs.collection<any>('Participant')
+      this.item = this.itemDoc.valueChanges();
+      this.item.length=0;
+      this.item.subscribe(res=>{
+        this.list.length=0;
+        //console.log(res)
+
+        // Peishan
+        for (let i=0; i<res.length;i++){
+
+          const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
+
+          personRefs.on('value', personSnapshot => {
+
+            this.myPerson = personSnapshot.val();
+
+            if ((this.myPerson != null) || (this.myPerson != undefined)){
+
+              if (this.myPerson["online"] == true) { // stores only the online users
+
+                if (res[i].gameId==this.code){
+
+                  this.list.push(res[i].username);
+
+                }
+              }
+              this.studentnum = this.list.length;
+            }
+          });
+
+        }
+        //console.log(this.list)
+      })
     }
     else{
       this.ok=true;
     }
 
+  }
+
+  updateUserPresenceStatus(){
+    // check if user is offline in real time database - Peishan
+    /*
+    Note: I am using both real time database and firestore to update
+    user's presence.
+    OnDisconnect() is only available on real time database.
+    Hence, after using OnDisconnect to detect user's presence, I need to update
+    the status in real time database as well.
+    */
+   var ref = firebase.database().ref(`/` + "User" + `/`); // check if there's any changes here
+   ref.on('value', snapshot => { // update users that are offline in firestore
+     //console.log("snapshot: "+ snapshot);
+
+     if ((snapshot.val()!=null)||(snapshot.val()!=undefined)) {
+
+       this.listUUID = Object.keys(snapshot.val());
+       this.listUUID.forEach(indvUUID => {
+
+         //console.log("help: "+ indvUUID);
+         var indvRef = firebase.database().ref(`/` + "User" + `/` + indvUUID + `/`);
+
+         indvRef.on('value', snapshot => {
+
+           if ((snapshot.val()!=null) || (snapshot.val()!=undefined))
+             if (snapshot.val()["online"] == false) {
+                 this.afs.collection('Participant').doc(indvUUID).update({
+                   online: false // update user's who have disconnected in firestore
+               })
+             }
+         })
+       });
+     }
+   })
   }
 
   randomGeneratedGameCode() {
