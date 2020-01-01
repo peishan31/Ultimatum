@@ -46,7 +46,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
 let data=this.navParams.data;
 if (data==true){
   this.waitforstudent=true;
- 
+
 }
   }
 
@@ -462,7 +462,7 @@ if (this.assgnsame.length%2==0){
     if (this.didsubscribed==true){
       this.subscription.unsubscribe();
     }
-  
+
     // this.professorcode.unsubscribe();
-  } 
+  }
 }
