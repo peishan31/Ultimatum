@@ -56,9 +56,13 @@
       </ion-item>
     </ion-list>
   </ion-card>
-  <button id="professorHome-button2" (click)="Next()" ion-button color="positive" block>
+  <button id="professorHome-button2" (click)="Next()" ion-button color="positive" block *ngIf="studentnum!=0">
     Start game
-  </button><br>
+  </button>
+  <button id="professorHome-button2" (click)="Next()" ion-button color="positive" block *ngIf="studentnum==0" disabled>
+    Start game
+  </button>
+  <br>
   <div style="text-align: center;">
    <h6> Link to website:</h6>
   <img src="../../assets/img/qrcode.PNG"/>

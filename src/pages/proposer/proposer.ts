@@ -19,14 +19,44 @@ export class ProposerPage {
   maxtime: any=30;
   timer:any;
   subscription:Subscription;
+  subscriptionn:Subscription;
   offer:Subscription;
   game:Subscription;
+  professorcode:any;
+  retrieveprofessor:any;
+  subscribed=false;
+  subscriptiontrue=false;
+  presstrue=false;
+  goonce=0;
 
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public navParams: NavParams) {
+      this.presstrue=false;
      // this.StartTimer()
+    //  let all=this.navParams.data;
+    //  this.itemDoc = this.afs.collection<any>('Game');
+    //  this.item = this.itemDoc.valueChanges();
+
+    // this.subscription= this.item.subscribe(res=>{
+    //    console.log("Hi: "+ res);
+    //    for (let p=0;p<res.length;p++){
+    //      this.professorcode = this.afs.collection<any>('Professor').doc(all["gamecode"])
+    //      this.retrieveprofessor = this.professorcode.valueChanges();
+    //      this.subscription=this.retrieveprofessor.subscribe(ress=>{
+    //        //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
+           
+    //        if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].proposerAmount=='') {
+             // user is a responder in the next round
+            //  this.proposerAmt = res[p].proposerAmount;
+            //  this.proposerUsername = res[p].proposerName;
+    //        }
+
+    //      })}
+
+    //  })
+    
   }
 
   StartTimer(){
@@ -48,6 +78,7 @@ export class ProposerPage {
             //  let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":0};
             //  this.navCtrl.setRoot(ResultPage,dict)
             //  })
+            this.presstrue=true;
             this.submitProposerOffer();
           }
 
@@ -57,10 +88,12 @@ export class ProposerPage {
   }
 
   ionViewDidEnter(){
+    this.presstrue=false;
     this.StartTimer();
   }
 
   Next(){
+    this.presstrue=true;
     this.submitProposerOffer();
     
    // then loading screen for the responder to respond
@@ -89,15 +122,17 @@ export class ProposerPage {
     //this.navCtrl.setRoot(RespondantPage);
   }
 
-  submitProposerOffer():Observable<any>{
-    var subject = new Subject<any>();
+  submitProposerOffer(){
+  
+    if (this.presstrue==true){ 
+ 
     // get the data using proposer's UUID
     // then combine the id with current-round+proposer-name+responder-name
     // using this id, update the proposerAmount & proposerStatus
     this.itemDoc = this.afs.collection<any>('Game');
     this.item = this.itemDoc.valueChanges();
     let all=this.navParams.data;
-
+this.subscribed=true;
     this.subscription= this.item.subscribe(res=>{
 
       console.log("My UUID: "+ all.UUID);
@@ -105,25 +140,43 @@ export class ProposerPage {
         if (res[p]==undefined || res[p]==null){
         }
         else{
-          if (res[p].proposerUUID == all.UUID && res[p].round == 0 && res[p].responderResponse==""){ //*** hardcoding round
+          let all=this.navParams.data;
+          console.log(all["GameId"])
+          this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"]);
+          this.subscriptiontrue=true;
+          this.retrieveprofessor = this.professorcode.valueChanges();
+          this.subscriptionn=this.retrieveprofessor.subscribe(ress=>{
+          console.log(ress,"RESS")
+        let roundnow=res[p].round.toString();
+        let professorroundnow=ress["round"]
+        console.log(roundnow,"roundnow");
+        console.log(professorroundnow,"proroundnow")
+          if (res[p].proposerUUID == all["UUID"] && roundnow==professorroundnow && res[p].responderResponse=="" && res[p].gameId==ress["gameId"] && this.goonce==0){ //*** hardcoding round
             // store proposerData here
+            this.goonce+=1;
             this.proposerData = res[p];
            // this.firebaseId = res[p].round + res[p].proposerName + res[p].responderName //ps code i comment out
            this.firebaseId= res[p].proposerUUID + res[p].round +  res[p].responderUUID +res[p].round;
             console.log("firebaseId: " + this.firebaseId );
             this.updateProfessorStatus(this.firebaseId);
-
-            let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range};
+            let all=this.navParams.data;
+            this.presstrue=false;
+            let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range,"GameId":all["GameId"],"Round":res[p].round};
+            this.presstrue=false;
             this.navCtrl.setRoot(ResultPage,dict);
-            subject.next(this.firebaseId);
+            this.presstrue=false;
+           
            
           }
         }
 
-      }
+          )}}
 
     }) 
-    return subject.asObservable();
+ 
+  }
+
+  
   }
 
   updateProfessorStatus(dbid){
@@ -146,7 +199,13 @@ export class ProposerPage {
   }
 
   ionViewDidLeave(){
-    this.subscription.unsubscribe();
+    if (this.subscribed==true){
+         this.subscription.unsubscribe();
+    }
+    if (this.subscriptiontrue==true){
+      this.subscriptionn.unsubscribe();
+    }
+
    // this.offer.unsubscribe();
   //  this.game.unsubscribe();
   } 

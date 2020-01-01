@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { ScoreboardPage } from '../scoreboard/scoreboard';
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
 import {LoadingController,ToastController} from 'ionic-angular';
 import * as firebase from 'firebase';
 import { UserPresenceStatusProvider } from '../../providers/user-presence-status/user-presence-status';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'page-professor-home',
@@ -34,15 +35,21 @@ mode:string;
 myPerson = {};
 listUUID = [];
 errormsg:string;
-
+subscription:Subscription;
+didsubscribed=false;
 studentsList={"username": [], "UUID": [], "totalRound": 0};
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public toastCtrl:ToastController,
+    public navParams:NavParams,
     public UserPresenceStatusProvider: UserPresenceStatusProvider
     ) {
-
+let data=this.navParams.data;
+if (data==true){
+  this.waitforstudent=true;
+  this.code="1";
+}
   }
 
   Next(){
@@ -104,7 +111,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
             //  loading.dismiss();
               console.log("RCHED HERE")
               var id = localStorage.getItem("id");
-              this.navCtrl.setRoot(ScoreboardPage,id);
+              this.navCtrl.setRoot(ScoreboardPage,this.code);
         }
 
     })
@@ -162,10 +169,11 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
       var id = this.afs.createId();
       localStorage.setItem("id", id);
 
-      this.afs.collection('Professor').doc(id).set({
+      this.afs.collection('Professor').doc(this.code).set({
         gameId:value.gameId,
         dateTime:value.dateTime,
-        professorStatus: "Not Ready"
+        professorStatus: "Not Ready",
+        round:""
 
        })
       .then((data) => {
@@ -179,7 +187,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
   updateProfessorStatus(){
     // Updating the game status to "Ready"
     var id = localStorage.getItem("id");
-    this.afs.collection('Professor').doc(id).update({
+    this.afs.collection('Professor').doc(this.code).update({
       professorStatus: "Ready",
       round:"0",
       gameMode:this.mode
@@ -275,7 +283,8 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
   assignsameplayers(){
     this.itemDoc = this.afs.collection<any>('Participant');
     this.item = this.itemDoc.valueChanges();
-    this.item.subscribe(res=>{
+    this.didsubscribed=true;
+    this.subscription=this.item.subscribe(res=>{
       for (let i=0; i<res.length;i++){
         if (res[i].gameId==this.code){
           this.assgnsame.push(res[i].UUID);
@@ -323,7 +332,7 @@ if (this.assgnsame.length%2==0){
  }
 
  for (let i=0;i<this.listassgnsame2.length;i++){
-   for (let u=4;u<10;u++){
+   for (let u=5;u<10;u++){
     let id=this.listassgnsame2[i]+u.toString()+this.listassgnsame1[i]+u.toString();
     this.afs.collection('Game').doc(id).set({
       gameId:this.code,
@@ -383,4 +392,12 @@ if (this.assgnsame.length%2==0){
     this.randomm=false;
     this.alllsame=true;
   }
+
+  ionViewDidLeave(){
+    if (this.didsubscribed==true){
+      this.subscription.unsubscribe();
+    }
+  
+    // this.professorcode.unsubscribe();
+  } 
 }

@@ -31,6 +31,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 
 import {PastscoreboardPage} from '../pages/pastscoreboard/pastscoreboard';
 import {ViewpastornewPage} from '../pages/viewpastornew/viewpastornew';
+import {NextroundsPage} from '../pages/nextrounds/nextrounds';
 import { UserPresenceStatusProvider } from '../providers/user-presence-status/user-presence-status';
 
 import { HttpClient, HttpHandler } from '@angular/common/http';
@@ -51,7 +52,8 @@ const config= {}
     ResultPage,
     LoadingPage,
     PastscoreboardPage,
-    ViewpastornewPage
+    ViewpastornewPage,
+    NextroundsPage
   ],
   imports: [
     BrowserModule,
@@ -75,7 +77,8 @@ const config= {}
     ResultPage,
     LoadingPage,
     PastscoreboardPage,
-    ViewpastornewPage
+    ViewpastornewPage,
+    NextroundsPage
   ],
   providers: [
     StatusBar,

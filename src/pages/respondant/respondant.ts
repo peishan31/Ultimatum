@@ -5,6 +5,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
 import { ResultPage } from '../result/result';
 import { Observable, Subject, Subscription } from 'rxjs';
+import { NextroundsPage } from '../nextrounds/nextrounds';
 
 @Component({
   selector: 'page-respondant',
@@ -20,30 +21,19 @@ export class RespondantPage {
   maxtime: any=30;
   timer:any;
   subscription:Subscription;
+  professorcode:any;
+  retrieveprofessor:any;
+  goonce=0;
   
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
     public afs: AngularFirestore,
     public navParams: NavParams) {
-    
 
-      let all=this.navParams.data;
-      this.itemDoc = this.afs.collection<any>('Game');
-      this.item = this.itemDoc.valueChanges();
 
-     this.subscription= this.item.subscribe(res=>{
-        console.log("Hi: "+ res);
-        for (let p=0;p<res.length;p++){
-            //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
-            if (res[p].responderUUID == all.UUID && res[p].round==0) {
-              // user is a responder in the next round
-              this.proposerAmt = res[p].proposerAmount;
-              this.proposerUsername = res[p].proposerName;
-            }
 
-          }
-
-      })
+ 
+     
         //this.proposerAmt = all.proposerAmount;
       // const loading = this.loadingCtrl.create({
 
@@ -91,6 +81,32 @@ export class RespondantPage {
   }*/
 
   ionViewDidEnter(){
+    let all=this.navParams.data;
+    this.itemDoc = this.afs.collection<any>('Game');
+    this.item = this.itemDoc.valueChanges();
+
+   this.subscription= this.item.subscribe(res=>{
+      console.log("Hi: "+ res);
+      for (let p=0;p<res.length;p++){
+        this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"])
+        this.retrieveprofessor = this.professorcode.valueChanges();
+        this.subscription=this.retrieveprofessor.subscribe(ress=>{
+          //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
+          if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].proposerAmount=="" && res[p].round!=0){
+            this.navCtrl.setRoot(NextroundsPage)
+          }
+          
+         else if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].responderResponse=='' && res[p].proposerAmount!="") {
+            // user is a responder in the next round
+            this.proposerAmt = res[p].proposerAmount;
+            this.proposerUsername = res[p].proposerName;
+          }
+          
+
+        })}
+
+    })
+    
      this.StartTimer() 
   }
  
@@ -139,23 +155,29 @@ export class RespondantPage {
 
     this.subscription= this.item.subscribe(res=>{
 
-      console.log("My UUID: "+ all.UUID);
+  
       for (let p=0;p<res.length;p++){
         if (res[p]==undefined || res[p]==null){
         }
         else{
-          if (res[p].responderUUID == all.UUID && res[p].round == 0 && res[p].responderResponse==""){ //*** hardcoding round
+          this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"])
+          this.retrieveprofessor = this.professorcode.valueChanges();
+          this.subscription=this.retrieveprofessor.subscribe(ress=>{
+          if (res[p].responderUUID == all["UUID"] && res[p].round.toString() == ress["round"].toString() && res[p].responderResponse=="" && this.goonce==0){ //*** hardcoding round
             // store responderData here
-            this.responderData = res[p];
+            this.goonce+=1;
+             this.responderData = res[p];
             this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
             console.log("firebaseId: " + this.firebaseId );
             this.updateResponderStatus(this.firebaseId, 'Accept');
-            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Accept"};
+            let all=this.navParams.data;
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Accept","GameId":all["GameId"],"Round":res[p].round};
             this.navCtrl.setRoot(ResultPage,dict)
+           
          //   subject.next(this.firebaseId);
           }
 
-        }
+        })}
 
       }
 
@@ -176,19 +198,25 @@ export class RespondantPage {
         if (res[p]==undefined || res[p]==null){
         }
         else{
-          if (res[p].responderUUID == all.UUID && res[p].round == 0){ //*** hardcoding round
+          this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"])
+          this.retrieveprofessor = this.professorcode.valueChanges();
+          this.subscription=this.retrieveprofessor.subscribe(ress=>{
+          if (res[p].responderUUID == all["UUID"] && res[p].round.toString() == ress["round"].toString()&& res[p].responderResponse=="" && this.goonce==0){ //*** hardcoding round
             // store responderData here
+            this.goonce+=1;
             this.responderData = res[p];
-            this.firebaseId =  res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
+            this.firebaseId =  res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round;
             console.log("firebaseId: " + this.firebaseId );
             this.updateResponderStatus(this.firebaseId, 'Decline');
-            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Decline"};
+            let all=this.navParams.data;
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Decline","GameId":all["GameId"],"Round":res[p].round};
             this.navCtrl.setRoot(ResultPage,dict)
+         
           }
         }
-
+          )}
       }
-
+    
     })
   }
 

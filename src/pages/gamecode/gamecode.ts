@@ -170,7 +170,7 @@ this.subscription=this.item.subscribe(res=>{
 
       for (let p=0;p<res.length;p++){
 
-          let passnextpg={UUID: all.UUID, username: all.username, gamecode: this.gamecode}
+          let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode}
           if (res[p].responderUUID == all.UUID && res[p].gameId==this.gamecode && res[p].proposerStatus=="Ready" && res[p].round=="0") {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values

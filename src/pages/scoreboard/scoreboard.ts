@@ -24,10 +24,11 @@ subscription:Subscription
 
   nextround(){
     let i=0;
+    this.hi=this.navParams.data;
     this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi)
     this.item = this.itemDoc.valueChanges();
     this.subscription=this.item.subscribe(res=>{
-      if (i==0){
+      if (i==0 && i<10){
 let round=parseInt(res["round"]);
 round=round+=1;
     this.afs.collection('Professor').doc(this.hi).update({
@@ -37,7 +38,8 @@ round=round+=1;
      
     .then((data) => {
       console.log("Data: ");
-      i+=1
+      i=0;
+      this.navCtrl.setRoot(ProfessorHomePage,true)
      
     }).catch((err) => {
       console.log("Err: "+err);
