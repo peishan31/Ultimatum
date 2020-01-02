@@ -5,6 +5,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
 import {LoadingController,ToastController} from 'ionic-angular';
 import * as firebase from 'firebase';
+import { UserPresenceStatusProvider } from '../../providers/user-presence-status/user-presence-status';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -41,7 +42,8 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public toastCtrl:ToastController,
-    public navParams:NavParams
+    public navParams:NavParams,
+    public UserPresenceStatusProvider: UserPresenceStatusProvider
     ) {
 let data=this.navParams.data;
 if (data==true){
@@ -109,7 +111,7 @@ if (data==true){
             //  loading.dismiss();
               console.log("RCHED HERE")
               var id = localStorage.getItem("id");
-              this.navCtrl.setRoot(ScoreboardPage,this.code);
+              this.navCtrl.setRoot(ScoreboardPage,{ gameId: this.code, gameMode: this.mode}); // i need gamecode and gamemode
         }
 
     })
@@ -135,42 +137,13 @@ if (data==true){
 
       this.createProCode({gameId:this.code,dateTime:date.toISOString()});
 
-      this.updateUserPresenceStatus();
+      this.UserPresenceStatusProvider.updateUserPresenceStatus();
+      let mylist = this.updateCurrentParticipant(this.code);
+      this.list = mylist;
+      this.studentnum = mylist.length;
+      console.log("My list: "+ mylist);
+      //console.log("My list's length: "+ mylist.length);
 
-      // Real time update of current participant in the game.
-      this.itemDoc = this.afs.collection<any>('Participant')
-      this.item = this.itemDoc.valueChanges();
-      this.item.length=0;
-      this.item.subscribe(res=>{
-        this.list.length=0;
-        //console.log(res)
-
-        // Peishan
-        for (let i=0; i<res.length;i++){
-
-          const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
-
-          personRefs.on('value', personSnapshot => {
-
-            this.myPerson = personSnapshot.val();
-
-            if ((this.myPerson != null) || (this.myPerson != undefined)){
-
-              if (this.myPerson["online"] == true) { // stores only the online users
-
-                if (res[i].gameId==this.code){
-
-                  this.list.push(res[i].username);
-
-                }
-              }
-              this.studentnum = this.list.length;
-            }
-          });
-
-        }
-        //console.log(this.list)
-      })
     }
     else{
       this.ok=true;
@@ -178,39 +151,47 @@ if (data==true){
 
   }
 
-  updateUserPresenceStatus(){
-    // check if user is offline in real time database - Peishan
-    /*
-    Note: I am using both real time database and firestore to update
-    user's presence.
-    OnDisconnect() is only available on real time database.
-    Hence, after using OnDisconnect to detect user's presence, I need to update
-    the status in real time database as well.
-    */
-   var ref = firebase.database().ref(`/` + "User" + `/`); // check if there's any changes here
-   ref.on('value', snapshot => { // update users that are offline in firestore
-     //console.log("snapshot: "+ snapshot);
+  updateCurrentParticipant(gameId) { // Real time update of current participant in the game. ## not working
+    console.log("Weeeee Game code: " + gameId);
+    // Real time update of current participant in the game.
+    this.itemDoc = this.afs.collection<any>('Participant')
+    this.item = this.itemDoc.valueChanges();
+    this.item.length=0;
+    this.item.subscribe(res=>{
+      this.list.length=0;
+      //console.log(res)
 
-     if ((snapshot.val()!=null)||(snapshot.val()!=undefined)) {
+      // Peishan
+      for (let i=0; i<res.length;i++){
 
-       this.listUUID = Object.keys(snapshot.val());
-       this.listUUID.forEach(indvUUID => {
+        const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/` + res[i].UUID + `/`);
 
-         //console.log("help: "+ indvUUID);
-         var indvRef = firebase.database().ref(`/` + "User" + `/` + indvUUID + `/`);
+        personRefs.on('value', personSnapshot => {
 
-         indvRef.on('value', snapshot => {
+          this.myPerson = personSnapshot.val();
+          if ((this.myPerson != null) || (this.myPerson != undefined)){
 
-           if ((snapshot.val()!=null) || (snapshot.val()!=undefined))
-             if (snapshot.val()["online"] == false) {
-                 this.afs.collection('Participant').doc(indvUUID).update({
-                   online: false // update user's who have disconnected in firestore
-               })
-             }
-         })
-       });
-     }
-   })
+            if (this.myPerson["online"] == true) { // stores only the online users
+
+              if (res[i].gameId==gameId){
+
+                this.list.push(res[i].username);
+                console.log("res[i].username: "+ res[i].username);
+              }
+            }
+            this.studentnum = this.list.length;
+          }
+        });
+
+      }
+      //console.log("Coming from user-presence-status: "+ this.list)
+    })
+    //console.log("Coming from user-presence-status 2: "+ this.list)
+    return this.list;
+    /*{
+      mylist: this.list,
+      mystudentnum: this.studentnum
+    };*/
   }
 
   randomGeneratedGameCode() {
@@ -313,10 +294,13 @@ if (data==true){
       for (var i = 0; i < half_length; i++) {
 
         console.log("(Proposer) "+ proposer[i] + " VS (Responder) "+ responder[temp]);
+        console.log("(Responder UUID) "+ responderUUID[i] + " (Responder Name) "+ responder[temp]);
         // adding student's sequence into database
-        var id = j+proposer[i]+responder[temp];
+        //var id = j+proposer[i]+responder[temp];
+        var id = proposerUUID[i] + j + responderUUID[i] + j;
         this.afs.collection('Game').doc(id).set({
           gameId:this.code,
+          gameMode: 'Random all players',
           round: j,
           totalRound: totalRound,
           dateTime: new Date().toISOString(),
@@ -373,6 +357,7 @@ if (this.assgnsame.length%2==0){
     let id=this.listassgnsame1[i]+u.toString()+this.listassgnsame2[i]+u.toString();
     this.afs.collection('Game').doc(id).set({
       gameId:this.code,
+      gameMode: 'All same opponents',
       round: u,
       totalRound: 10,
       dateTime: new Date().toISOString(),
@@ -401,6 +386,7 @@ if (this.assgnsame.length%2==0){
     let id=this.listassgnsame2[i]+u.toString()+this.listassgnsame1[i]+u.toString();
     this.afs.collection('Game').doc(id).set({
       gameId:this.code,
+      gameMode: 'All same opponents',
       round: u,
       totalRound: 10,
       dateTime: new Date().toISOString(),

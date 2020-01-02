@@ -87,7 +87,6 @@ export class UserPresenceStatusProvider {
               if (res[i].gameId==gameId){
 
                 this.list.push(res[i].username);
-
               }
             }
             this.studentnum = this.list.length;
@@ -95,10 +94,13 @@ export class UserPresenceStatusProvider {
         });
 
       }
+      //console.log("Coming from user-presence-status: "+ this.list)
     })
-    return {
+    //console.log("Coming from user-presence-status 2: "+ this.list)
+    return this.list;
+    /*{
       mylist: this.list,
       mystudentnum: this.studentnum
-    };
+    };*/
   }
 }
