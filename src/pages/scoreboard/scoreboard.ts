@@ -14,6 +14,7 @@ export class ScoreboardPage {
 hi:any;
 item:any;
 itemDoc:any;
+i=0;
 subscription:Subscription
 list=[]
 myPerson=[]
@@ -31,86 +32,35 @@ studentnum=0;
     this.navCtrl.setRoot(ProfessorHomePage);
   }
 
-  nextround(){
-    /*
-    "gameMode":"All same players"
-    */
-    let i=0;
-    let hi=this.navParams.data;
 
-    if (hi["gameMode"] == "All same players")
-    {
-      // Yong Lin's code
-      this.itemDoc = this.afs.collection<any>('Professor').doc(hi["gameId"])
-      this.item = this.itemDoc.valueChanges();
-      this.subscription=this.item.subscribe(res=>{
-      if (i==0 && i<10){
-        let round=parseInt(res["round"]);
-        round=round+=1;
-        this.afs.collection('Professor').doc(hi["gameId"]).update({
-          round:round.toString(),
-
-        })
-        .then((data) => {
-          console.log("Data: ");
-          i=0;
-          this.navCtrl.setRoot(ProfessorHomePage,true)
-
-        }).catch((err) => {
-          console.log("Err: "+err);
-        })
-      }
-      i+=1;
-      })
-    }
-    else if (hi["gameMode"] == "All different players")
-    {
-      // Peishan's code
-      // Check how many round it currently is (<10)!
-      // Check if users are online/offline
-      // Arrange and see how many rounds can players play with the user
-      // idkkkkk...
-      this.itemDoc = this.afs.collection<any>('Professor').doc(hi["gameId"])
-      this.item = this.itemDoc.valueChanges();
-
-      this.subscription=this.item.subscribe(res=>{
-
-        if (i==0 && i<10){
-          let round=parseInt(res["round"]);
-          round=round+=1;
-          this.afs.collection('Professor').doc(hi["gameId"]).update({
-            round:round.toString(),
-          })
-          .then((data) => {
-            console.log("Data: ");
-            i=0;
-            this.navCtrl.setRoot(ProfessorHomePage,true)
-
-          }).catch((err) => {
-            console.log("Err: "+err);
-          })
-          // 1. Check if any user(s) disconnect (1/2/2020)
-          this.UserPresenceStatusProvider.updateUserPresenceStatus();
-          // 2. Update user's presence (1/2/2020)
-          let mylist = this.updateCurrentParticipant(hi["gameId"]);
-          console.log("Scoreboard.ts My list: "+ mylist); // just checking if it rlly only update the current user
-          // 3. Store users that are currently online (1/2/2020)
-          // 4. Sort em such that the position is not repetitive (2/2/2020)
-          // 5. Create new document in Game collection (2/2/2020)
-          // 6. Move to the next page (????)
-
-
-        }
-        i+=1;
-      })
-    }
-
+  ionViewDidEnter(){
+this.i=0;
   }
-  updateCurrentParticipant(gameId) { // Real time update of current participant in the game. ## not working
-    console.log("Weeeee Game code: " + gameId);
-    // Real time update of current participant in the game.
-    this.itemDoc = this.afs.collection<any>('Participant')
+
+  nextround(){
+    
+    this.hi=this.navParams.data;
+    this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi)
     this.item = this.itemDoc.valueChanges();
+    this.subscription=this.item.subscribe(res=>{
+      if (this.i==0){
+let round=parseInt(res["round"]);
+if (round<9){
+
+
+this.i+=1;
+round=round+1;
+    this.afs.collection('Professor').doc(this.hi).update({
+      round:round.toString(),
+  
+     })
+     
+    .then((data) => {
+      console.log("Data: ");
+      this.navCtrl.setRoot(ProfessorHomePage,true)
+     
+    }).catch((err) => {
+      console.log("Err: "+err);
     this.item.length=0;
     this.item.subscribe(res=>{
       this.list.length=0;
@@ -141,6 +91,11 @@ studentnum=0;
       }
       //console.log("Coming from user-presence-status: "+ this.list)
     })
+    
+     } }  })
+ 
+     }
+ 
     //console.log("Coming from user-presence-status 2: "+ this.list)
     return this.list;
     /*{

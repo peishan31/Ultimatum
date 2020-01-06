@@ -57,26 +57,58 @@ export class ResultPage {
         this.datetime=date.toISOString();
         let round=parseInt(res["round"]);
         let changeparse=parseInt(ress["round"]);
-        if (round!=changeparse && this.data["Role"]=="Proposer" && res["round"]<5){
-            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"]};
+        this.data=navParams.data;
+        if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse<5){
+          if (this.data["once"]!=1){
+let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"]};
             this.navCtrl.setRoot(ProposerPage,passnextpg);
           }
-       else if (round!=changeparse && this.data["Role"]=="Proposer" && res["round"]>=5){
-            let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"]};
+          else{
+            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"]};
+            this.navCtrl.setRoot(ProposerPage,passnextpg);
+          }
+            
+          }
+       else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse==5){
+            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
              this.navCtrl.setRoot(NextroundsPage,passnextpg)
           }
 
-
-       else if (round!=changeparse && this.data["Role"]=="Respondant" && res["round"]<5){
-          let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"]};
-            this.navCtrl.setRoot(NextroundsPage,passnextpg);
-          }
-          else if (round!=changeparse && this.data["Role"]=="Respondant" && res["round"]>=5){
-            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"]};
+          else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse>5){
+            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"]};
              this.navCtrl.setRoot(ProposerPage,passnextpg)
           }
+         
+        
+       else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse<5){
+          let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"]};
+            this.navCtrl.setRoot(NextroundsPage,passnextpg);
+          }
+          else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse==5){
+            if (this.data["once"]!=1){
+               let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
+             this.navCtrl.setRoot(ProposerPage,passnextpg)
+            }
+            else{
+              let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
+              this.navCtrl.setRoot(ProposerPage,passnextpg)
+            }
+           
+          }
 
-
+          else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse>5){
+            if (this.data["once"]!=1){
+               let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
+             this.navCtrl.setRoot(NextroundsPage,passnextpg)
+            }
+            else{
+              let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
+              this.navCtrl.setRoot(NextroundsPage,passnextpg)
+            }
+           
+          }
+        
+         
       })
 
    });

@@ -6,6 +6,7 @@ import {LoadingController} from 'ionic-angular';
 import { ResultPage } from '../result/result';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { NextroundsPage } from '../nextrounds/nextrounds';
+import { ProposerPage } from '../proposer/proposer';
 
 @Component({
   selector: 'page-respondant',
@@ -24,7 +25,10 @@ export class RespondantPage {
   professorcode:any;
   retrieveprofessor:any;
   goonce=0;
-
+  result:string;
+  count=0;
+  datetime:any;
+  
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
     public afs: AngularFirestore,
@@ -92,15 +96,45 @@ export class RespondantPage {
         this.retrieveprofessor = this.professorcode.valueChanges();
         this.subscription=this.retrieveprofessor.subscribe(ress=>{
           //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
-          if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].proposerAmount=="" && res[p].round!=0){
-            this.navCtrl.setRoot(NextroundsPage)
-          }
+          if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString()){
+            if (res[p].round!=0 && res[p].proposerStatus!="Ready" && res[p].proposerAmount==''){
+              this.navCtrl.setRoot(NextroundsPage)
+            }
+            
+           else if (res[p].responderResponse=='' && res[p].proposerAmount!="") {
+              // user is a responder in the next round
+              this.proposerAmt = res[p].proposerAmount;
+              this.proposerUsername = res[p].proposerName;
+            
+            }
+  
+           else if (res[p].round!=0 && res[p].responderResponse!=""){
+            this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
+            let all=this.navParams.data;
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":this.result,"GameId":all["GameId"],"Round":res[p].round};
+           this.navCtrl.setRoot(ResultPage,dict)
+           } 
 
-         else if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].responderResponse=='' && res[p].proposerAmount!="") {
-            // user is a responder in the next round
-            this.proposerAmt = res[p].proposerAmount;
-            this.proposerUsername = res[p].proposerName;
+          
           }
+//added this part if it is proposer now
+          else if (res[p].proposerUUID==all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].responderResponse=="" && res[p].proposerAmount==""){
+            let all=this.navParams.data;
+            let date=new Date();
+        this.datetime=date.toISOString();
+            let passnextpg={UUID:res[p].proposerUUID,username:res[p].proposerName,dateTime:this.datetime,GameId: all["GameId"],once:0};
+            this.navCtrl.setRoot(ProposerPage,passnextpg);
+          }
+          else if (res[p].proposerUUID==all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].proposerAmount!=""){
+            let all=this.navParams.data;
+            let date=new Date();
+        this.datetime=date.toISOString();
+        this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
+            // let passnextpg={UUID:res[p].proposerUUID,username:res[p].proposerName,dateTime:this.datetime,GameId: all["GameId"]};
+            let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":res[p].proposerAmount,"GameId":all["GameId"],"Round":res[p].round,once:1,UUID:res[p].proposerUUID,username:res[p].proposerName,dateTime:this.datetime};
+            this.navCtrl.setRoot(ResultPage,dict);
+          }
+          
 
 
         })}
@@ -122,7 +156,9 @@ export class RespondantPage {
           }
 
           else if (this.maxtime==0){
-          this.Accept();
+          // this.Accept();
+
+          
             // this.hidevalue = true;
       //       this.Accept().subscribe((r)=>{
       //       console.log(r)
@@ -171,7 +207,10 @@ export class RespondantPage {
             console.log("firebaseId: " + this.firebaseId );
             this.updateResponderStatus(this.firebaseId, 'Accept');
             let all=this.navParams.data;
-            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Accept","GameId":all["GameId"],"Round":res[p].round};
+            let addround=res[p].round+1;
+     
+              let nextroundfirebaseid= res[p].proposerUUID + addround +  res[p].responderUUID + addround;
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Accept","GameId":all["GameId"],"Round":res[p].round,"nextroundfirebaseid":nextroundfirebaseid};
             this.navCtrl.setRoot(ResultPage,dict)
 
          //   subject.next(this.firebaseId);
@@ -183,6 +222,11 @@ export class RespondantPage {
 
     })
     //return subject.asObservable();
+    if (this.count==0){
+        this.result="Accept";
+        this.count+=1;
+    }
+  
   }
 
   Decline(){
@@ -209,7 +253,9 @@ export class RespondantPage {
             console.log("firebaseId: " + this.firebaseId );
             this.updateResponderStatus(this.firebaseId, 'Decline');
             let all=this.navParams.data;
-            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Decline","GameId":all["GameId"],"Round":res[p].round};
+            let addround=res[p].round+1;
+            let nextroundfirebaseid= res[p].proposerUUID + addround +  res[p].responderUUID + addround;
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Decline","GameId":all["GameId"],"Round":res[p].round,"nextroundfirebaseid":nextroundfirebaseid};
             this.navCtrl.setRoot(ResultPage,dict)
 
           }
@@ -218,6 +264,11 @@ export class RespondantPage {
       }
 
     })
+    if (this.count==0){
+      this.result="Decline";
+      this.count+=1;
+  }
+
   }
 
   updateResponderStatus(dbid, responderResponse){

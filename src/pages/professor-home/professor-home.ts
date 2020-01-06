@@ -393,7 +393,7 @@ if (this.assgnsame.length%2==0){
       proposerName: this.listusername2[i],
       responderUUID: this.listassgnsame1[i],
       responderName: this.listusername1[i],
-      proposerAmount: 0,
+      proposerAmount: "",
       responderResponse: "",
       proposerStatus: "Not Ready",
       responderStatus: "Not Ready",
