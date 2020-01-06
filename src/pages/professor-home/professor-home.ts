@@ -64,7 +64,6 @@ if (data==true){
       this.mode="All different players";
       // assign users to the respective user
       this.assignUserToPlayWithAnotherUser();
-      // check if user i
     }
 
     // Update Professor Status
@@ -297,7 +296,7 @@ if (data==true){
         console.log("(Responder UUID) "+ responderUUID[i] + " (Responder Name) "+ responder[temp]);
         // adding student's sequence into database
         //var id = j+proposer[i]+responder[temp];
-        var id = proposerUUID[i] + j + responderUUID[i] + j;
+        var id = "HIIIIIIII" + proposerUUID[i] + j + responderUUID[i] + j;
         this.afs.collection('Game').doc(id).set({
           gameId:this.code,
           gameMode: 'Random all players',

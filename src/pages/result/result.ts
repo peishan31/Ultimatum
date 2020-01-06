@@ -31,7 +31,8 @@ export class ResultPage {
   datetime:string;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore) {
     this.data=navParams.data;
-console.log(this.data["GameId"],"PARAMSDATA")
+    console.log(this.data["GameId"],"PARAMSDATA")
+    console.log("RESULT.TS This is my role: "+this.data["Role"]); 
     this.subscription=  this.afs.collection('Game').doc(this.data["FirebaseId"]).valueChanges().subscribe(res=>{
       this.Result=res["responderResponse"];
       this.ProposerName=res["proposerName"];
@@ -43,7 +44,7 @@ console.log(this.data["GameId"],"PARAMSDATA")
         }
         else{
           this.Proposer=true;
-  
+
         }
       }
       else{
@@ -64,8 +65,8 @@ console.log(this.data["GameId"],"PARAMSDATA")
             let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"]};
              this.navCtrl.setRoot(NextroundsPage,passnextpg)
           }
-         
-        
+
+
        else if (round!=changeparse && this.data["Role"]=="Respondant" && res["round"]<5){
           let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"]};
             this.navCtrl.setRoot(NextroundsPage,passnextpg);
@@ -74,19 +75,19 @@ console.log(this.data["GameId"],"PARAMSDATA")
             let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"]};
              this.navCtrl.setRoot(ProposerPage,passnextpg)
           }
-        
-         
+
+
       })
- 
+
    });
   }
 
   ionViewDidLoad() {
-   
+
   }
 
  ionViewDidLeave(){
     this.subscription.unsubscribe();
     // this.professorcode.unsubscribe();
-  } 
+  }
 }

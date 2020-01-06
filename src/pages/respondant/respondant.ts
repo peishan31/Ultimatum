@@ -24,7 +24,7 @@ export class RespondantPage {
   professorcode:any;
   retrieveprofessor:any;
   goonce=0;
-  
+
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
     public afs: AngularFirestore,
@@ -32,8 +32,8 @@ export class RespondantPage {
 
 
 
- 
-     
+
+
         //this.proposerAmt = all.proposerAmount;
       // const loading = this.loadingCtrl.create({
 
@@ -86,7 +86,7 @@ export class RespondantPage {
     this.item = this.itemDoc.valueChanges();
 
    this.subscription= this.item.subscribe(res=>{
-      console.log("Hi: "+ res);
+
       for (let p=0;p<res.length;p++){
         this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"])
         this.retrieveprofessor = this.professorcode.valueChanges();
@@ -95,23 +95,23 @@ export class RespondantPage {
           if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].proposerAmount=="" && res[p].round!=0){
             this.navCtrl.setRoot(NextroundsPage)
           }
-          
+
          else if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString() && res[p].responderResponse=='' && res[p].proposerAmount!="") {
             // user is a responder in the next round
             this.proposerAmt = res[p].proposerAmount;
             this.proposerUsername = res[p].proposerName;
           }
-          
+
 
         })}
 
     })
-    
-     this.StartTimer() 
+
+     this.StartTimer()
   }
- 
+
   StartTimer(){
-    this.timer = setTimeout(x => 
+    this.timer = setTimeout(x =>
       {
           if(this.maxtime <= 0) { }
           this.maxtime -= 1;
@@ -127,7 +127,7 @@ export class RespondantPage {
       //       this.Accept().subscribe((r)=>{
       //       console.log(r)
       //        this.afs.collection('Game').doc(r).valueChanges().subscribe(res=>{
-    
+
       // console.log(res);
       //       this.firebaseId=res["proposerUUID"] + res["round"] +  res["responderUUID"] +res["round"];
       //       this.updateResponderStatus(this.firebaseId,"Accept");
@@ -136,13 +136,13 @@ export class RespondantPage {
       //       })})
 
          }
-          
+
           else{
              // this.hidevalue = true;
           }
 
       }, 1000);
- 
+
 
   }
 
@@ -155,7 +155,7 @@ export class RespondantPage {
 
     this.subscription= this.item.subscribe(res=>{
 
-  
+
       for (let p=0;p<res.length;p++){
         if (res[p]==undefined || res[p]==null){
         }
@@ -173,7 +173,7 @@ export class RespondantPage {
             let all=this.navParams.data;
             let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Accept","GameId":all["GameId"],"Round":res[p].round};
             this.navCtrl.setRoot(ResultPage,dict)
-           
+
          //   subject.next(this.firebaseId);
           }
 
@@ -211,12 +211,12 @@ export class RespondantPage {
             let all=this.navParams.data;
             let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":"Decline","GameId":all["GameId"],"Round":res[p].round};
             this.navCtrl.setRoot(ResultPage,dict)
-         
+
           }
         }
           )}
       }
-    
+
     })
   }
 
@@ -239,5 +239,5 @@ export class RespondantPage {
 
   ionViewDidLeave(){
     this.subscription.unsubscribe();
-  } 
-} 
+  }
+}
