@@ -244,6 +244,41 @@ if (data==true){
     })
   }
 
+  derangementNumber(n) {
+    if(n == 0) {
+      return 1;
+    }
+    var factorial = 1;
+    while(n) {
+      factorial *= n--;
+    }
+    return Math.floor(factorial / Math.E);
+  }
+
+  derange(array) {
+    array = array.slice();
+    var mark = array.map(function() { return false; });
+    for(var i = array.length - 1, u = array.length - 1; u > 0; i--) {
+      if(!mark[i]) {
+        var unmarked = mark.map(function(_, i) { return i; })
+          .filter(function(j) { return !mark[j] && j < i; });
+        var j = unmarked[Math.floor(Math.random() * unmarked.length)];
+
+        var tmp = array[j];
+        array[j] = array[i];
+        array[i] = tmp;
+
+        // this introduces the unbiased random characteristic
+        if(Math.random() < u * this.derangementNumber(u - 1) /  this.derangementNumber(u + 1)) {
+          mark[j] = true;
+          u--;
+        }
+        u--;
+      }
+    }
+    return array;
+  }
+
   assignUserToPlayWithAnotherUser(){
     // Calling out all the users joining this gameId
     this.itemDoc = this.afs.collection<any>('Participant');
@@ -277,13 +312,53 @@ if (data==true){
       console.log("areaA's id: "+ areaAUUID);
       console.log("areaB's id: "+ areaBUUID);
 
+      this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID);
       // calculating how many rounds it would take for all users to play against each other in 2 groups.
-      this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
+      //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
       //this.assignProposerAndResponder (areaB, areaA,  half_length);
     });
   }
 
-  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, half_length, totalRound){
+  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID){
+
+    var arrangedUsersA = this.derange(proposer);
+    var arrangedUsersB = this.derange(responder);
+
+    console.log("Before shuffle: (areaA)" + proposer);
+		console.log("Now: (areaA)" + arrangedUsersA);
+
+		console.log("Before shuffle: (areaB)" + responder);
+    console.log("Now: (areaB)" + arrangedUsersB);
+
+    for (var i=0 ; i < arrangedUsersA.length; i++) {
+
+      console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
+
+      var id = proposerUUID[i] + "0" + responderUUID[i] + "0";
+        this.afs.collection('Game').doc(id).set({
+          gameId:this.code,
+          gameMode: 'Random all players',
+          round: 0,
+          totalRound: 10,
+          dateTime: new Date().toISOString(),
+          proposerUUID: proposerUUID[i],
+          proposerName: proposer[i],
+          responderUUID: responderUUID[i],
+          responderName: responder[i],
+          proposerAmount: "",
+          responderResponse: "",
+          proposerStatus: "Not Ready",
+          responderStatus: "Not Ready",
+          gameStatus: "Not Ready"
+         })
+        .then((data) => {
+          //console.log("Data: "+data);
+        }).catch((err) => {
+          console.log("Err: "+err);
+        })
+		}
+  }
+  /*assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, half_length, totalRound){
     // calculating how many rounds it would take for all users to play against each other in 2 groups.
     for (var j = 0; j < half_length; j++)
     {
@@ -325,7 +400,7 @@ if (data==true){
       var num = responder.shift();
       responder[responder.length] = num;
     }
-  }
+  }*/
 
   //yonglin
   assignsameplayers(){
