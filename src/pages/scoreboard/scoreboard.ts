@@ -43,7 +43,7 @@ studentnum=0;
     if (this.hi["gameMode"] == "All same players")
     {
       // Yong Lin's code
-      this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["code"])
+      this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
       this.item = this.itemDoc.valueChanges();
       this.subscription=this.item.subscribe(res=>{
         if (this.i==0){
@@ -51,7 +51,7 @@ studentnum=0;
           if (round<9){
             this.i+=1;
             round=round+1;
-            this.afs.collection('Professor').doc(this.hi["code"]).update({
+            this.afs.collection('Professor').doc(this.hi["gameId"]).update({
               round:round.toString(),
             })
             .then((data) => {
