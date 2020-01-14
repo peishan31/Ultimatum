@@ -33,6 +33,7 @@ export class ResultPage {
     this.data=navParams.data;
     console.log(this.data["GameId"],"PARAMSDATA")
     console.log("RESULT.TS This is my role: "+this.data["Role"]); 
+    // this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', data["UUID"]).where('round', '==', parseInt(ress["round"])));
     this.subscription=  this.afs.collection('Game').doc(this.data["FirebaseId"]).valueChanges().subscribe(res=>{
       this.Result=res["responderResponse"];
       this.ProposerName=res["proposerName"];
@@ -70,7 +71,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
             
           }
        else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse==5){
-            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
+            let passnextpg={Role:"Respondant",UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
              this.navCtrl.setRoot(NextroundsPage,passnextpg)
           }
 
@@ -81,7 +82,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
          
         
        else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse<5){
-          let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"]};
+          let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
             this.navCtrl.setRoot(NextroundsPage,passnextpg);
           }
           else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse==5){
@@ -98,11 +99,11 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
           else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse>5){
             if (this.data["once"]!=1){
-               let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
+               let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
              this.navCtrl.setRoot(NextroundsPage,passnextpg)
             }
             else{
-              let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
+              let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0};
               this.navCtrl.setRoot(NextroundsPage,passnextpg)
             }
            

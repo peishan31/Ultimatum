@@ -32,7 +32,7 @@ subscription:Subscription;
    
    if (res!=undefined){
      let passnextpg={UUID: this.all["UUID"], username: this.all["username"], GameId: this.all["GameId"],once:0}
-          if (res["proposerStatus"]=="Ready" && res["responderResponse"]=="") {
+          if (res["proposerStatus"]=="Ready" && res["responderResponse"]=="" && this.all["Role"]=="Respondant") {
 
             this.navCtrl.setRoot(RespondantPage, passnextpg);
    }

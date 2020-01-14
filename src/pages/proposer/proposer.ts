@@ -29,6 +29,7 @@ export class ProposerPage {
   presstrue=false;
   goonce=0;
   once=0;
+  addround=0
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
@@ -90,10 +91,78 @@ export class ProposerPage {
   ionViewDidEnter(){
     this.presstrue=false;
     this.StartTimer();
-  }
+
+//     let all=this.navParams.data;
+//     this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"]);
+//     this.subscriptiontrue=true;
+//     this.retrieveprofessor = this.professorcode.valueChanges();
+//     this.subscriptionn=this.retrieveprofessor.subscribe(ress=>{
+//   // get the data using proposer's UUID
+//   // then combine the id with current-round+proposer-name+responder-name
+//   // using this id, update the proposerAmount & proposerStatus
+//   this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all["UUID"]).where('round', '==', parseInt(ress["round"])));
+//   this.item = this.itemDoc.valueChanges();
+ 
+// this.subscribed=true;
+//   this.subscription= this.item.subscribe(res=>{
+//     console.log(res,"RESSSSS")
+
+//     console.log("My UUID: "+ all.UUID);
+//     for (let p=0;p<res.length;p++){
+//       if (res[p]==undefined || res[p]==null){
+//       }
+//       else{
+//         let all=this.navParams.data;
+//         console.log(all["GameId"])
+      
+//         console.log(ress,"RESS")
+//       let roundnow=res[p].round.toString();
+//       let professorroundnow=ress["round"]
+//       console.log(roundnow,"roundnow");
+//       console.log(professorroundnow,"proroundnow")
+//         if (res[p].proposerUUID == all["UUID"] && roundnow==professorroundnow && res[p].responderResponse=="" && this.goonce==0 && this.once==0){ //*** hardcoding round
+//           // store proposerData here
+       
+          
+//           this.proposerData = res[p];
+//          // this.firebaseId = res[p].round + res[p].proposerName + res[p].responderName //ps code i comment out
+//          this.firebaseId= res[p].proposerUUID + res[p].round +  res[p].responderUUID +res[p].round;
+         
+//           console.log("firebaseId: " + this.firebaseId );
+//           this.updateProfessorStatus(this.firebaseId);
+//           this.goonce+=1;
+//           this.once+=1;
+//           let all=this.navParams.data;
+//           this.presstrue=false;
+//           let addround=res[p].round+1;
+//           if (addround<5){
+//             let nextroundfirebaseid= res[p].proposerUUID + addround +  res[p].responderUUID + addround;
+//             let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid};
+//             this.presstrue=false;
+//             this.navCtrl.setRoot(ResultPage,dict);
+//             this.presstrue=false;
+//           }
+//           else{
+//             let nextroundfirebaseid=res[p].responderUUID + addround + res[p].proposerUUID  + addround;
+//             let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid};
+//             this.presstrue=false;
+//             this.navCtrl.setRoot(ResultPage,dict);
+//             this.presstrue=false;
+//           }
+         
+         
+         
+//         }
+//       }
+
+//     }})}
+
+//     )
+}
 
   Next(){
     this.presstrue=true;
+    
     this.submitProposerOffer();
     
    // then loading screen for the responder to respond
@@ -129,14 +198,20 @@ export class ProposerPage {
       if (this.once!=0){
         this.once=data["once"];
       }
+      let all=this.navParams.data;
+      this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"]);
+      this.subscriptiontrue=true;
+      this.retrieveprofessor = this.professorcode.valueChanges();
+      this.subscriptionn=this.retrieveprofessor.subscribe(ress=>{
     // get the data using proposer's UUID
     // then combine the id with current-round+proposer-name+responder-name
     // using this id, update the proposerAmount & proposerStatus
-    this.itemDoc = this.afs.collection<any>('Game');
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', data["UUID"]).where('round', '==', parseInt(ress["round"])));
     this.item = this.itemDoc.valueChanges();
-    let all=this.navParams.data;
+   
 this.subscribed=true;
     this.subscription= this.item.subscribe(res=>{
+      console.log(res,"RESSSSS")
 
       console.log("My UUID: "+ all.UUID);
       for (let p=0;p<res.length;p++){
@@ -145,10 +220,7 @@ this.subscribed=true;
         else{
           let all=this.navParams.data;
           console.log(all["GameId"])
-          this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"]);
-          this.subscriptiontrue=true;
-          this.retrieveprofessor = this.professorcode.valueChanges();
-          this.subscriptionn=this.retrieveprofessor.subscribe(ress=>{
+        
           console.log(ress,"RESS")
         let roundnow=res[p].round.toString();
         let professorroundnow=ress["round"]
@@ -189,11 +261,11 @@ this.subscribed=true;
           }
         }
 
-          )}}
+      }})}
 
-    }) 
  
-  }
+ 
+    )}
 
   
   }

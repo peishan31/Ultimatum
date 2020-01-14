@@ -28,6 +28,9 @@ export class RespondantPage {
   result:string;
   count=0;
   datetime:any;
+  addround=0;
+  res:any
+  itemm:any;
   
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
@@ -86,23 +89,69 @@ export class RespondantPage {
 
   ionViewDidEnter(){
     let all=this.navParams.data;
-    this.itemDoc = this.afs.collection<any>('Game');
+    
+    this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"])
+    this.retrieveprofessor = this.professorcode.valueChanges();
+    this.subscription=this.retrieveprofessor.subscribe(ress=>{
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all["UUID"]).where('round', '==', parseInt(ress["round"])));
     this.item = this.itemDoc.valueChanges();
 
    this.subscription= this.item.subscribe(res=>{
+     console.log(res,"RESPRES")
 
+     //if cannot find the length, we test if its proposer
+if (res.length==0){
+  this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all["UUID"]).where('round', '==', parseInt(ress["round"])));
+    this.itemm = this.itemDoc.valueChanges();
+
+  this.itemm.subscribe(resss=>{
+     console.log(resss,"RESPRES2")
+this.res=resss;
+console.log(this.res,"RES")
+
+     for (let p=0;p<this.res.length;p++){
+      if (this.res[p].proposerUUID==all.UUID && this.res[p].round.toString()==ress["round"].toString() && this.res[p].responderResponse=="" && this.res[p].proposerAmount==""){
+        let all=this.navParams.data;
+        let date=new Date();
+    this.datetime=date.toISOString();
+        let passnextpg={UUID:this.res[p].proposerUUID,username:this.res[p].proposerName,dateTime:this.datetime,GameId: all["GameId"],once:0};
+        this.navCtrl.setRoot(ProposerPage,passnextpg);
+     }
+     else if (this.res[p].proposerUUID==all.UUID && this.res[p].round.toString()==ress["round"].toString() && this.res[p].proposerAmount!=""){
+      let all=this.navParams.data;
+      let date=new Date();
+  this.datetime=date.toISOString();
+  this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].responderUUID + this.res[p].round
+      // let passnextpg={UUID:res[p].proposerUUID,username:res[p].proposerName,dateTime:this.datetime,GameId: all["GameId"]};
+      let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.res[p].proposerAmount,"GameId":all["GameId"],"Round":this.res[p].round,once:1,UUID:this.res[p].proposerUUID,username:this.res[p].proposerName,dateTime:this.datetime};
+      this.navCtrl.setRoot(ResultPage,dict);
+    }
+    
+  }})
+//   let all=this.navParams.data;
+//   let date=new Date();
+// this.datetime=date.toISOString();
+//   let passnextpg={UUID:all["UUID"],username:all["username"],dateTime:this.datetime,GameId: all["GameId"],once:0};
+//   this.navCtrl.setRoot(ProposerPage,passnextpg);
+}
       for (let p=0;p<res.length;p++){
-        this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"])
-        this.retrieveprofessor = this.professorcode.valueChanges();
-        this.subscription=this.retrieveprofessor.subscribe(ress=>{
+       
           //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
-          if (res[p].responderUUID == all.UUID && res[p].round.toString()==ress["round"].toString()){
+          if (res[p].responderUUID == all["UUID"] && res[p].round.toString()==ress["round"].toString()){
             if (res[p].round!=0 && res[p].proposerStatus!="Ready" && res[p].proposerAmount==''){
               this.navCtrl.setRoot(NextroundsPage)
             }
+
+            else if (res[p].round==0 && res[p].proposerStatus=="Ready" && res[p].proposerAmount!='' && res[p].responderResponse!=""){
+              let nextroundfirebaseid= res[p].proposerUUID + res[p].round.toString() +  res[p].responderUUID + res[p].round.toString();
+              this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round;
+              let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":res[p].responderResponse,"GameId":all["GameId"],"Round":res[p].round,"nextroundfirebaseid":nextroundfirebaseid};
+              this.navCtrl.setRoot(ResultPage,dict)
+            }
             
-           else if (res[p].responderResponse=='' && res[p].proposerAmount!="") {
+           else if (res[p].responderResponse=="" && res[p].proposerAmount!="") {
               // user is a responder in the next round
+              console.log("hu")
               this.proposerAmt = res[p].proposerAmount;
               this.proposerUsername = res[p].proposerName;
             
@@ -137,12 +186,11 @@ export class RespondantPage {
           
 
 
-        })}
-
-    })
+        }})})
 
      this.StartTimer()
   }
+
 
   StartTimer(){
     this.timer = setTimeout(x =>
@@ -185,9 +233,11 @@ export class RespondantPage {
   Accept(){
     var subject = new Subject<any>();
     // update responder's response as 'Accept'
-    this.itemDoc = this.afs.collection<any>('Game');
+
+     let all=this.navParams.data;
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all["UUID"]));
     this.item = this.itemDoc.valueChanges();
-    let all=this.navParams.data;
+   
 
     this.subscription= this.item.subscribe(res=>{
 
@@ -231,9 +281,10 @@ export class RespondantPage {
 
   Decline(){
     // update responder's response as 'Decline'
-    this.itemDoc = this.afs.collection<any>('Game');
-    this.item = this.itemDoc.valueChanges();
     let all=this.navParams.data;
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all["UUID"]));
+    this.item = this.itemDoc.valueChanges();
+  
 
   this.subscription=  this.item.subscribe(res=>{
 

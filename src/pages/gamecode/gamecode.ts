@@ -63,25 +63,22 @@ myPerson={};
       let all=this.navParams.data;
       all["gameId"]=this.gamecode;
       this.createParticipant(all);
-      this.itemDoc = this.afs.collection<any>('Professor')
+      console.log(this.gamecode);
+      // added .doc(all["GameId"]) to line 67
+      this.itemDoc = this.afs.collection<any>('Professor').doc(this.gamecode);
       this.item = this.itemDoc.valueChanges();
       this.subscription=this.item.subscribe(res=>{
         console.log(res);
 
         this.userDisconnectState(all);
-        //var ref = firebase.database().ref(`/` + "User" + `/` + all.UUID + `/`);
-
-
+       res=[res];
         for (let p=0;p<res.length;p++){
-          if (res[p]==undefined || res[p]==null){
-            console.log("BYE");
-          }
-          else{
-            if (res[p].professorStatus=='Ready' && res[p].gameId==this.gamecode){
+             if (res[p].professorStatus=='Ready'){
               // find out if user is a proposer or responder
               this.loader.dismiss();
+              console.log("in")
               this.responderOrProposal(this.navParams.data);
-            }
+            
           }
 
         }
@@ -159,19 +156,38 @@ myPerson={};
   responderOrProposal(all){
     // let shand = document.getElementsByClassName('errormsg') as HTMLCollectionOf<HTMLElement>;
     // shand[0].style.display="none";
-    this.itemDoc = this.afs.collection<any>('Game');
+    console.log(all,"ALLPA")
+    all=this.navParams.data;
+    this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all.UUID).where('round', '==', 0));
     this.item = this.itemDoc.valueChanges();
 let iu=0;// else if keep getting in
 this.subscription=this.item.subscribe(res=>{
-      // this.loader =  this.loadingCtrl.create({
+    
+  console.log("res1",res)
+  if (res.length==0){
+    //meaning this person is proposer instead
+    this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all.UUID).where('round', '==', 0));
+    this.item = this.itemDoc.valueChanges();
+let iu=0;// else if keep getting in
+this.subscription=this.item.subscribe(res=>{
+  console.log("Res2,",res)
+  for (let p=0;p<res.length;p++){
+    if (res[p].proposerStatus=="Not Ready" && iu==0){
+      // user is a proposer in the next round
+      let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode}
+      this.navCtrl.push(ProposerPage, passnextpg);
+    iu+=1
+     console.log("First")
 
-      // });
-      // this.loader.present();
-
-      for (let p=0;p<res.length;p++){
-
+    }
+  }
+})
+  }
+  else{
+     for (let p=0;p<res.length;p++){
+        
           let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode}
-          if (res[p].responderUUID == all.UUID && res[p].gameId==this.gamecode && res[p].proposerStatus=="Ready" && res[p].round=="0") {
+          if (res[p].proposerStatus=="Ready" && res[p].round==0) {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
           //  this.loader.dismiss();
@@ -180,19 +196,22 @@ this.subscription=this.item.subscribe(res=>{
 
           }
 
-           else if (res[p].proposerUUID == all.UUID && res[p].gameId==this.gamecode && res[p].round=="0" && res[p].proposerStatus=="Not Ready" && iu==0){
-            // user is a proposer in the next round
-            // this.loader.dismissAll()
-            this.navCtrl.push(ProposerPage, passnextpg);
-          iu+=1
-           console.log("First")
+          //  else if (res[p].proposerStatus=="Not Ready" && iu==0){
+          //   // user is a proposer in the next round
+          //   // this.loader.dismissAll()
+          //   this.navCtrl.push(ProposerPage, passnextpg);
+          // iu+=1
+          //  console.log("First")
 
-          }
+          // }
           else{
             this.hide=true;
           }
 
         }
+  }
+
+     
 
     })
   }
