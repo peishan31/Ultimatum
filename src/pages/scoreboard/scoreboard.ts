@@ -216,16 +216,31 @@ responderName="";
            }
            else{
             let proposerlist={"username":res[p].proposerName,"score":res[p].proposerAmount,"role":"Proposer"}
-            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
+            if (res[p].proposerAmount==0){
+              let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
+              this.scoreboard.push(responderlist)
+            }
+            else{
+              let responderlist={"username":res[p].responderName,"score":100-res[p].proposerAmount,"role":"Responder"}
+              this.scoreboard.push(responderlist)
+            }
+          
             this.scoreboard.push(proposerlist)
-            this.scoreboard.push(responderlist)
+          
            }
          }
             if (this.scoreboard.length==0){
             let proposerlist={"username":res[p].proposerName,"score":res[p].proposerAmount,"role":"Proposer"}
-            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
-            this.scoreboard.push(proposerlist)
+            if (res[p].proposerAmount==0){
+            let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
             this.scoreboard.push(responderlist)
+            }
+            else{
+              let responderlist={"username":res[p].responderName,"score":100-res[p].proposerAmount,"role":"Responder"}
+              this.scoreboard.push(responderlist)
+            }
+            this.scoreboard.push(proposerlist)
+           
         }
       }
       }
