@@ -121,7 +121,7 @@ if (data==true){
               this.navCtrl.setRoot(ScoreboardPage,{ gameId: this.code, gameMode: this.mode}); // i need gamecode and gamemode
         }
       }
-     
+
 
     })})
     //this.navCtrl.setRoot(ScoreboardPage);

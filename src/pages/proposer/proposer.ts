@@ -326,6 +326,7 @@ this.subscribed=true;
 
                 let dict={"Role":"Proposer", "Amount":this.range, "FirebaseId": this.firebaseId,"nextroundfirebaseid":nextroundfirebaseid, "GameId":all["GameId"],"Round":gameValues[p].round,"once":1, UUID: all["UUID"], username: all["username"], gameMode: all["gameMode"]};
 
+                console.log("((proposer.ts)): "+ all["UUID"]);
                 this.navCtrl.setRoot(ResultPage,dict);
               }
               else
@@ -334,6 +335,7 @@ this.subscribed=true;
 
                 let dict={"Role":"Proposer", "Amount":this.range, "FirebaseId": this.firebaseId, "nextroundfirebaseid":nextroundfirebaseid, "GameId":all["GameId"],"Round":gameValues[p].round,"once":1, UUID: all["UUID"], username: all["username"], gameMode: all["gameMode"]};
 
+                console.log("((proposer.ts)): "+ all["UUID"]);
                 this.navCtrl.setRoot(ResultPage,dict);
               }
 
