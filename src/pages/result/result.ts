@@ -152,33 +152,51 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
         let round=parseInt(res["round"]);
         let changeparse=parseInt(ress["round"]);
         this.data=navParams.data;
-        if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse<5){
-          if (this.data["once"]!=1){
-            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"]};
-            this.navCtrl.setRoot(ProposerPage,passnextpg);
-          }
-          else{
-            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"]};
-            this.navCtrl.setRoot(ProposerPage,passnextpg);
-          }
 
-          }
-          else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse==5){
-            let passnextpg={Role:"Respondant",UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
-            this.navCtrl.setRoot(NextroundsPage,passnextpg)
-          }
+        console.log("<<result.ts>>: (round)" + round);
+        console.log("<<result.ts>>: (changeparse)" + changeparse);
+        console.log("<<result.ts>>: ((this.data))" + JSON.stringify(this.data));
 
-          else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse>5){
-            let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"]};
-            this.navCtrl.setRoot(ProposerPage,passnextpg)
-          }
+        if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse%2 != 0){ // when (changeparse % 2 != 0) means swapping roles: proposer becomes responder now
 
-
-          else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse<5){
-            let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
+          //if (this.data["once"]!=1){
+            console.log("{{Result.ts}} User went from Proposer to Responder: ");
+            let passnextpg={Role: "Respondant",UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"],nextroundfirebaseid:this.data["nextroundfirebaseid"], gonextround:0};
             this.navCtrl.setRoot(NextroundsPage,passnextpg);
-          }
-          else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse==5){
+          //}
+          //else {
+            // ***********If (changeParse %2 == 0) {} ---> find out what role he/she is in
+            //console.log("PASS 2");
+            //let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"]};
+            //this.navCtrl.setRoot(ProposerPage,passnextpg);
+          //}
+
+        }
+        else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse%2 == 0){ // find their current roles in "Game" table
+          // possibility where the user is a proposer or responder
+
+        }
+
+        /*else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse==5){
+          let passnextpg={Role:"Respondant",UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
+          this.navCtrl.setRoot(NextroundsPage,passnextpg)
+        }
+
+        else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse>5){
+          let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"]};
+          this.navCtrl.setRoot(ProposerPage,passnextpg)
+        }*/
+        else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse%2 != 0){ // when (changeparse % 2 != 0) means swapping roles: responder becomes proposer now
+
+          console.log("<<Result.ts>> User went from Responder to Proposer: ");
+          let passnextpg={Role: "Proposer",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
+          this.navCtrl.setRoot(ProposerPage,passnextpg);
+        }
+        else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse%2 == 0){ // when (changeparse % 2 == 0) means responder is still a responder
+          let passnextpg={Role: "Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
+          this.navCtrl.setRoot(NextroundsPage,passnextpg);
+        }
+          /*else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse==5){
             if (this.data["once"]!=1){
               let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
               this.navCtrl.setRoot(ProposerPage,passnextpg)
@@ -198,7 +216,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
               let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
               this.navCtrl.setRoot(NextroundsPage,passnextpg)
             }
-          }
+          }*/
         })
       });
     }
