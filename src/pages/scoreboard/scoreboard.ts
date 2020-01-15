@@ -195,11 +195,12 @@ responderName="";
             let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
             this.scoreboard.push(proposerlist)
             this.scoreboard.push(responderlist)
-                  }
-        
-       
-     
-  }
+        }
+      }
+    })
+  })
+}
+
 
 
   derangementNumber(n) {
@@ -321,6 +322,4 @@ responderName="";
         })
 		}
   }
-}
-     ) })}
 }
