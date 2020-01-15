@@ -78,7 +78,7 @@ myPerson={};
               this.loader.dismiss();
               console.log("in")
               this.responderOrProposal(this.navParams.data);
-            
+
           }
 
         }
@@ -162,7 +162,7 @@ myPerson={};
     this.item = this.itemDoc.valueChanges();
 let iu=0;// else if keep getting in
 this.subscription=this.item.subscribe(res=>{
-    
+
   console.log("res1",res)
   if (res.length==0){
     //meaning this person is proposer instead
@@ -174,7 +174,8 @@ this.subscription=this.item.subscribe(res=>{
   for (let p=0;p<res.length;p++){
     if (res[p].proposerStatus=="Not Ready" && iu==0){
       // user is a proposer in the next round
-      let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode}
+      let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
+      console.log("((gamecode.ts)): "+ res[p].gameMode);
       this.navCtrl.push(ProposerPage, passnextpg);
     iu+=1
      console.log("First")
@@ -185,12 +186,13 @@ this.subscription=this.item.subscribe(res=>{
   }
   else{
      for (let p=0;p<res.length;p++){
-        
-          let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode}
+
+          let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
           if (res[p].proposerStatus=="Ready" && res[p].round==0) {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
           //  this.loader.dismiss();
+            console.log("((gamecode.ts)): "+ res[p].gameMode);
             this.navCtrl.push(RespondantPage, passnextpg);
 
 
@@ -211,7 +213,7 @@ this.subscription=this.item.subscribe(res=>{
         }
   }
 
-     
+
 
     })
   }
