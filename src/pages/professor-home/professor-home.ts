@@ -38,6 +38,8 @@ errormsg:string;
 subscription:Subscription;
 didsubscribed=false;
 studentsList={"username": [], "UUID": [], "totalRound": 0};
+retrieveprofessor:any;
+professorcode:any;
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
@@ -81,8 +83,10 @@ if (data==true){
       duration:3000
     });
     toast.present();
-
-    this.itemDoc = this.afs.collection<any>('Game');
+    this.professorcode = this.afs.collection<any>('Professor').doc(this.code);
+    this.retrieveprofessor = this.professorcode.valueChanges();
+   this.retrieveprofessor.subscribe(ress=>{
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('round', '==', parseInt(ress["round"])).where('gameId', '==', this.code));
     this.item = this.itemDoc.valueChanges();
 
     this.item.subscribe(res=>{
@@ -95,11 +99,11 @@ if (data==true){
           console.log("BYE");
         }
         else{
-          if (res[p].gameId==this.code && res[p].round==0){
+          if (res[p].gameId==this.code && res[p].round==parseInt(ress["round"])){
             this.allgameinround1.push("1")
 
           }
-          if (res[p].responderResponse!="" && res[p].gameId==this.code && res[p].round==0){
+          if (res[p].responderResponse!="" && res[p].gameId==this.code && res[p].round==parseInt(ress["round"])){
             // loading.dismiss();
             // console.log("RCHED HERE")
             // this.navCtrl.setRoot(ScoreboardPage);
@@ -107,14 +111,19 @@ if (data==true){
           }
         }
       }
-     if (this.alreadydone.length==this.allgameinround1.length){
+      if (this.allgameinround1.length!=0){
+        if (this.alreadydone.length==this.allgameinround1.length){
             //  loading.dismiss();
               console.log("RCHED HERE")
               var id = localStorage.getItem("id");
+              this.alreadydone.length=0;
+              this.allgameinround1.length=0;
               this.navCtrl.setRoot(ScoreboardPage,{ gameId: this.code, gameMode: this.mode}); // i need gamecode and gamemode
         }
+      }
+     
 
-    })
+    })})
     //this.navCtrl.setRoot(ScoreboardPage);
   }
 

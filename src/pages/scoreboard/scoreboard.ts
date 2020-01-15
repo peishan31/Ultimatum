@@ -19,6 +19,7 @@ subscription:Subscription
 list=[]
 myPerson=[]
 studentnum=0;
+scoreboard=[];
 
 studentsList={"username": [], "UUID": [], "totalRound": 0}
 
@@ -42,6 +43,7 @@ responderName="";
 
   ionViewDidEnter(){
     this.i=0;
+    this.scoreboardscore();
   }
 
   nextround(){
@@ -170,6 +172,36 @@ responderName="";
       })
     }
   }
+
+  scoreboardscore(){
+    this.hi=this.navParams.data;
+    this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
+    this.item = this.itemDoc.valueChanges();
+
+    this.subscription=this.item.subscribe(ress=>{
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('round', '==', parseInt(ress["round"])));
+    this.item = this.itemDoc.valueChanges();
+    this.subscription= this.item.subscribe(res=>{
+      for (let p=0;p<res.length;p++){
+        if (res[p].responderResponse=="Decline"){
+          let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
+          let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
+          this.scoreboard.push(proposerlist)
+          this.scoreboard.push(responderlist)
+        
+         }
+       else if (res[p].responderResponse=="Accept"){
+            let proposerlist={"username":res[p].proposerName,"score":res[p].proposerAmount,"role":"Proposer"}
+            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
+            this.scoreboard.push(proposerlist)
+            this.scoreboard.push(responderlist)
+        }
+      }
+    })
+  })
+}
+
+
 
   derangementNumber(n) {
     if(n == 0) {
