@@ -48,6 +48,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
 let data=this.navParams.data;
 if (data==true){
   this.waitforstudent=true;
+  this.code="trying to make this not empty"
 
 }
   }
