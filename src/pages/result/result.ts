@@ -193,6 +193,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
               this.item = this.itemDoc.valueChanges();
               this.subscription= this.item.subscribe(res=>{
 
+                console.log("********************RESPRES: " + res);
                 for (let p=0; p<res.length; p++) {
 
                   if (res[p]==undefined || res[p]==null){
@@ -200,107 +201,85 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                   }
                   else{
 
-                    if (res[p].responderUUID == this.data["UUID"]) {
+                    var nextroundfirebaseid = res[p].proposerUUID + changeparse + res[p].responderUUID + changeparse;
+
+                    console.log("nextroundfirebaseid: " + nextroundfirebaseid);
+                    if (res[p].responderUUID == this.data["UUID"]) { // user is a responder
 
                       console.log("((result.ts)): I am a responder");
-                      //let passnextpg={Role: "Respondant",UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"],nextroundfirebaseid:this.data["nextroundfirebaseid"], gonextround:0};
-                      //this.navCtrl.setRoot(NextroundsPage,passnextpg);
+                      console.log("************((result.ts)) this.data: " + JSON.stringify(this.data));
+                      /*
+                      {"Role":"Proposer",
+                      "FirebaseId":"b340f7a0-ba34-4512-9a29-d9d163f2d137107f2392b-7f91-4c07-8bc4-6b9091da9bda1",
+                      "Amount":51,
+                      "GameId":"0f01c6",
+                      "Round":1,
+                      "once":1,
+                      "UUID":"b340f7a0-ba34-4512-9a29-d9d163f2d137",
+                      "username":"fd",
+                      "dateTime":"2020-01-15T21:58:56.107Z",
+                      "gameMode":"Random all players"}
+                      */
+                      /*let passnextpg={
+                        Role: "Respondant",
+                        UUID:res["responderUUID"],
+                        username:res["responderName"],
+                        dateTime:this.datetime,
+                        GameId:this.data["GameId"],
+                        FirebaseId:this.data["FirebaseId"],
+                        nextroundfirebaseid:this.data["nextroundfirebaseid"],
+                        gonextround:0,
+                        gameMode:this.data["gameMode"]};*/
+
+                      this.navCtrl.setRoot(NextroundsPage, {
+                        Role: "Respondant",
+                        FirebaseId:this.data["FirebaseId"],
+                        nextroundfirebaseid: nextroundfirebaseid,
+                        gonextround:0,
+                        gameMode:this.data["gameMode"],
+                        GameId:this.data["GameId"],
+                        username:res[p].responderName,
+                        UUID:res[p].responderUUID,
+                      });
                     }
                     else if (res[p].proposerUUID == this.data["UUID"]) { // user is a proposer
 
                       console.log("((result.ts)): I am a proposer");
                       //let passnextpg={Role: "Proposer",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
                       //this.navCtrl.setRoot(ProposerPage, passnextpg);
+                      /*
+                      ************((result.ts)) this.data: {
+                        "Role":"Respondant",
+                        "FirebaseId":"36fbacef-5049-4d5e-81c2-3a45c49c178b117359ebd-45a3-4439-9ec0-9c237709a0ce1",
+                        "Result":"Accept",
+                        "GameId":"b21bf9",
+                        "Round":1,
+                        "gameMode":"Random all players",
+                        "UUID":"17359ebd-45a3-4439-9ec0-9c237709a0ce"
+                      }
+                      */
+                      console.log("************((result.ts)) this.data: " + JSON.stringify(this.data));
+                      console.log("nextroundfirebaseid: " + nextroundfirebaseid);
+
+                      this.navCtrl.setRoot(ProposerPage, {
+                        Role: "Proposer",
+                        FirebaseId:this.data["FirebaseId"],
+                        nextroundfirebaseid: nextroundfirebaseid,
+                        gonextround:0,
+                        gameMode:this.data["gameMode"],
+                        GameId:this.data["GameId"],
+                        username:res[p].proposerName,
+                        UUID:res[p].proposerUUID,
+                      });
                     }
                   }
                 }
-                console.log("********************RESPRES: " + res);
 
-                //if cannot find the length, we test if its proposer
-                if (res.length==0){}
               })
-
-
-              /*
-
-
-
-
-              /*this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', gameId).where('round', '==', changeparse).where('responderUUID', '==', uuid));
-
-              this.item = this.itemDoc.valueChanges();
-
-              this.subscription= this.item.subscribe(res=>{
-                //if cannot find the length, we test if its proposer
-                if (res.length==0) {
-                  this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.data["GameId"]).where('proposerUUID', '==', this.data["UUID"]).where('round', '==', parseInt(ress["round"])));
-                  this.itemm = this.itemDoc.valueChanges();
-                  this.itemm.subscribe(resss=>{
-
-                    console.log("*******************************(result.ts): " + resss);
-
-                  });
-                }
-                else {
-
-                }
-              })*/
-
             }
-            /*else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse%2 == 0){ // when (changeparse % 2 == 0) means responder is still a responder
-              let passnextpg={Role: "Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
-              this.navCtrl.setRoot(NextroundsPage,passnextpg);
-            }*/
-              /*else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse==5){
-                if (this.data["once"]!=1){
-                  let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
-                  this.navCtrl.setRoot(ProposerPage,passnextpg)
-                }
-                else{
-                  let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
-                  this.navCtrl.setRoot(ProposerPage,passnextpg)
-                }
-              }
-
-              else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse>5){
-                if (this.data["once"]!=1){
-                  let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
-                  this.navCtrl.setRoot(NextroundsPage,passnextpg)
-                }
-                else{
-                  let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:1,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
-                  this.navCtrl.setRoot(NextroundsPage,passnextpg)
-                }
-              }*/
             })
           });
       }
-        /*this.professorcode = this.afs.collection('Professor').doc(this.data["GameId"]).valueChanges().subscribe(ress=>{
-
-          var uuid = this.data["UUID"];
-          var gameId = this.data["GameId"];
-          let changeparse=parseInt(ress["round"]);
-          this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.data["GameId"]).where('round', '==', parseInt(ress["round"])).where('responderUUID', '==', this.data["UUID"]));
-
-          this.item = this.itemDoc.valueChanges();
-
-          this.subscription= this.item.subscribe(res=>{
-            //if cannot find the length, we test if its proposer
-            if (res.length==0) {
-              this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.data["GameId"]).where('proposerUUID', '==', this.data["UUID"]).where('round', '==', parseInt(ress["round"])));
-              this.itemm = this.itemDoc.valueChanges();
-              this.itemm.subscribe(resss=>{
-
-                console.log("(result.ts): " + resss);
-
-              });
-            }
-            else {
-
-            }
-          })
-        })*/
-
   }
 
   ionViewDidLoad() {
