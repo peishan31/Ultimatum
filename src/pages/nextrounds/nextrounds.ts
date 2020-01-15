@@ -26,6 +26,7 @@ subscription:Subscription;
   ionViewDidLoad() {
     this.all=this.navParams.data;
     console.log("{{nextRound.ts Page}}: " + JSON.stringify(this.all));
+    console.log("{{nextRound.ts Page}}: " + this.all["gonextround"]);
     if (this.all["nextroundfirebaseid"]!=undefined && this.all["gonextround"]==0){
        //  let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"]};
       this.subscription=  this.afs.collection('Game').doc(this.all["nextroundfirebaseid"]).valueChanges().subscribe(res=>{
@@ -34,6 +35,7 @@ subscription:Subscription;
         if (res!=undefined){
           // gameMode
           console.log("{{nextround.ts}}: " + JSON.stringify(this.all));
+          console.log("this is passed in ((nextround.ts)): ");
           let passnextpg={UUID: this.all["UUID"], username: this.all["username"], GameId: this.all["GameId"],once:0, gameMode: this.all["gameMode"]};
           if (res["proposerStatus"]=="Ready" && res["responderResponse"]=="" && this.all["Role"]=="Respondant") {
 
