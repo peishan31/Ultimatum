@@ -48,6 +48,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
 let data=this.navParams.data;
 if (data==true){
   this.waitforstudent=true;
+  this.code="trying to make this not empty"
 
 }
   }
@@ -57,11 +58,11 @@ if (data==true){
     this.waitforstudent=true;
      //choosing all same player mode
     if (this.alllsame==true){
-      this.mode="All same players";
+      this.mode="All same opponents";
       this.assignsameplayers();
     }
     else{
-      this.mode="All different players";
+      this.mode="Random all players";
       // assign users to the respective user
       this.assignUserToPlayWithAnotherUser();
     }
@@ -358,50 +359,6 @@ if (data==true){
         })
 		}
   }
-  /*assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, half_length, totalRound){
-    // calculating how many rounds it would take for all users to play against each other in 2 groups.
-    for (var j = 0; j < half_length; j++)
-    {
-      var temp = 0;
-      console.log("Round "+j+" :")
-
-      for (var i = 0; i < half_length; i++) {
-
-        console.log("(Proposer) "+ proposer[i] + " VS (Responder) "+ responder[temp]);
-        console.log("(Responder UUID) "+ responderUUID[i] + " (Responder Name) "+ responder[temp]);
-        // adding student's sequence into database
-        //var id = j+proposer[i]+responder[temp];
-        var id = "HIIIIIIII" + proposerUUID[i] + j + responderUUID[i] + j;
-        this.afs.collection('Game').doc(id).set({
-          gameId:this.code,
-          gameMode: 'Random all players',
-          round: j,
-          totalRound: totalRound,
-          dateTime: new Date().toISOString(),
-          proposerUUID: proposerUUID[i],
-          proposerName: proposer[i],
-          responderUUID: responderUUID[i],
-          responderName: responder[temp],
-          proposerAmount: "",
-          responderResponse: "",
-          proposerStatus: "Not Ready",
-          responderStatus: "Not Ready",
-          gameStatus: "Not Ready"
-         })
-        .then((data) => {
-          //console.log("Data: "+data);
-        }).catch((err) => {
-          console.log("Err: "+err);
-        })
-
-        temp++;
-      }
-
-      var num = responder.shift();
-      responder[responder.length] = num;
-    }
-  }*/
-
   //yonglin
   assignsameplayers(){
     this.itemDoc = this.afs.collection<any>('Participant');
