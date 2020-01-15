@@ -179,23 +179,55 @@ responderName="";
     this.item = this.itemDoc.valueChanges();
 
     this.subscription=this.item.subscribe(ress=>{
-    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('round', '==', parseInt(ress["round"])));
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready"));
     this.item = this.itemDoc.valueChanges();
     this.subscription= this.item.subscribe(res=>{
       for (let p=0;p<res.length;p++){
         if (res[p].responderResponse=="Decline"){
+          for (let i=0;i<this.scoreboard.length;i++){
+            if (this.scoreboard[i].username==res[p].proposerName){
+              this.scoreboard[i].score+=0;
+            }
+            else if (this.scoreboard[i].username==res[p].responderName){
+             this.scoreboard[i].score+=0;
+            }
+            else{
+             let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
+             let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
+             this.scoreboard.push(proposerlist)
+             this.scoreboard.push(responderlist)
+            }
+          }
+             if (this.scoreboard.length==0){
           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
           let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
           this.scoreboard.push(proposerlist)
           this.scoreboard.push(responderlist)
+             }
         
          }
        else if (res[p].responderResponse=="Accept"){
+         for (let i=0;i<this.scoreboard.length;i++){
+           if (this.scoreboard[i].username==res[p].proposerName){
+             this.scoreboard[i].score+=res[p].proposerAmount;
+           }
+           else if (this.scoreboard[i].username==res[p].responderName){
+            this.scoreboard[i].score+=res[p].proposerAmount;
+           }
+           else{
+            let proposerlist={"username":res[p].proposerName,"score":res[p].proposerAmount,"role":"Proposer"}
+            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
+            this.scoreboard.push(proposerlist)
+            this.scoreboard.push(responderlist)
+           }
+         }
+            if (this.scoreboard.length==0){
             let proposerlist={"username":res[p].proposerName,"score":res[p].proposerAmount,"role":"Proposer"}
             let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
             this.scoreboard.push(proposerlist)
             this.scoreboard.push(responderlist)
         }
+      }
       }
     })
   })

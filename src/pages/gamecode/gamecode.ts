@@ -6,6 +6,7 @@ import { NgForm } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
 import * as firebase from 'firebase';
+import { UltimatumPage } from '../ultimatum/ultimatum';
 // import functions from 'firebase-functions';
 
 /**
@@ -30,6 +31,7 @@ list=[];
 loader:Loading;
 hide:Boolean;
 myPerson={};
+errormsg:string;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public afs: AngularFirestore,
@@ -47,44 +49,65 @@ myPerson={};
   Next(form: NgForm){
 
     this.submitted = true;
-
     if (form.valid && this.gamecode!= '' && this.gamecode!=null) {
-      this.loader =  this.loadingCtrl.create({
-
-      });
-      this.loader.present();
-
-      const toast = this.toastCtrl.create({
-        message: 'See your name on the screen..',
-        duration:3000
-      });
-      toast.present();
-
-      let all=this.navParams.data;
-      all["gameId"]=this.gamecode;
-      this.createParticipant(all);
-      console.log(this.gamecode);
-      // added .doc(all["GameId"]) to line 67
-      this.itemDoc = this.afs.collection<any>('Professor').doc(this.gamecode);
+    let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
+    shand[0].style.display="none";
+      let data= this.navParams.data;
+      this.itemDoc = this.afs.collection<any>('Participant', ref => ref.where('username', '==', data["username"]).where('gameId', '==', this.gamecode));
       this.item = this.itemDoc.valueChanges();
-      this.subscription=this.item.subscribe(res=>{
-        console.log(res);
+      this.subscription= this.item.subscribe(res=>{
+        if (res.length==0){
+         
+          //means currently no user with same username
+          this.loader =  this.loadingCtrl.create({
 
-        this.userDisconnectState(all);
-       res=[res];
-        for (let p=0;p<res.length;p++){
-             if (res[p].professorStatus=='Ready'){
-              // find out if user is a proposer or responder
-              this.loader.dismiss();
-              console.log("in")
-              this.responderOrProposal(this.navParams.data);
-
-          }
-
+          });
+          this.loader.present();
+          const toast = this.toastCtrl.create({
+            message: 'See your name on the screen..',
+            duration:3000
+          });
+          toast.present();
+    
+          let all=this.navParams.data;
+          all["gameId"]=this.gamecode;
+          this.createParticipant(all);
+          console.log(this.gamecode);
+          // added .doc(all["GameId"]) to line 67
+          this.itemDoc = this.afs.collection<any>('Professor').doc(this.gamecode);
+          this.item = this.itemDoc.valueChanges();
+          this.subscription=this.item.subscribe(res=>{
+            console.log(res);
+    
+            this.userDisconnectState(all);
+           res=[res];
+            for (let p=0;p<res.length;p++){
+                 if (res[p].professorStatus=='Ready'){
+                  // find out if user is a proposer or responder
+                  this.loader.dismiss();
+                  console.log("in")
+                  this.responderOrProposal(this.navParams.data);
+    
+              }
+    
+            }
+    
+          })
         }
 
+        else{
+          let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
+          shand[0].style.display="";
+          this.errormsg="Already have exising username..";
+        }
+            
       })
+    
 
+    }
+    else{
+      let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
+      shand[0].style.display="";
     }
   }
 
@@ -231,6 +254,10 @@ this.subscription=this.item.subscribe(res=>{
 
   async dismissLoading() {
     await this.loader.dismiss();
+  }
+
+  back(){
+    this.navCtrl.setRoot(UltimatumPage);
   }
 }
 

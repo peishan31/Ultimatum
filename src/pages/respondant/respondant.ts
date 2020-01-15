@@ -319,7 +319,7 @@ console.log(this.res,"RES")
           }
 
           else if (this.maxtime==0){
-          // this.Accept();
+           this.Accept();
 
 
             // this.hidevalue = true;

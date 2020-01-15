@@ -48,9 +48,9 @@ professorcode:any;
     public UserPresenceStatusProvider: UserPresenceStatusProvider
     ) {
 let data=this.navParams.data;
-if (data==true){
+if (data["waitForStudent"]==true){
   this.waitforstudent=true;
-  this.code="trying to make this not empty"
+  this.code="trying to make this not empty";
 
 }
   }

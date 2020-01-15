@@ -79,8 +79,8 @@ export class ProposerPage {
             //  let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":0};
             //  this.navCtrl.setRoot(ResultPage,dict)
             //  })
-            this.presstrue=true;
-            // this.submitProposerOffer();
+             this.presstrue=true;
+             this.submitProposerOffer();
           }
 
       }, 1000);
