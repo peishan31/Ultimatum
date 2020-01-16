@@ -36,7 +36,12 @@ subscription:Subscription;
           // gameMode
           console.log("{{nextround.ts}}: " + JSON.stringify(this.all));
           console.log("this is passed in ((nextround.ts)): ");
-          let passnextpg={UUID: this.all["UUID"], username: this.all["username"], GameId: this.all["GameId"],once:0, gameMode: this.all["gameMode"]};
+          let passnextpg={
+            UUID: this.all["UUID"],
+            username: this.all["username"],
+            GameId: this.all["GameId"],
+            once:0,
+            gameMode: this.all["gameMode"]};
           if (res["proposerStatus"]=="Ready" && res["responderResponse"]=="" && this.all["Role"]=="Respondant") {
 
             this.navCtrl.setRoot(RespondantPage, passnextpg);
