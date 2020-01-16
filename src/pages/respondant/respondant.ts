@@ -150,7 +150,7 @@ console.log(this.res,"RES")
             else if (res[p].round==0 && res[p].proposerStatus=="Ready" && res[p].proposerAmount!='' && res[p].responderResponse!=""){
               let nextroundfirebaseid= res[p].proposerUUID + res[p].round.toString() +  res[p].responderUUID + res[p].round.toString();
               this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round;
-              let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":res[p].responderResponse,"GameId":all["GameId"],"Round":res[p].round,"nextroundfirebaseid":nextroundfirebaseid, gameMode: all["gameMode"], UUID: all["UUID"]};
+              let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":res[p].responderResponse,"GameId":all["GameId"],"Round":res[p].round,"nextroundfirebaseid":nextroundfirebaseid, gameMode: all["gameMode"]};
               this.navCtrl.setRoot(ResultPage,dict)
             }
 
@@ -165,7 +165,7 @@ console.log(this.res,"RES")
            else if (res[p].round!=0 && res[p].responderResponse!=""){
             this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
             let all=this.navParams.data;
-            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":this.result,"GameId":all["GameId"],"Round":res[p].round, gameMode: all["gameMode"], UUID: all["UUID"]};
+            let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":this.result,"GameId":all["GameId"],"Round":res[p].round, gameMode: all["gameMode"]};
            this.navCtrl.setRoot(ResultPage,dict)
            }
 
@@ -252,15 +252,13 @@ console.log(this.res,"RES")
             //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
             if (res[p].responderUUID == all["UUID"] && res[p].round.toString()==ress["round"].toString()){
               if (res[p].round!=0 && res[p].proposerStatus!="Ready" && res[p].proposerAmount==''){
-                console.log("sadscsdcdsc");
-                let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":res[p].responderResponse,"GameId":all["GameId"],"Round":res[p].round, gameMode: all["gameMode"], UUID: all["UUID"]};
-                this.navCtrl.setRoot(NextroundsPage,dict)
+                this.navCtrl.setRoot(NextroundsPage)
               }
 
               else if (res[p].round==0 && res[p].proposerStatus=="Ready" && res[p].proposerAmount!='' && res[p].responderResponse!=""){
                 let nextroundfirebaseid= res[p].proposerUUID + res[p].round.toString() +  res[p].responderUUID + res[p].round.toString();
                 this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round;
-                let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":res[p].responderResponse,"GameId":all["GameId"],"Round":res[p].round,"nextroundfirebaseid":nextroundfirebaseid, gameMode: all["gameMode"], UUID: all["UUID"]};
+                let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":res[p].responderResponse,"GameId":all["GameId"],"Round":res[p].round,"nextroundfirebaseid":nextroundfirebaseid, gameMode: all["gameMode"]};
                 this.navCtrl.setRoot(ResultPage,dict)
               }
 
@@ -275,7 +273,7 @@ console.log(this.res,"RES")
               else if (res[p].round!=0 && res[p].responderResponse!=""){
                 this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
                 let all=this.navParams.data;
-                let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":this.result,"GameId":all["GameId"],"Round":res[p].round, gameMode: all["gameMode"],  UUID: all["UUID"]};
+                let dict={"Role":"Respondant","FirebaseId":this.firebaseId,"Result":this.result,"GameId":all["GameId"],"Round":res[p].round, gameMode: all["gameMode"]};
               this.navCtrl.setRoot(ResultPage,dict)
               }
             }
@@ -319,20 +317,9 @@ console.log(this.res,"RES")
           }
 
           else if (this.maxtime==0){
-           this.Accept();
+         //  this.Accept();
 
 
-            // this.hidevalue = true;
-      //       this.Accept().subscribe((r)=>{
-      //       console.log(r)
-      //        this.afs.collection('Game').doc(r).valueChanges().subscribe(res=>{
-
-      // console.log(res);
-      //       this.firebaseId=res["proposerUUID"] + res["round"] +  res["responderUUID"] +res["round"];
-      //       this.updateResponderStatus(this.firebaseId,"Accept");
-      //       let dict={"Role":"Respondant","FirebaseId":this.firebaseId};
-      //       this.navCtrl.setRoot(ResultPage,dict)
-      //       })})
 
          }
 

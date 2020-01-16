@@ -96,8 +96,8 @@ errormsg:string;
         }
 
         else{
-          let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
-          shand[0].style.display="";
+          // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
+          // shand[0].style.display="";
           this.errormsg="Already have exising username..";
         }
             
