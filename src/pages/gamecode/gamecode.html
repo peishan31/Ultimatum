@@ -23,9 +23,13 @@
       <button id="ultimatum-button1" ion-button color="positive" block (click)="Next(submitUltimatumForm)">
         JOIN GAME!
       </button>
+      <div style="display:''" class="hidemsg">
       <!-- <p ion-text *ngIf="gamecode != '' && submitted == true" color="danger" padding-left class="errormsg">
         Please enter game code
       </p> -->
+      <p color="danger" padding-left style="color:red" class="errormsg">{{errormsg}}</p>
+    </div>
+      <a (click)="back()" style="float:right;font-size:19px;">Go Back</a>
     </div>
     <div *ngIf="hide==true" style="text-align: center;">
       <ion-card>

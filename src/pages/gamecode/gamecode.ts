@@ -6,6 +6,7 @@ import { NgForm } from '@angular/forms';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
 import * as firebase from 'firebase';
+import { UltimatumPage } from '../ultimatum/ultimatum';
 // import functions from 'firebase-functions';
 
 /**
@@ -30,6 +31,7 @@ list=[];
 loader:Loading;
 hide:Boolean;
 myPerson={};
+errormsg:string;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public afs: AngularFirestore,
@@ -47,44 +49,65 @@ myPerson={};
   Next(form: NgForm){
 
     this.submitted = true;
-
     if (form.valid && this.gamecode!= '' && this.gamecode!=null) {
-      this.loader =  this.loadingCtrl.create({
-
-      });
-      this.loader.present();
-
-      const toast = this.toastCtrl.create({
-        message: 'See your name on the screen..',
-        duration:3000
-      });
-      toast.present();
-
-      let all=this.navParams.data;
-      all["gameId"]=this.gamecode;
-      this.createParticipant(all);
-      console.log(this.gamecode);
-      // added .doc(all["GameId"]) to line 67
-      this.itemDoc = this.afs.collection<any>('Professor').doc(this.gamecode);
+    let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
+    shand[0].style.display="none";
+      let data= this.navParams.data;
+      this.itemDoc = this.afs.collection<any>('Participant', ref => ref.where('username', '==', data["username"]).where('gameId', '==', this.gamecode));
       this.item = this.itemDoc.valueChanges();
-      this.subscription=this.item.subscribe(res=>{
-        console.log(res);
+      this.subscription= this.item.subscribe(res=>{
+        if (res.length==0){
 
-        this.userDisconnectState(all);
-       res=[res];
-        for (let p=0;p<res.length;p++){
-             if (res[p].professorStatus=='Ready'){
-              // find out if user is a proposer or responder
-              this.loader.dismiss();
-              console.log("in")
-              this.responderOrProposal(this.navParams.data);
+          //means currently no user with same username
+          this.loader =  this.loadingCtrl.create({
 
-          }
+          });
+          this.loader.present();
+          const toast = this.toastCtrl.create({
+            message: 'See your name on the screen..',
+            duration:3000
+          });
+          toast.present();
 
+          let all=this.navParams.data;
+          all["gameId"]=this.gamecode;
+          this.createParticipant(all);
+          console.log(this.gamecode);
+          // added .doc(all["GameId"]) to line 67
+          this.itemDoc = this.afs.collection<any>('Professor').doc(this.gamecode);
+          this.item = this.itemDoc.valueChanges();
+          this.subscription=this.item.subscribe(res=>{
+            console.log(res);
+
+            this.userDisconnectState(all);
+           res=[res];
+            for (let p=0;p<res.length;p++){
+                 if (res[p].professorStatus=='Ready'){
+                  // find out if user is a proposer or responder
+                  this.loader.dismiss();
+                  console.log("in")
+                  this.responderOrProposal(this.navParams.data);
+
+              }
+
+            }
+
+          })
+        }
+
+        else{
+          // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
+          // shand[0].style.display="";
+          this.errormsg="Already have exising username..";
         }
 
       })
 
+
+    }
+    else{
+      let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
+      shand[0].style.display="";
     }
   }
 
@@ -174,7 +197,12 @@ this.subscription=this.item.subscribe(res=>{
   for (let p=0;p<res.length;p++){
     if (res[p].proposerStatus=="Not Ready" && iu==0){
       // user is a proposer in the next round
-      let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
+      let passnextpg={
+        UUID: all.UUID,
+        username: all.username,
+        GameId: this.gamecode,
+        gameMode: res[p].gameMode
+      }
       console.log("((gamecode.ts)): "+ res[p].gameMode);
       this.navCtrl.push(ProposerPage, passnextpg);
     iu+=1
@@ -187,7 +215,12 @@ this.subscription=this.item.subscribe(res=>{
   else{
      for (let p=0;p<res.length;p++){
 
-          let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
+          let passnextpg={
+            UUID: all.UUID,
+            username: all.username,
+            GameId: this.gamecode,
+            gameMode: res[p].gameMode
+          }
           if (res[p].proposerStatus=="Ready" && res[p].round==0) {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
@@ -231,6 +264,10 @@ this.subscription=this.item.subscribe(res=>{
 
   async dismissLoading() {
     await this.loader.dismiss();
+  }
+
+  back(){
+    this.navCtrl.setRoot(UltimatumPage);
   }
 }
 
