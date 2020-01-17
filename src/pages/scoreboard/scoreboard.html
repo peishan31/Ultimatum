@@ -17,7 +17,7 @@
   </h3>
   <div class="span3 control-group">
     <label>Filter: </label>
-    <select style="height:50%" [(ngModel)]="selecting" [ngModelOptions]="{standalone:true}" >
+    <select style="height:30%" [(ngModel)]="selecting" [ngModelOptions]="{standalone:true}" >
     <option>-</option>
     <option>Individual rounds</option>
     <option>Speed- Fastest to Slowest</option>
@@ -35,7 +35,7 @@
       Leaderboard
     </h1>
     <ol>
-      <li *ngFor="let u of scoreboard">
+      <li *ngFor="let u of arr">
         <mark>{{u.username}}</mark>
         <small>{{u.score}}</small>
       </li>
@@ -44,7 +44,7 @@
 
     <div style="text-align: center;margin-top: 20px;">
       <button (click)="Home()" ion-button color="positive" style="font-size:15px;height:150%"  item-left>
-       <br> Back to home<br><br>
+       <br> End game<br><br>
       </button>
       <button ion-button color="positive" (click)="nextround()" item-right style="font-size:15px;height:150%">
      <br>   Next round<br><br>

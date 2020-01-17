@@ -36,6 +36,8 @@ import { UserPresenceStatusProvider } from '../providers/user-presence-status/us
 
 import { HttpClient, HttpHandler } from '@angular/common/http';
 
+import { IonicStorageModule } from '@ionic/storage';
+
 const config= {}
 
 @NgModule({
@@ -62,7 +64,8 @@ const config= {}
     AngularFirestoreModule,
     AngularFireModule,
     AngularFireModule.initializeApp(firebaseConfig, 'Ultimatum'),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
