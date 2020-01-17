@@ -40,8 +40,15 @@ subscription:Subscription;
             UUID: this.all["UUID"],
             username: this.all["username"],
             GameId: this.all["GameId"],
+            gameMode: this.all["gameMode"],
+            // Role
+            // amount
+            // FirebaseId
+            // nextroundfirebaseid
+            // round
             once:0,
-            gameMode: this.all["gameMode"]};
+            // gonextround
+          };
           if (res["proposerStatus"]=="Ready" && res["responderResponse"]=="" && this.all["Role"]=="Respondant") {
 
             this.navCtrl.setRoot(RespondantPage, passnextpg);

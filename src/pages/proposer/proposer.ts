@@ -80,10 +80,10 @@ export class ProposerPage {
             //  this.navCtrl.setRoot(ResultPage,dict)
             //  })
             //  this.presstrue=true;
-          
+
             // this.submitProposerOffer();
-//              
-            
+//
+
           }
 
       }, 1000);
@@ -94,7 +94,7 @@ export class ProposerPage {
   ionViewDidEnter(){
     this.presstrue=false;
     this.StartTimer();
-    
+
 }
 
   Next(){
@@ -261,7 +261,18 @@ this.subscribed=true;
               { // swapping roles
                 let nextroundfirebaseid= gameValues[p].responderUUID + addround + gameValues[p].proposerUUID + addround;
 
-                let dict={"Role":"Proposer", "Amount":this.range, "FirebaseId": this.firebaseId,"nextroundfirebaseid":nextroundfirebaseid, "GameId":all["GameId"],"Round":gameValues[p].round,"once":1, UUID: all["UUID"], username: all["username"], gameMode: all["gameMode"]};
+                let dict={
+                  UUID: all["UUID"],
+                  username: all["username"],
+                  GameId:all["GameId"],
+                  gameMode: all["gameMode"],
+                  Role:"Proposer",
+                  Amount:this.range,
+                  FirebaseId: this.firebaseId,
+                  nextroundfirebaseid:nextroundfirebaseid,
+                  Round:gameValues[p].round,
+                  once:1
+                };
 
                 console.log("((proposer.ts)): "+ all["UUID"]);
                 this.navCtrl.setRoot(ResultPage,dict);
@@ -270,7 +281,20 @@ this.subscribed=true;
               { // randomizing role in the previous round
                 let nextroundfirebaseid= ""; // nth cos they are randomizing users now
 
-                let dict={"Role":"Proposer", "Amount":this.range, "FirebaseId": this.firebaseId, "nextroundfirebaseid":nextroundfirebaseid, "GameId":all["GameId"],"Round":gameValues[p].round,"once":1, UUID: all["UUID"], username: all["username"], gameMode: all["gameMode"]};
+                let dict={
+                  UUID: all["UUID"],
+                  username: all["username"],
+                  GameId:all["GameId"],
+                  gameMode: all["gameMode"],
+                  Role:"Proposer",
+                  Amount:this.range,
+                  FirebaseId: this.firebaseId,
+                  nextroundfirebaseid:nextroundfirebaseid,
+                  Round:gameValues[p].round,
+                  once:1
+
+
+                };
 
                 console.log("((proposer.ts)): "+ all["UUID"]);
                 this.navCtrl.setRoot(ResultPage,dict);

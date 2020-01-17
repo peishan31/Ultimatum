@@ -196,10 +196,10 @@ responderName="";
             // this.scoreboard[i].score=this.scoreboard[i].score+(100-res[p].proposerAmount);
             //   let responderlist={"username":res[p].responderName,"score":this.scoreboard[i].score,"role":"Responder"}
             //   this.scoreboard.push(responderlist)
-           
-          
+
+
             // this.scoreboard.push(proposerlist)
-          
+
            }
          }
             if (this.scoreboard.length==0){
@@ -213,7 +213,7 @@ responderName="";
               this.scoreboard.push(responderlist)
             }
             this.scoreboard.push(proposerlist)
-           
+
         }
       }
       else{
@@ -228,9 +228,9 @@ responderName="";
             this.scoreboard.push(responderlist)
           }
           this.scoreboard.push(proposerlist)
-         
-      
-    } 
+
+
+    }
       }
       }
     })
@@ -276,30 +276,33 @@ responderName="";
 
   assignUserToPlayWithAnotherUser(currentRound){
     // Calling out all the users joining this gameId
-    this.itemDoc = this.afs.collection<any>('Participant');
+    this.itemDoc = this.afs.collection<any>('Participant', ref => ref
+    .where('gameId', '==', this.hi["gameId"])
+    .where('online', "==", true)
+    );
     this.item = this.itemDoc.valueChanges();
     this.item.subscribe(res=>{
       this.studentsList["username"] = [];
       this.studentsList["UUID"] = [];
       for (let i=0; i<res.length;i++){
 
-        if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
+        //if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
           console.log("res[i]: " + JSON.stringify(res[i]));
           this.studentsList["username"].push(res[i].username);
           console.log("My username: " + res[i].username);
           this.studentsList["UUID"].push(res[i].UUID);
           this.studentnum=this.studentsList["username"].length;
-        }
+        //}
       }
       this.studentsList["totalRound"] = this.studentsList["username"].length;
       console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
-      if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
+      /*if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
       {
         this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
         this.studentsList["UUID"].push("101");
         //this.studentsIdList[this.studentsList.length] = 1;
-      }
+      }*/
 
       // splitting users into 2 groups
       var half_length = Math.ceil(this.studentsList["username"].length / 2);

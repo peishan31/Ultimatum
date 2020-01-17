@@ -57,7 +57,7 @@ errormsg:string;
       this.item = this.itemDoc.valueChanges();
       this.subscription= this.item.subscribe(res=>{
         if (res.length==0){
-         
+
           //means currently no user with same username
           this.loader =  this.loadingCtrl.create({
 
@@ -68,7 +68,7 @@ errormsg:string;
             duration:3000
           });
           toast.present();
-    
+
           let all=this.navParams.data;
           all["gameId"]=this.gamecode;
           this.createParticipant(all);
@@ -78,7 +78,7 @@ errormsg:string;
           this.item = this.itemDoc.valueChanges();
           this.subscription=this.item.subscribe(res=>{
             console.log(res);
-    
+
             this.userDisconnectState(all);
            res=[res];
             for (let p=0;p<res.length;p++){
@@ -87,11 +87,11 @@ errormsg:string;
                   this.loader.dismiss();
                   console.log("in")
                   this.responderOrProposal(this.navParams.data);
-    
+
               }
-    
+
             }
-    
+
           })
         }
 
@@ -100,9 +100,9 @@ errormsg:string;
           // shand[0].style.display="";
           this.errormsg="Already have exising username..";
         }
-            
+
       })
-    
+
 
     }
     else{
@@ -197,7 +197,12 @@ this.subscription=this.item.subscribe(res=>{
   for (let p=0;p<res.length;p++){
     if (res[p].proposerStatus=="Not Ready" && iu==0){
       // user is a proposer in the next round
-      let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
+      let passnextpg={
+        UUID: all.UUID,
+        username: all.username,
+        GameId: this.gamecode,
+        gameMode: res[p].gameMode
+      }
       console.log("((gamecode.ts)): "+ res[p].gameMode);
       this.navCtrl.push(ProposerPage, passnextpg);
     iu+=1
@@ -210,7 +215,12 @@ this.subscription=this.item.subscribe(res=>{
   else{
      for (let p=0;p<res.length;p++){
 
-          let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
+          let passnextpg={
+            UUID: all.UUID,
+            username: all.username,
+            GameId: this.gamecode,
+            gameMode: res[p].gameMode
+          }
           if (res[p].proposerStatus=="Ready" && res[p].round==0) {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
