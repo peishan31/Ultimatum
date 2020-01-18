@@ -53,5 +53,8 @@
       "cordova-plugin-firebase": {},
       "cordova-plugin-network-information": {}
     }
+  },
+  "config": {
+    "ionic_source_map": "source-map"
   }
 }
