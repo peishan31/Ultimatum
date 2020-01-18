@@ -176,27 +176,27 @@ arr:any;
 
   scoreboardscore(){
     this.hi=this.navParams.data;
- 
+
     this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready"));
     this.scoreboard.length=0;
     this.item = this.itemDoc.valueChanges();
     this.subscription= this.item.subscribe(res=>{
       for (let p=0;p<res.length;p++){
-         if (res[p].responderResponse=="Accept"){       
+         if (res[p].responderResponse=="Accept"){
             let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
             this.scoreboard.push(responderlist);
             let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
            this.scoreboard.push(proposerlist)
-   
+
       }
       else if (res[p].responderResponse=="Decline"){
-          let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}   
+          let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
           this.scoreboard.push(proposerlist)
           this.scoreboard.push(responderlist)
         }
         console.log(this.scoreboard,"scoreboard")
-   
+
   }
   var holder = {};
   this.scoreboard.forEach(function(d) {
@@ -206,7 +206,7 @@ arr:any;
       holder[d.username] = d.score;
     }
   });
-  
+
   var obj2 = [];
   for (var prop in holder) {
     obj2.push({ username: prop, score: holder[prop]});
@@ -217,9 +217,9 @@ arr:any;
   this.arr=obj2;
 
 
- 
+
 })
-  
+
   }
 
 
@@ -268,7 +268,8 @@ arr:any;
       this.studentsList["UUID"] = [];
       for (let i=0; i<res.length;i++){
 
-        if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
+        //if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
+        if ((res[i].gameId==this.hi["gameId"])){
           console.log("res[i]: " + JSON.stringify(res[i]));
           this.studentsList["username"].push(res[i].username);
           console.log("My username: " + res[i].username);
@@ -279,12 +280,12 @@ arr:any;
       this.studentsList["totalRound"] = this.studentsList["username"].length;
       console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
-      if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
+      /*if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
       {
         this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
         this.studentsList["UUID"].push("101");
         //this.studentsIdList[this.studentsList.length] = 1;
-      }
+      }*/
 
       // splitting users into 2 groups
       var half_length = Math.ceil(this.studentsList["username"].length / 2);

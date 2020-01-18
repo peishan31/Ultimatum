@@ -34,6 +34,11 @@ export class ResultPage {
   item: any;
   itemm: any;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore) {
+
+    var val = this.navCtrl.last().name;
+    console.log("VAL");
+    console.log(val);
+
     this.data=navParams.data;
     console.log(this.data["GameId"],"PARAMSDATA")
     console.log("RESULT.TS This is my role: "+this.data["Role"]);
@@ -98,7 +103,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
 
        else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse<half){
-         
+
           let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
             this.navCtrl.setRoot(NextroundsPage,passnextpg);
           }
@@ -231,7 +236,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                     if (resss.length != 0) {
                       console.log(resss,"Randomized proposer!")
-                      var nextroundfirebaseid = res[0]["proposerUUID"] + changeparse + res[0]["responderUUID"] + changeparse;
+                      var nextroundfirebaseid = res["proposerUUID"] + changeparse + res["responderUUID"] + changeparse;
 
                       this.navCtrl.setRoot(ProposerPage, {
                         UUID: resss["proposerUUID"],
@@ -254,7 +259,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                   })
                 }
-                else
+                else if (res.length > 0)
                 {
                   // user is a responder
                   console.log("((result.ts)): I am a responder");
@@ -264,9 +269,10 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                   console.log("changeparse " + changeparse);
                   console.log("RES: " + JSON.stringify(res));
                   var nextroundfirebaseid = res[0]["proposerUUID"] + changeparse + res[0]["responderUUID"] + changeparse;
+                  //********************** */
                   this.navCtrl.setRoot(NextroundsPage, {
-                    UUID:res["responderUUID"],
-                    username:res["responderName"],
+                    UUID:res[0]["responderUUID"],
+                    username:res[0]["responderName"],
                     GameId:this.data["GameId"],
                     gameMode:this.data["gameMode"],
                     Role: "Respondant",
@@ -274,11 +280,13 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                     FirebaseId:this.data["FirebaseId"],
                     nextroundfirebaseid: nextroundfirebaseid,
                     // round
-                    Round: parseInt(ress["round"]),
+                    //Round: parseInt(ress["round"]),
                     // once
                     gonextround:0,
                   });
                 }
+
+
 
               })
             }

@@ -34,6 +34,7 @@ hide:Boolean;
 myPerson={};
 errormsg:string;
 inhere=0;
+subscribed=false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public afs: AngularFirestore,
@@ -58,8 +59,10 @@ inhere=0;
       this.itemDoc = this.afs.collection<any>('Participant', ref => ref.where('username', '==', data["username"]).where('gameId', '==', this.gamecode));
       this.item = this.itemDoc.valueChanges();
       this.subscription= this.item.subscribe(res=>{
+
+        this.subscribed = true;
         if (res.length==0){
-         
+
           //means currently no user with same username
           this.loader =  this.loadingCtrl.create({
 
@@ -70,7 +73,7 @@ inhere=0;
             duration:3000
           });
           toast.present();
-    
+
           let all=this.navParams.data;
           all["gameId"]=this.gamecode;
           this.createParticipant(all);
@@ -80,7 +83,7 @@ inhere=0;
           this.item = this.itemDoc.valueChanges();
           this.subscription=this.item.subscribe(res=>{
             console.log(res);
-    
+
             this.userDisconnectState(all);
            res=[res];
             for (let p=0;p<res.length;p++){
@@ -90,11 +93,11 @@ inhere=0;
                   console.log("in")
                   this.inhere+=1;
                   this.responderOrProposal(this.navParams.data);
-    
+
               }
-    
+
             }
-    
+
           })
         }
 
@@ -103,9 +106,9 @@ inhere=0;
           // shand[0].style.display="";
           this.errormsg="Already have exising username..";
         }
-            
+
       })
-    
+
 
     }
     else{
@@ -150,7 +153,9 @@ inhere=0;
   }
 
   ionViewDidLeave(){
-    // this.subscription.unsubscribe();
+    if (this.subscribed == true) {
+      this.subscription.unsubscribe();
+    }
   }
 
 
@@ -197,14 +202,14 @@ this.subscription=this.item.subscribe(res=>{
   for (let p=0;p<res.length;p++){
     if (res[p].proposerStatus=="Not Ready" && iu==0){
       // user is a proposer in the next round
-    
+
       let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
-      
-     
+
+
       console.log("((gamecode.ts)): "+ res[p].gameMode);
 
       this.navCtrl.push(ProposerPage, passnextpg);
-      
+
     iu+=1
      console.log("First")
 
@@ -261,8 +266,11 @@ this.subscription=this.item.subscribe(res=>{
     await this.loader.dismiss();
   }
 
+
   back(){
     this.navCtrl.setRoot(UltimatumPage);
   }
+
+
 }
 

@@ -32,7 +32,7 @@ subscription:Subscription;
     console.log("{{nextRound.ts Page}}: " + JSON.stringify(this.all));
     console.log("{{nextRound.ts Page}}: " + this.all["gonextround"]);
     if (this.all['nextroundfirebaseid']==null){
-
+console.log('ok')
     }
     else if (this.all["nextroundfirebaseid"]!=null && this.all["nextroundfirebaseid"]!=undefined && this.all["gonextround"]==0){
        //  let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"]};
@@ -54,9 +54,13 @@ subscription:Subscription;
             // nextroundfirebaseid
             Round: this.all["Round"],
             once:0,
-            gameMode: this.all["gameMode"]};
+            //gameMode: this.all["gameMode"]
+          };
+
+          console.log("Round: " + this.all["Round"]);
           if (res["proposerStatus"]=="Ready" && res["responderResponse"]=="" && this.all["Role"]=="Respondant") {
 
+            console.log("this is passed in");
             this.navCtrl.setRoot(RespondantPage, passnextpg);
           }
         }

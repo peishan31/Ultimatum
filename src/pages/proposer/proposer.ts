@@ -34,6 +34,9 @@ export class ProposerPage {
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public navParams: NavParams) {
+      var val = this.navCtrl.last().name;
+      console.log("VAL");
+      console.log(val);
       this.presstrue=false;
      // this.StartTimer()
     //  let all=this.navParams.data;
@@ -268,9 +271,9 @@ this.subscribed=true;
 
               // round 1, 3, 5, 7, 9 just have to swap their roles
               // round 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 is required to randomly generate the user
-              if (addround<20)
+              if (addround<(gameValues[p].totalRound*2))
               {
-                if ((addround % 2 !=0) && (addround<20)) // *****there is only 19 rounds!!!(it starts from 0)
+                if ((addround % 2 !=0)) // *****(it starts from 0)
                 { // swapping roles
                   let nextroundfirebaseid= gameValues[p].responderUUID + addround + gameValues[p].proposerUUID + addround;
 
