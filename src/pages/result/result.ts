@@ -67,8 +67,9 @@ export class ResultPage {
         this.datetime=date.toISOString();
         let round=parseInt(res["round"]);
         let changeparse=parseInt(ress["round"]);
+        let half=(parseInt(res["totalRound"])/2)
         this.data=navParams.data;
-        if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse<5){
+        if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse<half){
           if (this.data["once"]!=1){
 let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"]};
             this.navCtrl.setRoot(ProposerPage,passnextpg);
@@ -79,22 +80,29 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
           }
 
           }
-       else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse==5){
+       else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse==half){
+
+        let addround=changeparse;
+        console.log("addround",addround);
+        this.data["nextroundfirebaseid"] = res['responderUUID'] + addround + res['proposerUUID'] + addround; //added this bc its respoder next round
+
+
             let passnextpg={Role:"Respondant",UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0,  gameMode:this.data["gameMode"]};
              this.navCtrl.setRoot(NextroundsPage,passnextpg)
           }
 
-          else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse>5){
+          else if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse>half){
             let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"]};
              this.navCtrl.setRoot(ProposerPage,passnextpg)
           }
 
 
-       else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse<5){
+       else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse<half){
+         
           let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
             this.navCtrl.setRoot(NextroundsPage,passnextpg);
           }
-          else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse==5){
+          else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse==half){
             if (this.data["once"]!=1){
                let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
              this.navCtrl.setRoot(ProposerPage,passnextpg)
@@ -106,7 +114,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
           }
 
-          else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse>5){
+          else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse>half){
             if (this.data["once"]!=1){
                let passnextpg={Role:"Respondant",UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"],nextroundfirebaseid:this.data["nextroundfirebaseid"],gonextround:0, gameMode:this.data["gameMode"]};
              this.navCtrl.setRoot(NextroundsPage,passnextpg)
@@ -151,10 +159,9 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
           else{
             this.Responder=true;
           }
-
           this.professorcode = this.afs.collection('Professor').doc(this.data["GameId"]).valueChanges().subscribe(ress=>{
-
             this.data=navParams.data;
+            //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
             let date=new Date();
             this.datetime=date.toISOString();
             let round=parseInt(res["round"]);
@@ -167,22 +174,8 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
             if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse%2 != 0){ // when (changeparse % 2 != 0) means swapping roles: proposer becomes responder now
 
-              console.log("<<Result.ts>> Changing position round: User went from Proposer to Responder: ");
-              let passnextpg={
-                UUID:res["proposerUUID"],
-                username:res["proposerName"],
-                GameId: this.data["GameId"],
-                gameMode:this.data["gameMode"],
-                Role: "Respondant",
-                // amount
-                FirebaseId:this.data["FirebaseId"],
-                nextroundfirebaseid:this.data["nextroundfirebaseid"],
-                dateTime:this.datetime, //extra
-                // Round
-                once:0,
-                gonextround:0 // gonextround
-
-              };
+              console.log("{{Result.ts}} User went from Proposer to Responder: ");
+              let passnextpg={Role: "Respondant",UUID:res["proposerUUID"],username:res["proposerName"],dateTime:this.datetime,GameId: this.data["GameId"],once:0,FirebaseId:this.data["FirebaseId"], gameMode:this.data["gameMode"],nextroundfirebaseid:this.data["nextroundfirebaseid"], gonextround:0};
               this.navCtrl.setRoot(NextroundsPage,passnextpg);
             }
             else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse%2 != 0){ // when (changeparse % 2 != 0) means swapping roles: responder becomes proposer now
@@ -286,6 +279,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                     gonextround:0,
                   });
                 }
+
               })
             }
             })

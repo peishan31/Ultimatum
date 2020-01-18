@@ -40,6 +40,7 @@ didsubscribed=false;
 studentsList={"username": [], "UUID": [], "totalRound": 0};
 retrieveprofessor:any;
 professorcode:any;
+rounds:number;
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
@@ -56,7 +57,6 @@ if (data["waitForStudent"]==true){
   }
 
   Next(){
-
     this.waitforstudent=true;
      //choosing all same player mode
     if (this.alllsame==true){
@@ -228,6 +228,7 @@ if (data["waitForStudent"]==true){
         gameId:value.gameId,
         dateTime:value.dateTime,
         professorStatus: "Not Ready",
+        totalround:this.rounds,
         round:""
 
        })
@@ -291,28 +292,25 @@ if (data["waitForStudent"]==true){
 
   assignUserToPlayWithAnotherUser(){
     // Calling out all the users joining this gameId
-    this.itemDoc = this.afs.collection<any>('Participant', ref => ref
-    .where('gameId', '==', this.code)
-    .where('online', "==", true)
-    );
+    this.itemDoc = this.afs.collection<any>('Participant');
     this.item = this.itemDoc.valueChanges();
     this.item.subscribe(res=>{
       for (let i=0; i<res.length;i++){
-        //if (res[i].gameId==this.code){
+        if (res[i].gameId==this.code){
           this.studentsList["username"].push(res[i].username);
           this.studentsList["UUID"].push(res[i].UUID);
           this.studentnum=this.studentsList["username"].length;
-        //}
+        }
       }
       this.studentsList["totalRound"] = this.studentsList["username"].length;
       console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
-      /*if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
+      if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
       {
         this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
         this.studentsList["UUID"].push("101");
         //this.studentsIdList[this.studentsList.length] = 1;
-      }*/
+      }
 
       // splitting users into 2 groups
       var half_length = Math.ceil(this.studentsList["username"].length / 2);
@@ -395,14 +393,15 @@ if (this.assgnsame.length%2==0){
    this.listusername2.push(this.usernamelist[i]);
  }
 
+ let rounds=(this.rounds/2);
  for (let i=0;i<this.listassgnsame1.length;i++){
-   for (let u=0;u<5;u++){
+   for (let u=0;u<rounds;u++){
     let id=this.listassgnsame1[i]+u.toString()+this.listassgnsame2[i]+u.toString();
     this.afs.collection('Game').doc(id).set({
       gameId:this.code,
       gameMode: 'All same opponents',
       round: u,
-      totalRound: 10,
+      totalRound: this.rounds,
       dateTime: new Date().toISOString(),
       proposerUUID: this.listassgnsame1[i],
       proposerName: this.listusername1[i],
@@ -423,15 +422,15 @@ if (this.assgnsame.length%2==0){
 
 
  }
-
+ let rounds1=(this.rounds/2)
  for (let i=0;i<this.listassgnsame2.length;i++){
-   for (let u=5;u<10;u++){
+   for (let u=rounds1;u<this.rounds;u++){
     let id=this.listassgnsame2[i]+u.toString()+this.listassgnsame1[i]+u.toString();
     this.afs.collection('Game').doc(id).set({
       gameId:this.code,
       gameMode: 'All same opponents',
       round: u,
-      totalRound: 10,
+      totalRound: this.rounds,
       dateTime: new Date().toISOString(),
       proposerUUID: this.listassgnsame2[i],
       proposerName: this.listusername2[i],

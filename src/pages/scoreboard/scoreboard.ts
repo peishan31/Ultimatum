@@ -27,6 +27,7 @@ proposerUUID="";
 proposerName="";
 responderUUID="";
 responderName="";
+arr:any;
 
   constructor(public navCtrl: NavController,
     public navParams:NavParams,
@@ -57,7 +58,7 @@ responderName="";
       this.subscription=this.item.subscribe(res=>{
         if (this.i==0){
           let round=parseInt(res["round"]);
-          if (round<9){
+          if (round<(parseInt(res["totalround"])-1)){
             this.i+=1;
             round=round+1;
             this.afs.collection('Professor').doc(this.hi["gameId"]).update({
@@ -175,67 +176,51 @@ responderName="";
 
   scoreboardscore(){
     this.hi=this.navParams.data;
-    this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
-    this.item = this.itemDoc.valueChanges();
-
-    this.subscription=this.item.subscribe(ress=>{
+ 
     this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready"));
+    this.scoreboard.length=0;
     this.item = this.itemDoc.valueChanges();
     this.subscription= this.item.subscribe(res=>{
       for (let p=0;p<res.length;p++){
-         if (res[p].responderResponse=="Accept"){
-         for (let i=0;i<this.scoreboard.length;i++){
-           if (this.scoreboard[i].username==res[p].proposerName){
-             this.scoreboard[i].score=this.scoreboard[i].score+(100-res[p].proposerAmount);
-           }
-           else if (this.scoreboard[i].username==res[p].responderName){
-            this.scoreboard[i].score=this.scoreboard[i].score+(res[p].proposerAmount);
-           }
-           else{
-            // let proposerlist={"username":res[p].proposerName,"score":res[p].proposerAmount,"role":"Proposer"}
-            // this.scoreboard[i].score=this.scoreboard[i].score+(100-res[p].proposerAmount);
-            //   let responderlist={"username":res[p].responderName,"score":this.scoreboard[i].score,"role":"Responder"}
-            //   this.scoreboard.push(responderlist)
-
-
-            // this.scoreboard.push(proposerlist)
-
-           }
-         }
-            if (this.scoreboard.length==0){
+         if (res[p].responderResponse=="Accept"){       
+            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
+            this.scoreboard.push(responderlist);
             let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
-            if (res[p].proposerAmount==0){
-            let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
-            this.scoreboard.push(responderlist)
-            }
-            else{
-              let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
-              this.scoreboard.push(responderlist)
-            }
-            this.scoreboard.push(proposerlist)
-
-        }
+           this.scoreboard.push(proposerlist)
+   
       }
-      else{
-        if (this.scoreboard.length==0){
+      else if (res[p].responderResponse=="Decline"){
+          let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}   
           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
-          if (res[p].proposerAmount==0){
-          let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
-          this.scoreboard.push(responderlist)
-          }
-          else{
-            let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
-            this.scoreboard.push(responderlist)
-          }
           this.scoreboard.push(proposerlist)
-
-
+          this.scoreboard.push(responderlist)
+        }
+        console.log(this.scoreboard,"scoreboard")
+   
+  }
+  var holder = {};
+  this.scoreboard.forEach(function(d) {
+    if (holder.hasOwnProperty(d.username)) {
+      holder[d.username] = holder[d.username] + d.score;
+    } else {
+      holder[d.username] = d.score;
     }
-      }
-      }
-    })
-  })
-}
+  });
+  
+  var obj2 = [];
+  for (var prop in holder) {
+    obj2.push({ username: prop, score: holder[prop]});
+  }
+  console.log(obj2);
+  obj2.sort(function(a, b){return a.score - b.score});
+  obj2.reverse();
+  this.arr=obj2;
+
+
+ 
+})
+  
+  }
 
 
 
@@ -276,33 +261,30 @@ responderName="";
 
   assignUserToPlayWithAnotherUser(currentRound){
     // Calling out all the users joining this gameId
-    this.itemDoc = this.afs.collection<any>('Participant', ref => ref
-    .where('gameId', '==', this.hi["gameId"])
-    .where('online', "==", true)
-    );
+    this.itemDoc = this.afs.collection<any>('Participant');
     this.item = this.itemDoc.valueChanges();
     this.item.subscribe(res=>{
       this.studentsList["username"] = [];
       this.studentsList["UUID"] = [];
       for (let i=0; i<res.length;i++){
 
-        //if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
+        if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
           console.log("res[i]: " + JSON.stringify(res[i]));
           this.studentsList["username"].push(res[i].username);
           console.log("My username: " + res[i].username);
           this.studentsList["UUID"].push(res[i].UUID);
           this.studentnum=this.studentsList["username"].length;
-        //}
+        }
       }
       this.studentsList["totalRound"] = this.studentsList["username"].length;
       console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
-      /*if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
+      if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
       {
         this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
         this.studentsList["UUID"].push("101");
         //this.studentsIdList[this.studentsList.length] = 1;
-      }*/
+      }
 
       // splitting users into 2 groups
       var half_length = Math.ceil(this.studentsList["username"].length / 2);

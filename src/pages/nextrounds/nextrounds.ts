@@ -28,6 +28,7 @@ subscription:Subscription;
 
   ionViewDidLoad() {
     this.all=this.navParams.data;
+    console.log("{{nextRound.ts Page}}: " + JSON.stringify(this.all["nextroundfirebaseid"]));
     console.log("{{nextRound.ts Page}}: " + JSON.stringify(this.all));
     console.log("{{nextRound.ts Page}}: " + this.all["gonextround"]);
     if (this.all['nextroundfirebaseid']==null){
@@ -53,8 +54,7 @@ subscription:Subscription;
             // nextroundfirebaseid
             Round: this.all["Round"],
             once:0,
-            // gonextround
-          };
+            gameMode: this.all["gameMode"]};
           if (res["proposerStatus"]=="Ready" && res["responderResponse"]=="" && this.all["Role"]=="Respondant") {
 
             this.navCtrl.setRoot(RespondantPage, passnextpg);
