@@ -244,7 +244,7 @@ this.subscribed=true;
       console.log("BALLING: " + all["UUID"]);
       this.itemDoc = this.afs.collection<any>('Game', ref =>
       ref // should only return one val
-      //.where('gameId', '==', all["GameId"])
+      .where('gameId', '==', all["GameId"])
       .where('proposerUUID', '==', all["UUID"])
       .where('round', '==', parseInt(ress["round"])) // retrieve that specific round
       );

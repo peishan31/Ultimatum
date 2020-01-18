@@ -230,7 +230,7 @@ console.log(this.res,"RES")
             if (res.length==0) { // User is highly likely to be a proposer cos responder data is empty
               this.itemDoc = this.afs.collection<any>('Game', ref =>
                 ref
-                //.where('gameId', '==', all["GameId"])
+                .where('gameId', '==', all["GameId"])
                 .where('proposerUUID', '==', all["UUID"])
                 .where('round', '==', parseInt(ress["round"]))
               );

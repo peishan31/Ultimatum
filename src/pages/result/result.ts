@@ -272,7 +272,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                   console.log("RES: " + JSON.stringify(res));
                   var nextroundfirebaseid = res[0]["proposerUUID"] + changeparse + res[0]["responderUUID"] + changeparse;
                   //********************** */
-                  this.navCtrl.setRoot(NextroundsPage, {
+                  /*this.navCtrl.setRoot(NextroundsPage, {
                     UUID:res[0]["responderUUID"],
                     username:res[0]["responderName"],
                     GameId:this.data["GameId"],
@@ -285,7 +285,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                     Round: parseInt(ress["round"]),
                     // once
                     gonextround:0,
-                  });
+                  });*/
                 }
               })
             }
