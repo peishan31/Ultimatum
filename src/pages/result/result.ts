@@ -224,7 +224,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                 //console.log("********************Proposer in change position " + res);
 
                 // if res.length == 0, there is no data. Hence, user might be a proposer
-                if (res.length == 0) // checking if user is a proposer
+                if (res.length == 0 && round!=changeparse) // checking if user is a proposer
                 {
                   this.itemDoc = this.afs.collection('Game', ref => ref
                   //.where('gameId', '==', this.data["GameId"])
@@ -248,7 +248,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                         FirebaseId:this.data["FirebaseId"],
                         nextroundfirebaseid: nextroundfirebaseid,
                         // round
-                        Round: parseInt(ress["round"]),
+                        //Round: parseInt(ress["round"]),
                         // once
                         gonextround:0,
                       });
@@ -259,9 +259,11 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                   })
                 }
-                else if (res.length > 0)
+                else if (res.length > 0 && round!=changeparse)
                 {
                   // user is a responder
+                  console.log("******************* changeparse: (prof's current round) " + changeparse);
+                  console.log("******************* round: (current) " + round);
                   console.log("((result.ts)): I am a responder");
                   console.log("************((result.ts)) this.data: " + JSON.stringify(this.data));
                   console.log("proposerUUID: " + res[0]["proposerUUID"]);
@@ -280,14 +282,11 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                     FirebaseId:this.data["FirebaseId"],
                     nextroundfirebaseid: nextroundfirebaseid,
                     // round
-                    //Round: parseInt(ress["round"]),
+                    Round: parseInt(ress["round"]),
                     // once
                     gonextround:0,
                   });
                 }
-
-
-
               })
             }
             })
