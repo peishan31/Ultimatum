@@ -21,18 +21,24 @@ itemDoc:any;
 item:any;
 subscription:Subscription;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore,) {
+    var val = this.navCtrl.last().name;
+    console.log("VAL");
+    console.log(val);
   }
 
   ionViewDidLoad() {
     this.all=this.navParams.data;
     console.log("{{nextRound.ts Page}}: " + JSON.stringify(this.all));
     console.log("{{nextRound.ts Page}}: " + this.all["gonextround"]);
-    if (this.all["nextroundfirebaseid"]!=undefined && this.all["gonextround"]==0){
+    if (this.all['nextroundfirebaseid']==null){
+
+    }
+    else if (this.all["nextroundfirebaseid"]!=null && this.all["nextroundfirebaseid"]!=undefined && this.all["gonextround"]==0){
        //  let passnextpg={UUID:res["responderUUID"],username:res["responderName"],dateTime:this.datetime,GameId:this.data["GameId"]};
-      this.subscription=  this.afs.collection('Game').doc(this.all["nextroundfirebaseid"]).valueChanges().subscribe(res=>{
+      this.subscription=  this.afs.collection('Game').doc(this.all.nextroundfirebaseid).valueChanges().subscribe(res=>{
         console.log("reshr",res)
 
-        if (res!=undefined){
+        if (res!=undefined || res!=null){
           // gameMode
           console.log("{{nextround.ts}}: " + JSON.stringify(this.all));
           console.log("this is passed in ((nextround.ts)): ");
@@ -45,7 +51,7 @@ subscription:Subscription;
             // amount
             // FirebaseId
             // nextroundfirebaseid
-            // round
+            Round: this.all["Round"],
             once:0,
             // gonextround
           };
@@ -57,4 +63,5 @@ subscription:Subscription;
       })
     }
   }
+
 }

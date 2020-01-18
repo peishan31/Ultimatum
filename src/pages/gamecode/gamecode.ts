@@ -179,11 +179,14 @@ errormsg:string;
   responderOrProposal(all){
     // let shand = document.getElementsByClassName('errormsg') as HTMLCollectionOf<HTMLElement>;
     // shand[0].style.display="none";
+
+   let iu=0;
     console.log(all,"ALLPA")
     all=this.navParams.data;
+    if (iu==0){
     this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all.UUID).where('round', '==', 0));
     this.item = this.itemDoc.valueChanges();
-let iu=0;// else if keep getting in
+// else if keep getting in
 this.subscription=this.item.subscribe(res=>{
 
   console.log("res1",res)
@@ -191,7 +194,7 @@ this.subscription=this.item.subscribe(res=>{
     //meaning this person is proposer instead
     this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all.UUID).where('round', '==', 0));
     this.item = this.itemDoc.valueChanges();
-let iu=0;// else if keep getting in
+// else if keep getting in
 this.subscription=this.item.subscribe(res=>{
   console.log("Res2,",res)
   for (let p=0;p<res.length;p++){
@@ -249,7 +252,7 @@ this.subscription=this.item.subscribe(res=>{
 
 
     })
-  }
+  }}
 
   // async presentLoading(loading) {
   //   return await loading.present();

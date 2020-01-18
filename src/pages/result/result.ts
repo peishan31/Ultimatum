@@ -161,8 +161,8 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
             let changeparse=parseInt(ress["round"]);
             this.data=navParams.data;
 
-            console.log("<<result.ts>>: (round)" + round);
-            console.log("<<result.ts>>: (changeparse)" + changeparse);
+            console.log("<<result.ts>>: (round)" + round); // student's round
+            console.log("<<result.ts>>: (changeparse)" + changeparse); // professor's round
             console.log("<<result.ts>>: ((this.data))" + JSON.stringify(this.data));
 
             if (round!=changeparse && this.data["Role"]=="Proposer" && changeparse%2 != 0){ // when (changeparse % 2 != 0) means swapping roles: proposer becomes responder now
@@ -200,61 +200,65 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                 // Round
                 // once
                 gonextround:0,
-                dateTime:this.datetime, // dxtra
+                dateTime:this.datetime, // extra
               };
               this.navCtrl.setRoot(ProposerPage,passnextpg);
             }
             else if (round!=changeparse && changeparse%2 == 0){ // find their current roles in "Game" table bc it is randomized
-              // check if the next round, user is a proposer or responder;
+              // check if the next round, user is a proposer or responder AND also their nextroundfirebaseid!;
               // if user is a proposer, go to ProposerPage
               // else if user is a responder, go to ResponderPage
-              /*
-              var uuid = this.data["UUID"];
-              var gameId = this.data["GameId"];
-              let changeparse=parseInt(ress["round"]);
-              */
 
               console.log("PASSED THROUGH HERE. ");
               console.log("UUID: " + this.data["UUID"]); // undefined
-              console.log("round: " + parseInt(ress["round"]));
-              console.log("GameId " + this.data["GameId"]);
+              //console.log("round: " + parseInt(ress["round"])); // Prof's current round
+              console.log("GameId " + this.data["GameId"]); // gameId!
 
               this.itemDoc = this.afs.collection('Game', ref => ref
-                .where('gameId', '==', this.data["GameId"])
-                .where('round', '==', parseInt(ress["round"]))
+                //.where('gameId', '==', this.data["GameId"])
+                .where('round', '==', changeparse)
                 .where('responderUUID', '==', this.data["UUID"])
                 );
 
               this.item = this.itemDoc.valueChanges();
               this.subscription= this.item.subscribe(res=>{
 
-                console.log("********************Proposer in change position " + res);
+                //console.log("********************Proposer in change position " + res);
 
                 // if res.length == 0, there is no data. Hence, user might be a proposer
                 if (res.length == 0) // checking if user is a proposer
                 {
                   this.itemDoc = this.afs.collection('Game', ref => ref
-                  .where('gameId', '==', this.data["GameId"])
-                  .where('round', '==', parseInt(ress["round"]))
+                  //.where('gameId', '==', this.data["GameId"])
+                  .where('round', '==', changeparse)
                   .where('proposerUUID', '==', this.data["UUID"])
                   );
                   this.itemm = this.itemDoc.valueChanges();
-                  this.itemm.subscribe(resss=>{
-                    //
-                    console.log(resss,"Proposer in changed position")
-                    this.navCtrl.setRoot(ProposerPage, {
-                      UUID: resss["proposerUUID"],
-                      username:resss["proposerName"],
-                      GameId:this.data["GameId"],
-                      gameMode:this.data["gameMode"],
-                      Role: "Proposer",
-                      // amount
-                      FirebaseId:this.data["FirebaseId"],
-                      nextroundfirebaseid: nextroundfirebaseid,
-                      // round
-                      // once
-                      gonextround:0,
-                    });
+                  this.subscription = this.itemm.subscribe(resss=>{
+
+                    if (resss.length != 0) {
+                      console.log(resss,"Randomized proposer!")
+                      var nextroundfirebaseid = res[0]["proposerUUID"] + changeparse + res[0]["responderUUID"] + changeparse;
+
+                      this.navCtrl.setRoot(ProposerPage, {
+                        UUID: resss["proposerUUID"],
+                        username:resss["proposerName"],
+                        GameId:this.data["GameId"],
+                        gameMode:this.data["gameMode"],
+                        Role: "Proposer",
+                        // amount
+                        FirebaseId:this.data["FirebaseId"],
+                        nextroundfirebaseid: nextroundfirebaseid,
+                        // round
+                        Round: parseInt(ress["round"]),
+                        // once
+                        gonextround:0,
+                      });
+                    }
+                    else {
+                      console.log("??? User is neither a proposer or respondant?");
+                    }
+
                   })
                 }
                 else
@@ -262,7 +266,11 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                   // user is a responder
                   console.log("((result.ts)): I am a responder");
                   console.log("************((result.ts)) this.data: " + JSON.stringify(this.data));
-                  var nextroundfirebaseid = res["proposerUUID"] + changeparse + res["responderUUID"] + changeparse;
+                  console.log("proposerUUID: " + res[0]["proposerUUID"]);
+                  console.log("proposerUUID: " + res[0]["responderUUID"]);
+                  console.log("changeparse " + changeparse);
+                  console.log("RES: " + JSON.stringify(res));
+                  var nextroundfirebaseid = res[0]["proposerUUID"] + changeparse + res[0]["responderUUID"] + changeparse;
                   this.navCtrl.setRoot(NextroundsPage, {
                     UUID:res["responderUUID"],
                     username:res["responderName"],
@@ -273,12 +281,9 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                     FirebaseId:this.data["FirebaseId"],
                     nextroundfirebaseid: nextroundfirebaseid,
                     // round
+                    Round: parseInt(ress["round"]),
                     // once
                     gonextround:0,
-
-
-
-
                   });
                 }
               })
