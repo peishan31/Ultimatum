@@ -185,15 +185,8 @@ arr:any;
          if (res[p].responderResponse=="Accept"){
             let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
             this.scoreboard.push(responderlist);
-            if (res[p].proposerAmount==0){
-           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
+            let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
            this.scoreboard.push(proposerlist)
-            }
-            else{
-           let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
-           this.scoreboard.push(proposerlist)
-            }
-           
 
       }
       else if (res[p].responderResponse=="Decline"){
