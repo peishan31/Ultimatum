@@ -350,7 +350,7 @@ if (data["waitForStudent"]==true){
           gameId:this.code,
           gameMode: 'Random all players',
           round: 0,
-          totalRound: 10,
+          totalRound: this.rounds,
           dateTime: new Date().toISOString(),
           proposerUUID: proposerUUID[i],
           proposerName: proposer[i],
