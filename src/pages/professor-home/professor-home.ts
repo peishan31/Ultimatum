@@ -292,25 +292,28 @@ if (data["waitForStudent"]==true){
 
   assignUserToPlayWithAnotherUser(){
     // Calling out all the users joining this gameId
-    this.itemDoc = this.afs.collection<any>('Participant');
+    this.itemDoc = this.afs.collection<any>('Participant', ref => ref
+      .where("gameId", "==", this.code)
+    );
     this.item = this.itemDoc.valueChanges();
-    this.item.subscribe(res=>{
+    this.didsubscribed=true;
+    this.subscription = this.item.subscribe(res=>{
       for (let i=0; i<res.length;i++){
-        if (res[i].gameId==this.code){
+        //if (res[i].gameId==this.code){
           this.studentsList["username"].push(res[i].username);
           this.studentsList["UUID"].push(res[i].UUID);
           this.studentnum=this.studentsList["username"].length;
-        }
+        //}
       }
       this.studentsList["totalRound"] = this.studentsList["username"].length;
       console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
-      if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
+      /*if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
       {
         this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
         this.studentsList["UUID"].push("101");
         //this.studentsIdList[this.studentsList.length] = 1;
-      }
+      }*/
 
       // splitting users into 2 groups
       var half_length = Math.ceil(this.studentsList["username"].length / 2);
