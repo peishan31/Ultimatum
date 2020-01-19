@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { UltimatumPage } from '../pages/ultimatum/ultimatum';
-import { ProposerPage } from '../pages/proposer/proposer';
+import {ProposerPage} from '../pages/proposer/proposer';
 import { RespondantPage } from '../pages/respondant/respondant';
 import { ProfessorHomePage } from '../pages/professor-home/professor-home';
 import { ScoreboardPage } from '../pages/scoreboard/scoreboard';

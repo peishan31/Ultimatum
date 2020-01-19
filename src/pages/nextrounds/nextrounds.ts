@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subscription } from 'rxjs';
 import { RespondantPage } from '../respondant/respondant';
+import { Storage } from '@ionic/storage';
 /**
  * Generated class for the NextroundsPage page.
  *
@@ -24,10 +25,12 @@ professorcode: any;
 retrieveprofessor: any;
 itemm: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore,) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore,public storage:Storage) {
     var val = this.navCtrl.last().name;
     console.log("VAL");
     console.log(val);
+
+    this.storage.set("responder","true")
   }
 
   ionViewDidLoad() {

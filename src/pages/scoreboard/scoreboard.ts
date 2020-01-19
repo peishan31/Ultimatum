@@ -90,7 +90,8 @@ arr:any;
       this.subscription=this.item.subscribe(res=>{
         if (this.i==0){
           let round=parseInt(res["round"]);
-          if (round<19){
+          //let totalRound=parseInt(res["totalRound"]) * 2;
+          if (round<(parseInt(res["totalround"])-1)){
             console.log("Previous round: " + round);
             this.i+=1;
             round=round+1;
@@ -162,12 +163,13 @@ arr:any;
                 }
               })
             }
-            else {
+            else { // randomize player
               this.assignUserToPlayWithAnotherUser(round);
             }
-
-
-            console.log("Added name???");
+            //console.log("Added name???");
+          }
+          else {
+            console.log("Cannot click another further!");
           }
         }
       })
@@ -185,8 +187,15 @@ arr:any;
          if (res[p].responderResponse=="Accept"){
             let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
             this.scoreboard.push(responderlist);
-            let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
+            if (res[p].proposerAmount==0){
+           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
            this.scoreboard.push(proposerlist)
+            }
+            else{
+           let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
+           this.scoreboard.push(proposerlist)
+            }
+
 
       }
       else if (res[p].responderResponse=="Decline"){
@@ -259,6 +268,25 @@ arr:any;
     return array;
   }
 
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  }
+
   assignUserToPlayWithAnotherUser(currentRound){
     // Calling out all the users joining this gameId
     this.itemDoc = this.afs.collection<any>('Participant');
@@ -309,6 +337,10 @@ arr:any;
 
     var arrangedUsersA = this.derange(proposer);
     var arrangedUsersB = this.derange(responder);
+    if ( (proposer.length+responder.length) == 4) {
+      arrangedUsersA = this.shuffle(proposer);
+      arrangedUsersB = this.shuffle(responder);
+    }
 
     console.log("Before shuffle: (areaA)" + proposer);
 		console.log("Now: (areaA)" + arrangedUsersA);

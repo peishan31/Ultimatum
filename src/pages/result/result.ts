@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ProposerPage } from '../proposer/proposer';
 import { RespondantPage } from '../respondant/respondant';
 import { NextroundsPage } from '../nextrounds/nextrounds';
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the ResultPage page.
@@ -33,7 +34,7 @@ export class ResultPage {
   itemDoc: any;
   item: any;
   itemm: any;
-  constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore) {
+  constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore, public storage:Storage) {
 
     var val = this.navCtrl.last().name;
     console.log("VAL");
@@ -295,7 +296,8 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
   }
 
   ionViewDidLoad() {
-
+    this.storage.set("responder","true")
+    this.storage.set("proposer","true")
   }
 
  ionViewDidLeave(){
