@@ -83,7 +83,7 @@ export class ProposerPage {
             //  })
             this.presstrue=true;
             this.range=0;
-            this.submitProposerOffer();
+            // this.submitProposerOffer();
 
 
           }
@@ -150,8 +150,8 @@ export class ProposerPage {
   }
 
   submitProposerOffer(){
-    this.storage.get("proposer").then((val) => {
-      if (val=="false"){
+    // this.storage.get("proposer").then((val) => {
+    //   if (val=="false"){
         if (this.presstrue==true){
           let data=this.navParams.data;
           if (this.once!=0){
@@ -225,12 +225,13 @@ export class ProposerPage {
             }
 
           }})}
-
-
-
-        )}
-      }
-    })
+    
+    
+    
+        )} 
+    //   }
+    // })
+  
 
 
 
@@ -301,12 +302,12 @@ export class ProposerPage {
                     once:1
                   };
 
-                  console.log("((proposer.ts)): "+ all["UUID"]);
-                  this.navCtrl.setRoot(ResultPage,dict);
-                }
-                else
-                { // ***** randomizing role later in the professor part
-                  let nextroundfirebaseid= "333"; // nth cos they are randomizing users now
+                console.log("((proposer.ts)): "+ all["UUID"]);
+                this.navCtrl.setRoot(ResultPage,dict);
+              }
+              else
+              { // randomizing role in the previous round
+                let nextroundfirebaseid= "23454"; // nth cos they are randomizing users now
 
                   let dict={
                     UUID: all["UUID"],

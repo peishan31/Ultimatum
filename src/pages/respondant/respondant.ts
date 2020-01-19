@@ -32,6 +32,7 @@ export class RespondantPage {
   addround=0;
   res:any
   itemm:any;
+  gohereonceagn=0;
 
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
@@ -201,11 +202,8 @@ console.log(this.res,"RES")
     else if (all["gameMode"] == "Random all players") {
 
       // Peishan
-      console.log("((respondant.ts)): gameId: ????" + all["GameId"])
-      console.log("((respondant.ts)): UUID: ????" + all["UUID"])
-      console.log("((respondant.ts)): responderUUID: " + all["responderUUID"])
-      console.log("((respondant.ts)): round: " + all["responderUUID"])
-
+      if (this.gohereonceagn==0){
+      this.gohereonceagn+=1;
       this.professorcode = this.afs.collection<any>('Professor').doc(all["GameId"])
       this.retrieveprofessor = this.professorcode.valueChanges();
       //if (this.goonce == 1){
@@ -395,14 +393,14 @@ console.log(this.res,"RES")
     //}
     this.StartTimer();
     }
-
+ }
 
   }
 
 
   StartTimer(){
-    this.storage.get("responder").then((val) => {
-      if (val=="false"){
+    // this.storage.get("responder").then((val) => {
+    //   if (val=="false"){
     this.timer = setTimeout(x =>
       {
           if(this.maxtime <= 0) { }
@@ -415,7 +413,8 @@ console.log(this.res,"RES")
 
           else if (this.maxtime==0){
 
-         this.Accept();
+        //  this.Accept();
+
 
 
 
@@ -427,14 +426,14 @@ console.log(this.res,"RES")
           }
 
       }, 1000);
-    }})
+    // }})
 
   }
 
   Accept(){
     // update responder's response as 'Accept'
-    this.storage.get("responder").then((val) => {
-      if (val=="false"){
+    // this.storage.get("responder").then((val) => {
+    //   if (val=="false"){
 
     let all=this.navParams.data;
     this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all["UUID"]));
@@ -488,8 +487,8 @@ console.log(this.res,"RES")
         this.result="Accept";
         this.count+=1;
     }
-  }
-})
+  // }
+// })
 
   }
 
