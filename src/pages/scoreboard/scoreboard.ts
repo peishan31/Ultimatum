@@ -90,7 +90,8 @@ arr:any;
       this.subscription=this.item.subscribe(res=>{
         if (this.i==0){
           let round=parseInt(res["round"]);
-          if (round<19){
+          //let totalRound=parseInt(res["totalRound"]) * 2;
+          if (round<(parseInt(res["totalround"])-1)){
             console.log("Previous round: " + round);
             this.i+=1;
             round=round+1;
@@ -162,12 +163,13 @@ arr:any;
                 }
               })
             }
-            else {
+            else { // randomize player
               this.assignUserToPlayWithAnotherUser(round);
             }
-
-
-            console.log("Added name???");
+            //console.log("Added name???");
+          }
+          else {
+            console.log("Cannot click another further!");
           }
         }
       })
@@ -221,9 +223,6 @@ arr:any;
 })
 
   }
-
-
-
   derangementNumber(n) {
     if(n == 0) {
       return 1;
@@ -256,6 +255,25 @@ arr:any;
         u--;
       }
     }
+    return array;
+  }
+
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+    }
+
     return array;
   }
 
@@ -307,9 +325,13 @@ arr:any;
 
   assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, currentRound){
 
+
     var arrangedUsersA = this.derange(proposer);
     var arrangedUsersB = this.derange(responder);
-
+    if ( (proposer.length+responder.length) == 4) {
+      arrangedUsersA = this.shuffle(proposer);
+      arrangedUsersB = this.shuffle(responder);
+    }
     console.log("Before shuffle: (areaA)" + proposer);
 		console.log("Now: (areaA)" + arrangedUsersA);
 
