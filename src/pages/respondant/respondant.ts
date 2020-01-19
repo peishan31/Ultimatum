@@ -7,6 +7,7 @@ import { ResultPage } from '../result/result';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { NextroundsPage } from '../nextrounds/nextrounds';
 import { ProposerPage } from '../proposer/proposer';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-respondant',
@@ -35,11 +36,11 @@ export class RespondantPage {
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
     public afs: AngularFirestore,
-    public navParams: NavParams) {
-      var val = this.navCtrl.last().name;
-      console.log("VAL");
-      console.log(val);
+    public navParams: NavParams,
+    public storage:Storage) {
 
+
+      this.storage.set("responder","false")
 
 
 
@@ -146,8 +147,7 @@ console.log(this.res,"RES")
           //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
           if (res[p].responderUUID == all["UUID"] && res[p].round.toString()==ress["round"].toString()){
             if (res[p].round!=0 && res[p].proposerStatus!="Ready" && res[p].proposerAmount==''){
-               this.navCtrl.setRoot(NextroundsPage,"hi")
-
+              this.navCtrl.setRoot(NextroundsPage)
             }
 
             else if (res[p].round==0 && res[p].proposerStatus=="Ready" && res[p].proposerAmount!='' && res[p].responderResponse!=""){
@@ -230,7 +230,7 @@ console.log(this.res,"RES")
             if (res.length==0) { // User is highly likely to be a proposer cos responder data is empty
               this.itemDoc = this.afs.collection<any>('Game', ref =>
                 ref
-                .where('gameId', '==', all["GameId"])
+                //.where('gameId', '==', all["GameId"])
                 .where('proposerUUID', '==', all["UUID"])
                 .where('round', '==', parseInt(ress["round"]))
               );
@@ -401,6 +401,8 @@ console.log(this.res,"RES")
 
 
   StartTimer(){
+    this.storage.get("responder").then((val) => {
+      if (val=="false"){
     this.timer = setTimeout(x =>
       {
           if(this.maxtime <= 0) { }
@@ -412,7 +414,9 @@ console.log(this.res,"RES")
           }
 
           else if (this.maxtime==0){
-         //  this.Accept();
+
+         this.Accept();
+
 
 
 
@@ -423,13 +427,14 @@ console.log(this.res,"RES")
           }
 
       }, 1000);
-
+    }})
 
   }
 
   Accept(){
-    var subject = new Subject<any>();
     // update responder's response as 'Accept'
+    this.storage.get("responder").then((val) => {
+      if (val=="false"){
 
     let all=this.navParams.data;
     this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all["UUID"]));
@@ -452,6 +457,7 @@ console.log(this.res,"RES")
             this.responderData = res[p];
             this.firebaseId = res[p].proposerUUID + res[p].round + res[p].responderUUID + res[p].round
             console.log("firebaseId: " + this.firebaseId );
+            this.storage.set("responder","true")
             this.updateResponderStatus(this.firebaseId, 'Accept');
             let all=this.navParams.data;
             let addround=res[p].round+1;
@@ -482,6 +488,8 @@ console.log(this.res,"RES")
         this.result="Accept";
         this.count+=1;
     }
+  }
+})
 
   }
 
