@@ -30,7 +30,7 @@ export class ResultPage {
   professorcode:Subscription;
   data:any;
   datetime:string;
-
+  goonceagn=0;
   itemDoc: any;
   item: any;
   itemm: any;
@@ -138,9 +138,10 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
    });
 
     }
-    else if (this.data["gameMode"] == "Random all players") {
+    else if (this.data["gameMode"] == "Random all players" && this.goonceagn==0) {
 
       // Peishan
+      this.goonceagn+=1;
       this.data=navParams.data;
       console.log(this.data["GameId"],"PARAMSDATA")
       console.log("RESULT.TS This is my role: "+this.data["Role"]);
@@ -260,7 +261,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                   })
                 }
-                else if (res.length > 0 && round!=changeparse)
+                else if (res.length > 0 && round!=changeparse && res[0]["responderResponse"]=="")
                 {
                   // user is a responder
                   console.log("******************* changeparse: (prof's current round) " + changeparse);

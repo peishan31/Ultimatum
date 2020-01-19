@@ -36,7 +36,7 @@
     </h1>
     <ol>
       <li *ngFor="let u of arr">
-        <mark>{{u.username}}</mark>
+        <mark>{{u.username}}{{u.amount}}</mark>
         <small>{{u.score}}</small>
       </li>
     </ol>
@@ -46,7 +46,7 @@
       <button (click)="Home()" ion-button color="positive" style="font-size:15px;height:150%"  item-left>
        <br> End game<br><br>
       </button>
-      <button ion-button color="positive" (click)="nextround()" item-right style="font-size:15px;height:150%">
+      <button ion-button color="positive" (click)="nextround()" item-right style="font-size:15px;height:150%" >
      <br>   Next round<br><br>
     </button>
     </div>

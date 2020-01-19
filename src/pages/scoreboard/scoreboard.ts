@@ -28,7 +28,9 @@ proposerName="";
 responderUUID="";
 responderName="";
 arr:any;
-
+currentround:number;
+totalround:number;
+retrievedvalue:any;
   constructor(public navCtrl: NavController,
     public navParams:NavParams,
     public afs:AngularFirestore,
@@ -61,6 +63,8 @@ arr:any;
           if (round<(parseInt(res["totalround"])-1)){
             this.i+=1;
             round=round+1;
+            this.currentround=round-1;
+            this.totalround=(parseInt(res["totalround"])-1);
             this.afs.collection('Professor').doc(this.hi["gameId"]).update({
               round:round.toString(),
             })
@@ -176,29 +180,41 @@ arr:any;
 
   scoreboardscore(){
     this.hi=this.navParams.data;
-
-    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready"));
+    this.itemDoc = this.afs.collection<any>('Professor', ref => ref.where('gameId', '==', this.hi["gameId"]));
+    this.item = this.itemDoc.valueChanges();
+    this.subscription= this.item.subscribe(ress=>{
+      this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready").where('responderStatus', '==', "Ready").where('round', '==', parseInt(ress[0].round)));
+    this.scoreboard.length=0;
+    this.item = this.itemDoc.valueChanges();
+    this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
+      if (retrievecurrentroundvalue.length!=0){
+        this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready"));
     this.scoreboard.length=0;
     this.item = this.itemDoc.valueChanges();
     this.subscription= this.item.subscribe(res=>{
+
       for (let p=0;p<res.length;p++){
          if (res[p].responderResponse=="Accept"){
-            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
+          this.retrievedvalue=" (+"+retrievecurrentroundvalue[0].proposerAmount.toString()+ ")";
+            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder","amount":this.retrievedvalue}
             this.scoreboard.push(responderlist);
             if (res[p].proposerAmount==0){
-           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
+              this.retrievedvalue=" (+0"+ ")";
+           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer","amount":this.retrievedvalue}
            this.scoreboard.push(proposerlist)
             }
             else{
-           let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
+              this.retrievedvalue=" (+"+[(100-retrievecurrentroundvalue[0].proposerAmount)].toString()+ ")";   
+           let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer","amount":this.retrievedvalue}
            this.scoreboard.push(proposerlist)
             }
            
 
       }
       else if (res[p].responderResponse=="Decline"){
+        this.retrievedvalue=" (+0"+ ")";
           let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
-          let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
+          let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer","amount":this.retrievedvalue}
           this.scoreboard.push(proposerlist)
           this.scoreboard.push(responderlist)
         }
@@ -212,8 +228,8 @@ arr:any;
     } else {
       holder[d.username] = d.score;
     }
-  });
 
+  });
   var obj2 = [];
   for (var prop in holder) {
     obj2.push({ username: prop, score: holder[prop]});
@@ -222,12 +238,13 @@ arr:any;
   obj2.sort(function(a, b){return a.score - b.score});
   obj2.reverse();
   this.arr=obj2;
-
-
+  
 
 })
-
-  }
+    }})
+      }
+    
+    )}
 
 
 
