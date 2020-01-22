@@ -19,23 +19,23 @@
 <ion-content id="page4" overflow-scroll="true">
   <body>
     <!-- <button ion-button (click)="gamecode()"></button> -->
-   
+
   <div *ngIf="code==0" style="text-align: center;"><br><br><br><br><br>
     <ion-item>
       <ion-label style="color: darkgray;">Game mode:</ion-label>
-      
+
     <button ion-button style="background-color: transparent;color:cornflowerblue;" item-right outline class="randomall" (click)="randomall()">Random all players</button>
     <button ion-button style="background-color: transparent;color:cornflowerblue;" item-right outline class="allsame" (click)="allsame()">All same opponents</button><br>
   </ion-item>
       <ion-item>
         <ion-label>No. of rounds:</ion-label>
-        <ion-input type="number" [(ngModel)]="rounds" required="true" clearInput=true min="2" max="20" step="2"></ion-input>
-    
+        <ion-input type="number" [(ngModel)]="rounds" required="true" clearInput=true min="2" max="10" step="2"></ion-input>
+
 </ion-item>
 
    <br>
     <button ion-button (click)="gamecode()" block>Generate game code &nbsp;<ion-icon name="color-wand"  style="color:white;font-size:25px;"></ion-icon></button>
-  
+
   </div>
 
     <p *ngIf="ok" style="color:red; margin-left: auto; margin-right: auto; padding-right: 10px; padding-left: 10px;">
