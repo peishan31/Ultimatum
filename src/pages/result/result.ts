@@ -30,10 +30,17 @@ export class ResultPage {
   professorcode:Subscription;
   data:any;
   datetime:string;
-
+  goonceagn=0;
   itemDoc: any;
   item: any;
   itemm: any;
+  arr=[];
+  scoreboard=[];
+  hi:any;
+  currentround:number;
+  score:number;
+  professorcodes:any;
+  totalproposeramount=0;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore, public storage:Storage) {
 
     var val = this.navCtrl.last().name;
@@ -60,12 +67,103 @@ export class ResultPage {
         }
         else{
           this.Proposer=true;
+          if (this.Result=="Accept" && res["proposerAmount"]!=0){
+            this.currentround=100-res["proposerAmount"];
+          }
+          else if (this.Result=="Decline"){
+            this.currentround=0;
+          }
+          else if (res["proposerAmount"]==0){
+            this.currentround=0;
+          }
+
+          //added this to get total score
+          this.data=navParams.data;
+          console.log(this.data);
+         
+          
+          
 
         }
       }
       else{
         this.Responder=true;
+        if (this.Result=="Accept"){
+           this.currentround=res["proposerAmount"];
+        }
+        else if (this.Result=="Decline"){
+          this.currentround=0;
+        }
+
+         //added this to get total score
+//          this.data=navParams.data;
+//          console.log(this.data);
+//          this.professorcodes = this.afs.collection<any>('Game').ref
+//          .where('gameId', '==', this.data["GameId"])
+//          .where('responderUUID', '==', this.data["UUID"])
+//          .where('responderStatus', '==', "Ready")
+//          .get()
+//          .then(ress => {
+// console.log(ress)
+//          if (ress.docs.length != 0) {
+
+//            ress.forEach(ProfessorDoc => {
+//              if ( ProfessorDoc.data().responderResponse=='Accept' && ProfessorDoc.data().proposerAmount!=0 ) {
+//                this.totalproposeramount+=ProfessorDoc.data().proposerAmount; 
+//              }
+//              else{
+//                this.totalproposeramount+=0;
+//              }
+             
+//            }
+//          )}
+// })
+       
       }
+      if (this.Proposer==true||this.Responder==true){
+        this.professorcodes = this.afs.collection<any>('Game').ref
+        .where('gameId', '==', this.data["GameId"])
+        .where('proposerUUID', '==', this.data["UUID"])
+        .where('responderStatus', '==', "Ready")
+        .get()
+        .then(ress => {
+console.log(ress)
+        if (ress.docs.length != 0) {
+
+          ress.forEach(ProfessorDoc => {
+            if ( ProfessorDoc.data().responderResponse=='Accept' && ProfessorDoc.data().proposerAmount!=0 ) {
+              this.totalproposeramount+=100-ProfessorDoc.data().proposerAmount; 
+            }
+            else{
+              this.totalproposeramount+=0;
+            }
+            
+          }
+        )}
+})
+
+this.professorcodes = this.afs.collection<any>('Game').ref
+.where('gameId', '==', this.data["GameId"])
+.where('responderUUID', '==', this.data["UUID"])
+.where('responderStatus', '==', "Ready")
+.get()
+.then(ress => {
+console.log(ress)
+if (ress.docs.length != 0) {
+
+ ress.forEach(ProfessorDoc => {
+   if ( ProfessorDoc.data().responderResponse=='Accept' && ProfessorDoc.data().proposerAmount!=0 ) {
+     this.totalproposeramount+=ProfessorDoc.data().proposerAmount; 
+   }
+   else{
+     this.totalproposeramount+=0;
+   }
+   
+ }
+)}
+})
+      }
+      
       this.professorcode = this.afs.collection('Professor').doc(this.data["GameId"]).valueChanges().subscribe(ress=>{
         this.data=navParams.data;
         //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
@@ -138,9 +236,10 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
    });
 
     }
-    else if (this.data["gameMode"] == "Random all players") {
+    else if (this.data["gameMode"] == "Random all players" && this.goonceagn==0) {
 
       // Peishan
+      this.goonceagn+=1;
       this.data=navParams.data;
       console.log(this.data["GameId"],"PARAMSDATA")
       console.log("RESULT.TS This is my role: "+this.data["Role"]);
@@ -159,12 +258,74 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
             }
             else{
               this.Proposer=true;
-
+              if (this.Result=="Accept"){
+                this.currentround=100-res["proposerAmount"];
+              }
+              else if (this.Result=="Decline"){
+                this.currentround=0;
+              }
+              
+              
+    
             }
           }
+        
           else{
             this.Responder=true;
+            if (this.Result=="Accept"){
+               this.currentround=res["proposerAmount"];
+            }
+            else if (this.Result=="Decline"){
+              this.currentround=0;
+            }
+           
           }
+
+          if (this.Proposer==true||this.Responder==true){
+            this.professorcodes = this.afs.collection<any>('Game').ref
+            .where('gameId', '==', this.data["GameId"])
+            .where('proposerUUID', '==', this.data["UUID"])
+            .where('responderStatus', '==', "Ready")
+            .get()
+            .then(ress => {
+    console.log(ress)
+            if (ress.docs.length != 0) {
+    
+              ress.forEach(ProfessorDoc => {
+                if ( ProfessorDoc.data().responderResponse=='Accept' && ProfessorDoc.data().proposerAmount!=0 ) {
+                  this.totalproposeramount+=100-ProfessorDoc.data().proposerAmount; 
+                }
+                else{
+                  this.totalproposeramount+=0;
+                }
+                
+              }
+            )}
+    })
+    
+    this.professorcodes = this.afs.collection<any>('Game').ref
+    .where('gameId', '==', this.data["GameId"])
+    .where('responderUUID', '==', this.data["UUID"])
+    .where('responderStatus', '==', "Ready")
+    .get()
+    .then(ress => {
+    console.log(ress)
+    if (ress.docs.length != 0) {
+    
+     ress.forEach(ProfessorDoc => {
+       if ( ProfessorDoc.data().responderResponse=='Accept' && ProfessorDoc.data().proposerAmount!=0 ) {
+         this.totalproposeramount+=ProfessorDoc.data().proposerAmount; 
+       }
+       else{
+         this.totalproposeramount+=0;
+       }
+       
+     }
+    )}
+    })
+          }
+
+          
           this.professorcode = this.afs.collection('Professor').doc(this.data["GameId"]).valueChanges().subscribe(ress=>{
             this.data=navParams.data;
             //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
@@ -260,7 +421,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                   })
                 }
-                else if (res.length > 0 && round!=changeparse)
+                else if (res.length > 0 && round!=changeparse && res[0]["responderResponse"]=="")
                 {
                   // user is a responder
                   console.log("******************* changeparse: (prof's current round) " + changeparse);
@@ -296,12 +457,119 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
   }
 
   ionViewDidLoad() {
-    this.storage.set("responder","true")
-    this.storage.set("proposer","true")
+    // this.storage.set("responder","true")
+    // this.storage.set("proposer","true")
   }
 
  ionViewDidLeave(){
        // this.subscription.unsubscribe();
     // this.professorcode.unsubscribe();
   }
+
+  
+  scoreboardscore(){
+    this.hi=this.navParams.data;
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["GameId"]).where('proposerStatus', '==', "Ready").where('responderStatus', '==', "Ready"));
+    this.scoreboard.length=0;
+    this.item = this.itemDoc.valueChanges();
+    this.subscription= this.item.subscribe(res=>{
+
+      for (let p=0;p<res.length;p++){
+         if (res[p].responderResponse=="Accept"){
+            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
+            this.scoreboard.push(responderlist);
+            if (res[p].proposerAmount==0){
+           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
+           this.scoreboard.push(proposerlist)
+            }
+            else{  
+           let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
+           this.scoreboard.push(proposerlist)
+            }
+           
+
+      }
+      else if (res[p].responderResponse=="Decline"){
+          let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
+          let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
+          this.scoreboard.push(proposerlist)
+          this.scoreboard.push(responderlist)
+        }
+        console.log(this.scoreboard,"scoreboard")
+
+  }
+  var holder = {};
+  this.scoreboard.forEach(function(d) {
+    if (holder.hasOwnProperty(d.username)) {
+      holder[d.username] = holder[d.username] + d.score;
+    } else {
+      holder[d.username] = d.score;
+    }
+
+  });
+  var obj2 = [];
+  for (var prop in holder) {
+    obj2.push({ username: prop, score: holder[prop]});
+  }
+  console.log(obj2);
+  obj2.sort(function(a, b){return a.score - b.score});
+  obj2.reverse();
+  this.arr=obj2;
+  
+  // for (let i=0; i<this.arr.length;i++){
+  //   this.itemDoc = this.afs.collection<any>('Professor', ref => ref.where('gameId', '==', this.hi["GameId"]));
+  //   this.item = this.itemDoc.valueChanges();
+  //   this.subscription= this.item.subscribe(ress=>{
+  //     this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["GameId"]).where('proposerName', '==', this.arr[i].username).where('round', '==', parseInt(ress["round"])));
+  //   this.item = this.itemDoc.valueChanges();
+  //   this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
+  //     console.log(retrievecurrentroundvalue)
+  //     if (retrievecurrentroundvalue.length!=0){
+  //       console.log(retrievecurrentroundvalue[0].proposerAmount)
+  //      this.arr[i].role="Proposer";
+  //      this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+  //      if (retrievecurrentroundvalue[0].proposerAmount==0|| retrievecurrentroundvalue[0].responderResponse=="Decline"){
+  //       this.arr[i].scorethisround=0;
+  //      } 
+  //      else{
+  //        this.arr[i].scorethisround=100-retrievecurrentroundvalue[0].proposerAmount;
+  //      }
+       
+  //     }
+  //     else{
+  //       this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["GameId"]).where('responderName', '==', this.arr[i].username).where('round', '==', parseInt(ress["round"])));
+  //       this.item = this.itemDoc.valueChanges();
+  //       this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
+  //         if (retrievecurrentroundvalue.length!=0&&retrievecurrentroundvalue[0].responderResponse!="Decline"){
+  //           this.arr[i].role="Responder";
+  //           this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+  //           this.arr[i].scorethisround=retrievecurrentroundvalue[0].proposerAmount;
+  //         }
+  //         else if (retrievecurrentroundvalue.length!=0&&retrievecurrentroundvalue[0].responderResponse=="Decline"){
+  //           this.arr[i].role="Responder";
+  //           this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+  //           this.arr[i].scorethisround=0;
+
+  //         }
+  //       })
+      
+  //     }
+
+  //     })
+  //   })
+  //     }
+  //     for (let u=0;u<this.arr.length;u++){
+  //       if (this.arr[u].username==this.data["username"]){
+  //         this.currentround=this.arr[u].scorethisround;
+  //         this.score=this.arr[u].score;
+  //       }
+  //     }
+      
+  //   })
+  //   }
+    
+      
+
+  }   
+    )}
 }

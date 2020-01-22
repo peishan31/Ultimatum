@@ -30,10 +30,11 @@ itemm: any;
     console.log("VAL");
     console.log(val);
 
-    this.storage.set("responder","true")
+   
   }
 
   ionViewDidLoad() {
+    // this.storage.set("responder","true");
     this.all=this.navParams.data;
     console.log("{{nextRound.ts Page}}: " + JSON.stringify(this.all["nextroundfirebaseid"]));
     console.log("{{nextRound.ts Page}}: " + JSON.stringify(this.all));

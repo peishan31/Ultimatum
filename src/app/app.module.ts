@@ -34,7 +34,7 @@ import {ViewpastornewPage} from '../pages/viewpastornew/viewpastornew';
 import {NextroundsPage} from '../pages/nextrounds/nextrounds';
 import { UserPresenceStatusProvider } from '../providers/user-presence-status/user-presence-status';
 
-import { HttpClient, HttpHandler } from '@angular/common/http';
+import { HttpClient,HttpClientModule } from '@angular/common/http';
 
 import { IonicStorageModule } from '@ionic/storage';
 
@@ -59,6 +59,7 @@ const config= {}
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     FormsModule,
     IonicModule.forRoot(MyApp),
     AngularFirestoreModule,
@@ -95,7 +96,7 @@ const config= {}
     Network,
     UserPresenceStatusProvider,
     HttpClient,
-    HttpHandler
+    
   ]
 })
 export class AppModule {}
