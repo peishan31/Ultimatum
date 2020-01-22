@@ -9,50 +9,110 @@
   </ion-navbar> -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'><link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </ion-header>
 <ion-content id="page5">
   <br>
-  <h3 id="scoreboard-heading3" style="color:#000000;text-align: center;">
-    Scoreboard:
+  <h3 id="scoreboard-heading3" style="color:#000000;text-align: center;"> 
   </h3>
-  <div class="span3 control-group">
-    <label>Filter: </label>
-    <select style="height:30%" [(ngModel)]="selecting" [ngModelOptions]="{standalone:true}" >
-    <option>-</option>
-    <option>Individual rounds</option>
-    <option>Speed- Fastest to Slowest</option>
-    <option>Speed- Slowest to Fastest</option>
-    <option>Score- High to low</option>
-    <option>Score- Low to High</option>
+  <div class="form-group" *ngIf="currentround==totalround" style="text-align: center;"> 
+    <label for="gender1" class="col-sm-2 control-label"></label>
+    <label for="gender1" class="col-sm-1 control-label">Filter:&nbsp;<ion-icon name="options" style="color:cornflowerblue"></ion-icon></label>
+    <div class="col-sm-3">
+    <ion-select class="form-control" id="gender1" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
+      <ion-option>Individual round</ion-option>
+      <ion-option>Accumulated rounds</ion-option>
+    
 
-    </select>
-  </div>
+    </ion-select>          
+      
+    </div>
+    <label for="gender1"  *ngIf="selecting=='Individual round'" class="col-sm-1 control-label">Round:</label>
+    <div class="col-sm-1" *ngIf="selecting=='Individual round'">
+      <ion-select class="form-control" (ionChange)="roundselect($event)" [(ngModel)]="roundsselectedfilter">
+        <!-- <option>Speed- Fastest to Slowest</option>
+        <option>Speed- Slowest to Fastest</option> -->
+        <ion-option *ngFor = "let i of roundss">{{i}}</ion-option>
+    
+      </ion-select>          
+        
+      </div>
+      <label for="gender1" class="col-sm-1 control-label">Sort by: &nbsp;<ion-icon name="swap" style="color:cornflowerblue"></ion-icon></label>
+      <div class="col-sm-3">
+        <ion-select class="form-control" (ionChange)="scorefiltering($event)">
+          <!-- <option>Speed- Fastest to Slowest</option>
+          <option>Speed- Slowest to Fastest</option> -->
+      <ion-option>-</ion-option>    
+      <ion-option>Score- High to Low</ion-option>
+      <ion-option>Score- Low to High</ion-option>
+      
+        </ion-select>          
+          
+        </div>
+
+</div>          
+
+ <br>
+<br><br><br><br>
+  <ion-icon name="arrow-dropleft-circle" style="font-size:60px;float:left;margin-top:10%;margin-left:10%" *ngIf="currentround==totalround && selecting=='Individual round' && (roundsselectedfilter-1)!=0" (click)="prevround(roundsselectedfilter)"></ion-icon>
+  <ion-icon name="arrow-dropright-circle" style="font-size:60px;float:right;margin-top:10%;margin-right:10%" *ngIf="currentround==totalround && selecting=='Individual round' && roundsselectedfilter!=totalround+1" (click)="gonext(roundsselectedfilter)"></ion-icon>
   <div class="leaderboard">
-    <h1>
+    <h1 *ngIf="currentround==totalround && selecting=='Accumulated rounds'">
       <svg class="ico-cup">
         <use xlink:href="#cup"></use>
       </svg>
-      Leaderboard
+     Accumulated Rounds Leaderboard
     </h1>
-    <ol>
-      <li *ngFor="let u of arr">
-        <mark>{{u.username}}{{u.amount}}</mark>
+    <h1 *ngIf="currentround!=totalround && selecting!='Individual round'">
+      <svg class="ico-cup">
+        <use xlink:href="#cup"></use>
+      </svg>
+     Round {{currentround+1}} Leaderboard
+    </h1>
+
+    <h1 *ngIf="selecting=='Individual round'">
+      <svg class="ico-cup">
+        <use xlink:href="#cup"></use>
+      </svg>
+     Round {{roundsselectedfilter}} Leaderboard
+    </h1>
+
+    <ol *ngIf="scorefilter=='Score- Low to High'">
+      <li *ngFor="let u of arr?.slice()?.reverse()">
+        <mark *ngIf="selecting!='Individual round'">{{u.username}}  <span class="badge badge-success" style="background-color: green;">+{{u.scorethisround}} pts</span></mark>
+        <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Accept' && u.role=='Responder'"><span class="badge badge-secondary" style="background-color: green;">{{u.result}}ed {{u.amt}}</span></mark>
+        <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Decline' && u.role=='Responder'"><span class="badge badge-secondary" style="background-color: red;">{{u.result}}d {{u.amt}}</span></mark>
+        <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Decline' && u.role=='Proposer'"><span class="badge badge-secondary" style="background-color: red;">Proposed {{u.amt}} ({{u.result}})</span></mark>
+        <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Accept' && u.role=='Proposer'"><span class="badge badge-secondary" style="background-color: green;">Proposed {{u.amt}} ({{u.result}})</span></mark>
+        <mark *ngIf="selecting=='Individual round'">{{u.username}} ({{u.role}})</mark>
         <small>{{u.score}}</small>
       </li>
     </ol>
-<br><br><br><br><br><br><br>
+    <ol *ngIf="scorefilter!='Score- Low to High'">
+      <li *ngFor="let u of arr">
+        <mark *ngIf="selecting!='Individual round'">{{u.username}}  <span class="badge badge-success" style="background-color: green;">+{{u.scorethisround}} pts</span></mark>
+        <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Accept' && u.role=='Responder'"><span class="badge badge-secondary" style="background-color: green;">{{u.result}}ed {{u.amt}}</span></mark>
+        <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Decline' && u.role=='Responder'"><span class="badge badge-secondary" style="background-color: red;">{{u.result}}d {{u.amt}}</span></mark>
+        <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Decline' && u.role=='Proposer'"><span class="badge badge-secondary" style="background-color: red;">Proposed {{u.amt}} ({{u.result}})</span></mark>
+        <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Accept' && u.role=='Proposer'"><span class="badge badge-secondary" style="background-color: green;">Proposed {{u.amt}} ({{u.result}})</span></mark>
+        <mark *ngIf="selecting=='Individual round'">{{u.username}} ({{u.role}})</mark>
+        <small>{{u.score}}</small>
+      </li>
+    </ol>
 
-    <div style="text-align: center;margin-top: 20px;">
-      <button (click)="Home()" ion-button color="positive" style="font-size:15px;height:150%"  item-left>
+<br><br><br><br><br>
+    <div style="text-align: center;margin-top: 40px;">
+      <button (click)="Home()" ion-button color="positive" style="font-size:15px;"  item-left>
        <br> End game<br><br>
       </button>
-      <button ion-button color="positive" (click)="nextround()" item-right style="font-size:15px;height:150%" >
+      <button ion-button color="positive" (click)="nextround()" item-right style="font-size:15px;" *ngIf="currentround!=totalround" >
      <br>   Next round<br><br>
     </button>
     </div>
   </div>
 
-
+<br><br><br><br><br><br>
   <svg style="display: none;">
     <symbol id="cup" x="0px" y="0px"
      width="25px" height="26px" viewBox="0 0 25 26" enable-background="new 0 0 25 26" xml:space="preserve">

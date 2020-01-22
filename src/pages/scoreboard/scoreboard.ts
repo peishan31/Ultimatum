@@ -5,6 +5,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Subscription } from 'rxjs';
 import { UserPresenceStatusProvider } from '../../providers/user-presence-status/user-presence-status';
 import * as firebase from 'firebase';
+import { ViewpastornewPage } from '../viewpastornew/viewpastornew';
 
 @Component({
   selector: 'page-scoreboard',
@@ -20,9 +21,9 @@ list=[]
 myPerson=[]
 studentnum=0;
 scoreboard=[];
-
+roundsselectedfilter:number;
 studentsList={"username": [], "UUID": [], "totalRound": 0}
-
+scorefilter:string;
 proposerUUID="";
 proposerName="";
 responderUUID="";
@@ -31,6 +32,9 @@ arr:any;
 currentround:number;
 totalround:number;
 retrievedvalue:any;
+u=0;
+roundss=[];
+selecting="Accumulated rounds";
   constructor(public navCtrl: NavController,
     public navParams:NavParams,
     public afs:AngularFirestore,
@@ -40,17 +44,53 @@ retrievedvalue:any;
   }
 
   Home(){
-    this.navCtrl.setRoot(ProfessorHomePage);
+    this.navCtrl.setRoot(ViewpastornewPage);
   }
 
 
   ionViewDidEnter(){
-    this.i=0;
+    this.u=0;
     this.scoreboardscore();
+    if (this.hi["gameMode"] == "All same opponents")
+    {
+      // Yong Lin's code
+      this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
+      this.item = this.itemDoc.valueChanges();
+      this.subscription=this.item.subscribe(res=>{
+        if (this.u==0){
+          this.currentround=parseInt(res["round"]);
+          this.totalround=parseInt(res["totalround"])-1;
+          for (let i=0;i<this.totalround+1;i++){
+            this.roundss.push(i+1);
+          }
+            this.u+=1;
+          }
+        
+      })
+    }
+    else if (this.hi["gameMode"] == "Random all players")
+    {
+      // Peishan's code
+      // Check how many round it currently is (<19)!
+      // Check if users are online/offline
+      // Arrange and see how many rounds can players play with the user
+      this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
+      this.item = this.itemDoc.valueChanges();
+      this.subscription=this.item.subscribe(res=>{
+        
+        if (this.u==0){
+          this.currentround=parseInt(res["round"]);
+          this.totalround=parseInt(res["totalround"])-1;
+          for (let i=0;i<this.totalround+1;i++){
+            this.roundss.push(i+1);
+          }
+            this.u+=1;
+   
+        
+          }})}
   }
 
   nextround(){
-
     this.hi=this.navParams.data;
     if (this.hi["gameMode"] == "All same opponents")
     {
@@ -63,8 +103,6 @@ retrievedvalue:any;
           if (round<(parseInt(res["totalround"])-1)){
             this.i+=1;
             round=round+1;
-            this.currentround=round-1;
-            this.totalround=(parseInt(res["totalround"])-1);
             this.afs.collection('Professor').doc(this.hi["gameId"]).update({
               round:round.toString(),
             })
@@ -94,7 +132,7 @@ retrievedvalue:any;
       this.subscription=this.item.subscribe(res=>{
         if (this.i==0){
           let round=parseInt(res["round"]);
-          if (round<19){
+          if (round<(parseInt(res["totalround"])-1)){
             console.log("Previous round: " + round);
             this.i+=1;
             round=round+1;
@@ -180,41 +218,29 @@ retrievedvalue:any;
 
   scoreboardscore(){
     this.hi=this.navParams.data;
-    this.itemDoc = this.afs.collection<any>('Professor', ref => ref.where('gameId', '==', this.hi["gameId"]));
-    this.item = this.itemDoc.valueChanges();
-    this.subscription= this.item.subscribe(ress=>{
-      this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready").where('responderStatus', '==', "Ready").where('round', '==', parseInt(ress[0].round)));
-    this.scoreboard.length=0;
-    this.item = this.itemDoc.valueChanges();
-    this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
-      if (retrievecurrentroundvalue.length!=0){
-        this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready"));
+    this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerStatus', '==', "Ready"));
     this.scoreboard.length=0;
     this.item = this.itemDoc.valueChanges();
     this.subscription= this.item.subscribe(res=>{
 
       for (let p=0;p<res.length;p++){
          if (res[p].responderResponse=="Accept"){
-          this.retrievedvalue=" (+"+retrievecurrentroundvalue[0].proposerAmount.toString()+ ")";
-            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder","amount":this.retrievedvalue}
+            let responderlist={"username":res[p].responderName,"score":res[p].proposerAmount,"role":"Responder"}
             this.scoreboard.push(responderlist);
             if (res[p].proposerAmount==0){
-              this.retrievedvalue=" (+0"+ ")";
-           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer","amount":this.retrievedvalue}
+           let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
            this.scoreboard.push(proposerlist)
             }
-            else{
-              this.retrievedvalue=" (+"+[(100-retrievecurrentroundvalue[0].proposerAmount)].toString()+ ")";   
-           let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer","amount":this.retrievedvalue}
+            else{  
+           let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
            this.scoreboard.push(proposerlist)
             }
            
 
       }
       else if (res[p].responderResponse=="Decline"){
-        this.retrievedvalue=" (+0"+ ")";
           let responderlist={"username":res[p].responderName,"score":0,"role":"Responder"}
-          let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer","amount":this.retrievedvalue}
+          let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
           this.scoreboard.push(proposerlist)
           this.scoreboard.push(responderlist)
         }
@@ -239,14 +265,53 @@ retrievedvalue:any;
   obj2.reverse();
   this.arr=obj2;
   
-
-})
-    }})
+  for (let i=0; i<this.arr.length;i++){
+    this.itemDoc = this.afs.collection<any>('Professor', ref => ref.where('gameId', '==', this.hi["gameId"]));
+    this.item = this.itemDoc.valueChanges();
+    this.subscription= this.item.subscribe(ress=>{
+      this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('proposerName', '==', this.arr[i].username).where('round', '==', parseInt(ress[0].round)));
+    this.item = this.itemDoc.valueChanges();
+    this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
+      if (retrievecurrentroundvalue.length!=0){
+        console.log(retrievecurrentroundvalue[0].proposerAmount)
+       this.arr[i].role="Proposer";
+       this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+       if (retrievecurrentroundvalue[0].proposerAmount==0|| retrievecurrentroundvalue[0].responderResponse=="Decline"){
+        this.arr[i].scorethisround=0;
+       } 
+       else{
+         this.arr[i].scorethisround=100-retrievecurrentroundvalue[0].proposerAmount;
+       }
+       
       }
+      else{
+        this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('responderName', '==', this.arr[i].username).where('round', '==', parseInt(ress[0].round)));
+        this.item = this.itemDoc.valueChanges();
+        this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
+          if (retrievecurrentroundvalue.length!=0&&retrievecurrentroundvalue[0].responderResponse!="Decline"){
+            this.arr[i].role="Responder";
+            this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+            this.arr[i].scorethisround=retrievecurrentroundvalue[0].proposerAmount;
+          }
+          else if (retrievecurrentroundvalue.length!=0&&retrievecurrentroundvalue[0].responderResponse=="Decline"){
+            this.arr[i].role="Responder";
+            this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+            this.arr[i].scorethisround=0;
+
+          }
+        })
+      
+      }
+
+      })
+    })
+      }
+    })
+    }
     
-    )}
+      
 
-
+      
 
   derangementNumber(n) {
     if(n == 0) {
@@ -368,4 +433,125 @@ retrievedvalue:any;
         })
 		}
   }
+
+  onSelectChange(selectedValue: any) {
+    console.log('Selected', selectedValue);
+    if (selectedValue=="Individual round"){
+     this.selecting="Individual round";
+     this.roundsselectedfilter=this.totalround+1;
+     this.roundselect(this.roundsselectedfilter);
+    }
+    // else if (selectedValue=="Score- High to Low"){
+      // let shandss = document.getElementsByClassName('hidecollectedby') as HTMLCollectionOf<HTMLElement>;
+      // shandss[0].style.display="";
+      // let shandsss = document.getElementsByClassName('hidesign') as HTMLCollectionOf<HTMLElement>;
+      // shandsss[0].style.display="";
+    //   this.selecting="Score- High to Low";
+    // }
+    // else if (selectedValue=="Score- Low to High"){
+    // this.selecting="Score- Low to High";
+    // }
+    else if (selectedValue=="Accumulated rounds"){
+      this.selecting="Accumulated rounds";
+      this.scoreboardscore();
+
+    }
+  }
+
+    roundselect(selectedValue: any) {
+      this.roundsselectedfilter=parseInt(selectedValue);
+      let list=[];
+      this.hi=this.navParams.data;
+        this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('round', '==', selectedValue-1));
+      this.item = this.itemDoc.valueChanges();
+      this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
+        for (let i=0;i<retrievecurrentroundvalue.length;i++){   
+        if (retrievecurrentroundvalue[i].proposerName!=""){
+         if (retrievecurrentroundvalue[i].proposerAmount==0|| retrievecurrentroundvalue[i].responderResponse=="Decline"){
+          let selectround={};
+          selectround["role"]="Proposer";
+          selectround["username"]=retrievecurrentroundvalue[i].proposerName;
+         selectround["result"]=retrievecurrentroundvalue[i].responderResponse; 
+          selectround["scorethisround"]=0;
+          selectround["score"]=0;
+          selectround["score"]=0;
+          selectround["amt"]=retrievecurrentroundvalue[i].proposerAmount;
+         list.push(selectround)
+         } 
+         else if (retrievecurrentroundvalue[i].proposerAmount!=0|| retrievecurrentroundvalue[i].responderResponse=="Accept"){
+          let selectround={};
+          selectround["role"]="Proposer";
+          selectround["username"]=retrievecurrentroundvalue[i].proposerName;
+         selectround["result"]=retrievecurrentroundvalue[i].responderResponse; 
+           selectround["scorethisround"]=100-retrievecurrentroundvalue[i].proposerAmount;
+           selectround["username"]=retrievecurrentroundvalue[i].proposerName;
+           selectround["score"]=100-retrievecurrentroundvalue[i].proposerAmount;
+           selectround["amt"]=retrievecurrentroundvalue[i].proposerAmount;
+           
+           list.push(selectround)
+         }
+         
+        }
+        if (retrievecurrentroundvalue[i].responderName!=""){
+          if (retrievecurrentroundvalue[i].proposerAmount==0|| retrievecurrentroundvalue[i].responderResponse=="Decline"){
+            let responderdict={};
+            responderdict["scorethisround"]=0;
+            responderdict["score"]=0;
+            responderdict["role"]="Responder";
+           responderdict["username"]=retrievecurrentroundvalue[i].responderName;
+           responderdict["result"]=retrievecurrentroundvalue[i].responderResponse;
+           responderdict["amt"]=retrievecurrentroundvalue[i].proposerAmount; 
+          list.push(responderdict)
+          } 
+        else if (retrievecurrentroundvalue[i].proposerAmount!=0 && retrievecurrentroundvalue[i].responderResponse=="Accept"){
+          let responderdict={};
+            responderdict["scorethisround"]=retrievecurrentroundvalue[i].proposerAmount;
+            responderdict["score"]=0;
+            responderdict["role"]="Responder";
+            responderdict["username"]=retrievecurrentroundvalue[i].responderName;
+            responderdict["score"]=retrievecurrentroundvalue[i].proposerAmount;
+            responderdict["result"]=retrievecurrentroundvalue[i].responderResponse; 
+            responderdict["amt"]=retrievecurrentroundvalue[i].proposerAmount; 
+            list.push(responderdict)
+          }
+          
+         }
+       
+  
+    
+       }
+       if (this.arr.length!=0){
+         this.arr.length=0;
+       }
+       list.sort(function(a, b){return a.score - b.score});
+       list.reverse();
+       this.arr=list;
+       
+       })
+
+    }
+
+    scorefiltering(selectedValue: any){
+     this.scorefilter=selectedValue;
+     if (selectedValue=="-"){
+       this.scorefilter="Score- High to Low";
+     }
+
+    }
+
+    prevround(round){
+      console.log(round);
+      this.roundselect(round-1);
+      this.roundsselectedfilter=parseInt(round)-1;
+      console.log(this.roundsselectedfilter,"filter")
+      
+    }
+
+    gonext(round){
+      console.log(round);
+      this.roundselect(round+1);
+      this.roundsselectedfilter=parseInt(round)+1;
+
+    }
+
 }
