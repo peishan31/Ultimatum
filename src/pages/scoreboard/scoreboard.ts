@@ -31,6 +31,7 @@ arr:any;
 currentround:number;
 totalround:number;
 retrievedvalue:any;
+randomModeTotalRound="";
   constructor(public navCtrl: NavController,
     public navParams:NavParams,
     public afs:AngularFirestore,
@@ -92,6 +93,7 @@ retrievedvalue:any;
       this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
       this.item = this.itemDoc.valueChanges();
       this.subscription=this.item.subscribe(res=>{
+        this.randomModeTotalRound = res["totalround"];
         if (this.i==0){
           let round=parseInt(res["round"]);
           //let totalRound=parseInt(res["totalRound"]) * 2;
@@ -141,13 +143,13 @@ retrievedvalue:any;
                     this.responderUUID = res[p].proposerUUID;
                     this.proposerName = res[p].responderName;
                     this.responderName = res[p].proposerName;
-
+                    console.log("HIIIIIII: " + res[p].totalround)
                     var id = this.proposerUUID + round + this.responderUUID + round;
                     this.afs.collection('Game').doc(id).set({
                       gameId:this.hi["gameId"],
                       gameMode: 'Random all players',
                       round: round,
-                      totalRound: 10,
+                      totalRound: this.randomModeTotalRound,
                       dateTime: new Date().toISOString(),
                       proposerUUID: this.proposerUUID,
                       proposerName: this.proposerName,
@@ -168,7 +170,7 @@ retrievedvalue:any;
               })
             }
             else { // randomize player
-              this.assignUserToPlayWithAnotherUser(round);
+              this.assignUserToPlayWithAnotherUser(round, this.randomModeTotalRound);
             }
             //console.log("Added name???");
           }
@@ -304,7 +306,7 @@ retrievedvalue:any;
     return array;
   }
 
-  assignUserToPlayWithAnotherUser(currentRound){
+  assignUserToPlayWithAnotherUser(currentRound, totalround){
     // Calling out all the users joining this gameId
     this.itemDoc = this.afs.collection<any>('Participant');
     this.item = this.itemDoc.valueChanges();
@@ -343,14 +345,14 @@ retrievedvalue:any;
       console.log("areaA's id: "+ areaAUUID);
       console.log("areaB's id: "+ areaBUUID);
 
-      this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID, currentRound);
+      this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID, currentRound, totalround);
       // calculating how many rounds it would take for all users to play against each other in 2 groups.
       //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
       //this.assignProposerAndResponder (areaB, areaA,  half_length);
     });
   }
 
-  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, currentRound){
+  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, currentRound, totalround){
 
     var arrangedUsersA = this.derange(proposer);
     var arrangedUsersB = this.derange(responder);
@@ -374,7 +376,7 @@ retrievedvalue:any;
           gameId:this.hi["gameId"],
           gameMode: 'Random all players',
           round: currentRound,
-          totalRound: 10,
+          totalRound: totalround,
           dateTime: new Date().toISOString(),
           proposerUUID: proposerUUID[i],
           proposerName: proposer[i],

@@ -55,66 +55,80 @@ subscribed=false;
     if (form.valid && this.gamecode!= '' && this.gamecode!=null && this.inhere==0) {
     // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
     // shand[0].style.display="none";
-      let data= this.navParams.data;
-      this.itemDoc = this.afs.collection<any>('Participant', ref => ref.where('username', '==', data["username"]).where('gameId', '==', this.gamecode));
-      this.item = this.itemDoc.valueChanges();
-      this.subscription= this.item.subscribe(res=>{
+      this.storage.get("EnteredGameCode").then((val) => {
 
-        this.subscribed = true;
-        if (res.length==0){
-
-          //means currently no user with same username
-          this.loader =  this.loadingCtrl.create({
-
-          });
-          this.loader.present();
-          const toast = this.toastCtrl.create({
-            message: 'See your name on the screen..',
-            duration:3000
-          });
-          toast.present();
-
-          let all=this.navParams.data;
-          all["gameId"]=this.gamecode;
-          this.createParticipant(all);
-          console.log(this.gamecode);
-          // added .doc(all["GameId"]) to line 67
-          this.itemDoc = this.afs.collection<any>('Professor').doc(this.gamecode);
+        if (val == false) {
+          let data= this.navParams.data;
+          this.itemDoc = this.afs.collection<any>('Participant', ref => ref.where('username', '==', data["username"]).where('gameId', '==', this.gamecode));
           this.item = this.itemDoc.valueChanges();
-          this.subscription=this.item.subscribe(res=>{
-            console.log(res);
+          this.subscription= this.item.subscribe(res=>{
 
-            this.userDisconnectState(all);
-           res=[res];
-            for (let p=0;p<res.length;p++){
-                 if (res[p].professorStatus=='Ready'){
-                  // find out if user is a proposer or responder
-                  this.loader.dismiss();
-                  console.log("in")
-                  this.inhere+=1;
-                  this.responderOrProposal(this.navParams.data);
+            this.subscribed = true;
+            if (res.length==0){
 
-              }
+              //means currently no user with same username
+              this.loader =  this.loadingCtrl.create({
 
+              });
+              this.loader.present();
+              const toast = this.toastCtrl.create({
+                message: 'See your name on the screen..',
+                duration:3000
+              });
+              toast.present();
+
+              let all=this.navParams.data;
+              all["gameId"]=this.gamecode;
+              this.createParticipant(all);
+              console.log(this.gamecode);
+              // added .doc(all["GameId"]) to line 67
+              this.itemDoc = this.afs.collection<any>('Professor').doc(this.gamecode);
+              this.item = this.itemDoc.valueChanges();
+              this.subscription=this.item.subscribe(res=>{ // real-time update of Professor's status
+                console.log(res);
+
+                this.userDisconnectState(all);
+                res=[res];
+                for (let p=0;p<res.length;p++){
+                    if (res[p].professorStatus=='Ready'){
+                      // find out if user is a proposer or responder
+                      this.loader.dismiss();
+                      console.log("in")
+                      this.inhere+=1;
+
+                      this.responderOrProposal(this.navParams.data);
+
+                  }
+
+                }
+
+              })
+            }
+
+            else{
+              // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
+              // shand[0].style.display="";
+              this.errormsg="Already have exising username..";
             }
 
           })
         }
 
-        else{
-          // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
-          // shand[0].style.display="";
-          this.errormsg="Already have exising username..";
-        }
-
       })
-
-
     }
     else{
       // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
       // shand[0].style.display="";
     }
+
+    this.storage.get("EnteredGameCode").then((val) => {
+
+      if (val == true) {
+        if (this.subscription){
+          this.subscription.unsubscribe();
+        }
+      }
+    })
   }
 
   userDisconnectState(all) {
@@ -188,47 +202,98 @@ subscribed=false;
     all=this.navParams.data;
     let iu=0;// else if keep getting in
     if (iu==0){
-    this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all.UUID).where('round', '==', 0));
+    console.log("all: " + JSON.stringify(all));
+    console.log("Before: " + all.Round);
+    this.itemDoc =  this.afs.collection<any>('Game', ref => // real-time to check if proposal/responder is ready
+      ref
+      .where('responderUUID', '==', all.UUID)
+      .where('round', '==', 0));
     this.item = this.itemDoc.valueChanges();
-this.subscription=this.item.subscribe(res=>{
+    this.subscription=this.item.subscribe(res=>{
+      console.log("local storage stuff: " + localStorage.getItem("enterGameCode"+all.UUID));
+      console.log("res1",res)
+      if ((res.length==0 && iu==0 && localStorage.getItem("enterGameCode"+all.UUID)==null) || ((localStorage.getItem("enterGameCode"+all.UUID)=="OK"))){
 
-  console.log("res1",res)
-  if (res.length==0 && iu==0){
-    //meaning this person is proposer instead
-    this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all.UUID).where('round', '==', 0));
-    this.item = this.itemDoc.valueChanges();
-this.subscription=this.item.subscribe(res=>{
-  console.log("Res2,",res)
-  for (let p=0;p<res.length;p++){
-    if (res[p].proposerStatus=="Not Ready" && iu==0){
-      // user is a proposer in the next round
+        //meaning this person is proposer instead
+        this.itemDoc =  this.afs.collection<any>('Game', ref =>
+          ref
+          .where('proposerUUID', '==', all.UUID)
+          .where('round', '==', 0));
+        this.item = this.itemDoc.valueChanges();
+        this.subscription=this.item.subscribe(res=>{
 
-      let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
+          console.log("Res2,",res)
+          for (let p=0;p<res.length;p++){
+            if (res[p].proposerStatus=="Not Ready" && iu==0){
 
+              // user is a proposer in the next round
+              let passnextpg={
+                UUID: all.UUID,
+                username: all.username,
+                GameId: this.gamecode,
+                gameMode: res[p].gameMode,
+                Round: all.Round
+              }
+              if (all.Round > 0) {
 
-      console.log("((gamecode.ts)): "+ res[p].gameMode);
+                passnextpg["Role"] = "Proposal";
+                passnextpg["FirebaseId"] = all.FirebaseId;
+                passnextpg["nextroundfirebaseid"] = all.nextroundfirebaseid;
+              }
 
-      this.navCtrl.push(ProposerPage, passnextpg);
+              console.log("((gamecode.ts)): "+ res[p].gameMode);
 
-    iu+=1
-     console.log("First")
+              this.subscription.unsubscribe();
 
-    }
-  }
-})
-  }
-  else if (iu==0){
-     for (let p=0;p<res.length;p++){
-          let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
+              // Create local storage here
+              this.storage.set(all.UUID+"EnteredGameCode", false);
+              this.storage.set(all.UUID+"EnteredProposal", false);
+              this.storage.set(all.UUID+"EnteredRespondant", false);
+              this.storage.set(all.UUID+"EnteredResult", false);
+              this.storage.set(all.UUID+"EnteredNextRound", false);
+
+              localStorage.setItem("enterGameCode"+all.UUID, "NO");
+              this.navCtrl.setRoot(ProposerPage, passnextpg);
+
+              iu+=1
+              console.log("First")
+            }
+          }
+        })
+      }
+      else if ((iu==0 && localStorage.getItem("enterGameCode"+all.UUID)==null) || (localStorage.getItem("enterGameCode"+all.UUID)=="OK")){
+
+        for (let p=0;p<res.length;p++){
+          let passnextpg={
+            UUID: all.UUID,
+            username: all.username,
+            GameId: this.gamecode,
+            gameMode: res[p].gameMode,
+            Round: all.Round}
+            if (all.Round > 0) {
+              passnextpg["Role"] = "Respondant";
+              passnextpg["FirebaseId"] = all.FirebaseId;
+              passnextpg["nextroundfirebaseid"] = all.nextroundfirebaseid;
+
+            }
           if (res[p].proposerStatus=="Ready" && res[p].round==0) {
             // user is a responder in the next round
             // **** needs to create a loader and wait for the proposer to submit their values
           //  this.loader.dismiss();
             console.log("((gamecode.ts)): "+ res[p].gameMode);
             iu+=1
-            this.navCtrl.push(RespondantPage, passnextpg);
 
+            this.subscription.unsubscribe();
 
+            // Create local storage here
+            this.storage.set(all.UUID+"EnteredGameCode", false);
+            this.storage.set(all.UUID+"EnteredProposal", false);
+            this.storage.set(all.UUID+"EnteredRespondant", false);
+            this.storage.set(all.UUID+"EnteredResult", false);
+            this.storage.set(all.UUID+"EnteredNextRound", false);
+
+            localStorage.setItem("enterGameCode"+all.UUID, "NO");
+            this.navCtrl.setRoot(RespondantPage, passnextpg);
           }
 
           //  else if (res[p].proposerStatus=="Not Ready" && iu==0){
@@ -244,10 +309,7 @@ this.subscription=this.item.subscribe(res=>{
           }
 
         }
-  }
-
-
-
+      }
     })
   }
  }
@@ -271,6 +333,12 @@ this.subscription=this.item.subscribe(res=>{
     this.navCtrl.setRoot(UltimatumPage);
   }
 
+  ionViewWillEnter(){
+    this.storage.set("EnteredGameCode", false)
+    if (this.subscribed == true) {
+      this.subscription.unsubscribe();
+    }
+  }
 
 }
 
