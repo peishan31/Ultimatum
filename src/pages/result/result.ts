@@ -441,29 +441,32 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                         this.loader.present();
 
-                        let passnextpg = {
-                          UUID: res["proposerUUID"],
-                          username: res["proposerName"],
-                          GameId: this.data["GameId"],
-                          gameMode:this.data["gameMode"],
-                          Role: "Respondant", // new role
-                          FirebaseId:this.data["FirebaseId"],
-                          nextroundfirebaseid:this.data["nextroundfirebaseid"],
-                          // result
-                          Round: changeparse, // new round
-                          dateTime:this.datetime,
-                          once:0,
-                          gonextround:0
-                        };
+                        this.loader.onDidDismiss(() => {
+                          let passnextpg = {
+                            UUID: res["proposerUUID"],
+                            username: res["proposerName"],
+                            GameId: this.data["GameId"],
+                            gameMode:this.data["gameMode"],
+                            Role: "Respondant", // new role
+                            FirebaseId:this.data["FirebaseId"],
+                            nextroundfirebaseid:this.data["nextroundfirebaseid"],
+                            // result
+                            Round: changeparse, // new round
+                            dateTime:this.datetime,
+                            once:0,
+                            gonextround:0
+                          };
 
-                        // Resetting local storage
-                        this.storage.set(this.data.UUID+"EnteredGameCode", false);
-                        this.storage.set(this.data.UUID+"EnteredProposal", false);
-                        this.storage.set(this.data.UUID+"EnteredRespondant", false);
-                        this.storage.set(this.data.UUID+"EnteredResult", false);
-                        this.storage.set(this.data.UUID+"EnteredNextRound", false);
+                          // Resetting local storage
+                          this.storage.set(this.data.UUID+"EnteredGameCode", false);
+                          this.storage.set(this.data.UUID+"EnteredProposal", false);
+                          this.storage.set(this.data.UUID+"EnteredRespondant", false);
+                          this.storage.set(this.data.UUID+"EnteredResult", false);
+                          this.storage.set(this.data.UUID+"EnteredNextRound", false);
 
-                        this.navCtrl.setRoot(NextroundsPage,passnextpg);
+                          this.navCtrl.setRoot(NextroundsPage,passnextpg);
+                        })
+
                       }
                       else if (round!=changeparse && this.data["Role"]=="Respondant" && changeparse%2 != 0){ // when (changeparse % 2 != 0) means swapping roles: responder becomes proposer now
 
@@ -475,27 +478,29 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                         this.loader.present();
 
-                        let passnextpg={
-                          UUID:res["responderUUID"],
-                          username:res["responderName"],
-                          GameId:this.data["GameId"],
-                          gameMode:this.data["gameMode"],
-                          Role: "Proposer",
-                          // amount
-                          FirebaseId:this.data["FirebaseId"],
-                          nextroundfirebaseid:this.data["nextroundfirebaseid"],
-                          Round: changeparse, // new round
-                          // once
-                          gonextround:0,
-                          dateTime:this.datetime, // extra
-                        };
+                        this.loader.onDidDismiss(() => {
+                          let passnextpg={
+                            UUID:res["responderUUID"],
+                            username:res["responderName"],
+                            GameId:this.data["GameId"],
+                            gameMode:this.data["gameMode"],
+                            Role: "Proposer",
+                            // amount
+                            FirebaseId:this.data["FirebaseId"],
+                            nextroundfirebaseid:this.data["nextroundfirebaseid"],
+                            Round: changeparse, // new round
+                            // once
+                            gonextround:0,
+                            dateTime:this.datetime, // extra
+                          };
 
-                        this.storage.set(this.data.UUID+"EnteredGameCode", false);
-                        this.storage.set(this.data.UUID+"EnteredProposal", false);
-                        this.storage.set(this.data.UUID+"EnteredRespondant", true);
-                        this.storage.set(this.data.UUID+"EnteredResult", false);
-                        this.storage.set(this.data.UUID+"EnteredNextRound", false);
-                        this.navCtrl.setRoot(ProposerPage,passnextpg);
+                          this.storage.set(this.data.UUID+"EnteredGameCode", false);
+                          this.storage.set(this.data.UUID+"EnteredProposal", false);
+                          this.storage.set(this.data.UUID+"EnteredRespondant", true);
+                          this.storage.set(this.data.UUID+"EnteredResult", false);
+                          this.storage.set(this.data.UUID+"EnteredNextRound", false);
+                          this.navCtrl.setRoot(ProposerPage,passnextpg);
+                        })
                       }
                       else if (round!=changeparse && changeparse%2 == 0){ // find their current roles in "Game" table bc it is randomized
 
@@ -508,16 +513,11 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                         //this.loader = null;
                         this.loader =  this.loadingCtrl.create({
-                          duration: 10000
+                          duration: 8000
                         });
 
                         this.loader.present();
 
-                        /*setTimeout(() => {
-
-                          this.loader.dismiss().catch(() => {this.loader.dismissAll()});
-
-                        }, 10000);*/
 
                         this.loader.onDidDismiss(() => {
                           this.afs.collection<any>('Game').ref
