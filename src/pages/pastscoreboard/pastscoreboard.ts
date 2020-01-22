@@ -42,6 +42,7 @@ export class PastscoreboardPage {
  chosengamecode:string;
  professorcodes:any;
  gamecode=[];
+ gamemode:string;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs:AngularFirestore,) {
   }
 
@@ -289,6 +290,7 @@ console.log(ress)
           console.log(ress)
           if ( ProfessorDoc.data().professorStatus=='Ready' && parseInt(ProfessorDoc.data().round)==parseInt(ProfessorDoc.data().totalround)-1) {
             this.totalround= parseInt(ProfessorDoc.data().totalround);
+            this.gamemode=ProfessorDoc.data().gameMode;
           }
         }
         )

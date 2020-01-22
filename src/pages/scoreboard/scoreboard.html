@@ -18,9 +18,9 @@
   <h3 id="scoreboard-heading3" style="color:#000000;text-align: center;"> 
   </h3>
   <div class="form-group" *ngIf="currentround==totalround" style="text-align: center;"> 
-    <label for="gender1" class="col-sm-2 control-label"></label>
+    <label for="gender1" class="col-sm-1 control-label"></label>
     <label for="gender1" class="col-sm-1 control-label">Filter:&nbsp;<ion-icon name="options" style="color:cornflowerblue"></ion-icon></label>
-    <div class="col-sm-3">
+    <div class="col-sm-4">
     <ion-select class="form-control" id="gender1" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
       <ion-option>Individual round</ion-option>
       <ion-option>Accumulated rounds</ion-option>

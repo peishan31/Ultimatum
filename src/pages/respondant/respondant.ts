@@ -255,10 +255,6 @@ console.log(this.res,"RES")
 
 
   StartTimer(){
-    // this.storage.set("responder","false");
-    // this.storage.get("responder").then((val) => {
-    //   console.log("VAL",val)
-    //   if (val=="false"){
     this.timer = setTimeout(x =>
       {
           if(this.maxtime <= 0) { }
@@ -285,7 +281,7 @@ console.log(this.res,"RES")
 
       }, 1000);
 
-    // }})
+    
   }
 
   Accept(){
@@ -334,6 +330,7 @@ console.log(this.res,"RES")
                 gameMode: all["gameMode"],
                 "UUID": all["UUID"]
               };
+              this.storage.set("responder","true")
               this.navCtrl.setRoot(ResultPage,dict);
 
           //   subject.next(this.firebaseId);
@@ -357,8 +354,8 @@ console.log(this.res,"RES")
       // update responder's response as 'Accept'
     let all=this.navParams.data;
     console.log("all: " + JSON.stringify(all));
-    //this.storage.get(all.UUID+"EnteredRespondant").then((val) => {
-      //if (val == false) {
+    this.storage.get(all.UUID+"EnteredRespondant").then((val) => {
+      if (val == false) {
         this.itemDoc = this.afs.collection<any>('Game').ref
         .where('responderUUID', '==', all["UUID"]);
         //this.item = this.itemDoc.valueChanges();
@@ -442,8 +439,8 @@ console.log(this.res,"RES")
             this.result="Accept";
             this.count+=1;
         }
-      //}
-    //})
+      }
+    })
     }
 
   }
