@@ -37,6 +37,7 @@ import { UserPresenceStatusProvider } from '../providers/user-presence-status/us
 import { HttpClient,HttpClientModule } from '@angular/common/http';
 
 import { IonicStorageModule } from '@ionic/storage';
+import { ResetPage } from '../pages/reset/reset';
 
 const config= {}
 
@@ -55,7 +56,8 @@ const config= {}
     LoadingPage,
     PastscoreboardPage,
     ViewpastornewPage,
-    NextroundsPage
+    NextroundsPage,
+    ResetPage
   ],
   imports: [
     BrowserModule,
@@ -82,7 +84,8 @@ const config= {}
     LoadingPage,
     PastscoreboardPage,
     ViewpastornewPage,
-    NextroundsPage
+    NextroundsPage,
+    ResetPage
   ],
   providers: [
     StatusBar,
