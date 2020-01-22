@@ -115,6 +115,15 @@ subscribed=false;
       // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
       // shand[0].style.display="";
     }
+
+    this.storage.get("EnteredGameCode").then((val) => {
+
+      if (val == true) {
+        if (this.subscription){
+          this.subscription.unsubscribe();
+        }
+      }
+    })
   }
 
   userDisconnectState(all) {
@@ -185,40 +194,40 @@ subscribed=false;
   }
 
   responderOrProposal(all){
-    all=this.navParams.data;
+    /*all=this.navParams.data;
     let iu=0;// else if keep getting in
     if (iu==0){
     this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('responderUUID', '==', all.UUID).where('round', '==', 0));
     this.item = this.itemDoc.valueChanges();
-this.subscription=this.item.subscribe(res=>{
+    this.subscription=this.item.subscribe(res=>{
 
-  console.log("res1",res)
-  if (res.length==0 && iu==0){
-    //meaning this person is proposer instead
-    this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all.UUID).where('round', '==', 0));
-    this.item = this.itemDoc.valueChanges();
-this.subscription=this.item.subscribe(res=>{
-  console.log("Res2,",res)
-  for (let p=0;p<res.length;p++){
-    if (res[p].proposerStatus=="Not Ready" && iu==0){
-      // user is a proposer in the next round
+      console.log("res1",res)
+      if (res.length==0 && iu==0){
+        //meaning this person is proposer instead
+        this.itemDoc =  this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all.UUID).where('round', '==', 0));
+        this.item = this.itemDoc.valueChanges();
+        this.subscription=this.item.subscribe(res=>{
+          console.log("Res2,",res)
+          for (let p=0;p<res.length;p++){
+            if (res[p].proposerStatus=="Not Ready" && iu==0){
+              // user is a proposer in the next round
 
-      let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
+              let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
 
 
-      console.log("((gamecode.ts)): "+ res[p].gameMode);
+              console.log("((gamecode.ts)): "+ res[p].gameMode);
 
-      this.navCtrl.push(ProposerPage, passnextpg);
+              this.navCtrl.push(ProposerPage, passnextpg);
 
-    iu+=1
-     console.log("First")
+            iu+=1
+            console.log("First")
 
-    }
-  }
-})
-  }
-  else if (iu==0){
-     for (let p=0;p<res.length;p++){
+            }
+          }
+        })
+      }
+      else if (iu==0){
+        for (let p=0;p<res.length;p++){
           let passnextpg={UUID: all.UUID, username: all.username, GameId: this.gamecode, gameMode: res[p].gameMode}
           if (res[p].proposerStatus=="Ready" && res[p].round==0) {
             // user is a responder in the next round
@@ -244,10 +253,120 @@ this.subscription=this.item.subscribe(res=>{
           }
 
         }
-  }
+      }
+    })
+  }*/
+  all=this.navParams.data;
+    let iu=0;// else if keep getting in
+    if (iu==0){
+    console.log("all: " + JSON.stringify(all));
+    console.log("Before: " + all.Round);
+    this.itemDoc =  this.afs.collection<any>('Game', ref => // real-time to check if proposal/responder is ready
+      ref
+      .where('responderUUID', '==', all.UUID)
+      .where('round', '==', 0));
+    this.item = this.itemDoc.valueChanges();
+    this.subscription=this.item.subscribe(res=>{
+      console.log("local storage stuff: " + localStorage.getItem("enterGameCode"+all.UUID));
+      console.log("res1",res)
+      if ((res.length==0 && iu==0 && localStorage.getItem("enterGameCode"+all.UUID)==null) || ((localStorage.getItem("enterGameCode"+all.UUID)=="OK"))){
 
+        //meaning this person is proposer instead
+        this.itemDoc =  this.afs.collection<any>('Game', ref =>
+          ref
+          .where('proposerUUID', '==', all.UUID)
+          .where('round', '==', 0));
+        this.item = this.itemDoc.valueChanges();
+        this.subscription=this.item.subscribe(res=>{
 
+          console.log("Res2,",res)
+          for (let p=0;p<res.length;p++){
+            if (res[p].proposerStatus=="Not Ready" && iu==0){
 
+              // user is a proposer in the next round
+              let passnextpg={
+                UUID: all.UUID,
+                username: all.username,
+                GameId: this.gamecode,
+                gameMode: res[p].gameMode,
+                Round: all.Round
+              }
+              if (all.Round > 0) {
+
+                passnextpg["Role"] = "Proposal";
+                passnextpg["FirebaseId"] = all.FirebaseId;
+                passnextpg["nextroundfirebaseid"] = all.nextroundfirebaseid;
+              }
+
+              console.log("((gamecode.ts)): "+ res[p].gameMode);
+
+              this.subscription.unsubscribe();
+
+              // Create local storage here
+              this.storage.set(all.UUID+"EnteredGameCode", false);
+              this.storage.set(all.UUID+"EnteredProposal", false);
+              this.storage.set(all.UUID+"EnteredRespondant", false);
+              this.storage.set(all.UUID+"EnteredResult", false);
+              this.storage.set(all.UUID+"EnteredNextRound", false);
+
+              localStorage.setItem("enterGameCode"+all.UUID, "NO");
+              this.navCtrl.setRoot(ProposerPage, passnextpg);
+
+              iu+=1
+              console.log("First")
+            }
+          }
+        })
+      }
+      else if ((iu==0 && localStorage.getItem("enterGameCode"+all.UUID)==null) || (localStorage.getItem("enterGameCode"+all.UUID)=="OK")){
+
+        for (let p=0;p<res.length;p++){
+          let passnextpg={
+            UUID: all.UUID,
+            username: all.username,
+            GameId: this.gamecode,
+            gameMode: res[p].gameMode,
+            Round: all.Round}
+            if (all.Round > 0) {
+              passnextpg["Role"] = "Respondant";
+              passnextpg["FirebaseId"] = all.FirebaseId;
+              passnextpg["nextroundfirebaseid"] = all.nextroundfirebaseid;
+
+            }
+          if (res[p].proposerStatus=="Ready" && res[p].round==0) {
+            // user is a responder in the next round
+            // **** needs to create a loader and wait for the proposer to submit their values
+          //  this.loader.dismiss();
+            console.log("((gamecode.ts)): "+ res[p].gameMode);
+            iu+=1
+
+            this.subscription.unsubscribe();
+
+            // Create local storage here
+            this.storage.set(all.UUID+"EnteredGameCode", false);
+            this.storage.set(all.UUID+"EnteredProposal", false);
+            this.storage.set(all.UUID+"EnteredRespondant", false);
+            this.storage.set(all.UUID+"EnteredResult", false);
+            this.storage.set(all.UUID+"EnteredNextRound", false);
+
+            localStorage.setItem("enterGameCode"+all.UUID, "NO");
+            this.navCtrl.setRoot(RespondantPage, passnextpg);
+          }
+
+          //  else if (res[p].proposerStatus=="Not Ready" && iu==0){
+          //   // user is a proposer in the next round
+          //   // this.loader.dismissAll()
+          //   this.navCtrl.push(ProposerPage, passnextpg);
+          // iu+=1
+          //  console.log("First")
+
+          // }
+          else{
+            this.hide=true;
+          }
+
+        }
+      }
     })
   }
  }
@@ -271,6 +390,11 @@ this.subscription=this.item.subscribe(res=>{
     this.navCtrl.setRoot(UltimatumPage);
   }
 
-
+  ionViewWillEnter(){
+    this.storage.set("EnteredGameCode", false)
+    if (this.subscribed == true) {
+      this.subscription.unsubscribe();
+    }
+  }
 }
 

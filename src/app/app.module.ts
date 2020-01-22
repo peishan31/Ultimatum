@@ -96,7 +96,7 @@ const config= {}
     Network,
     UserPresenceStatusProvider,
     HttpClient,
-    
+
   ]
 })
 export class AppModule {}

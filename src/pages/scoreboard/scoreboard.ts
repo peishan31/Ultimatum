@@ -35,6 +35,7 @@ retrievedvalue:any;
 u=0;
 roundss=[];
 selecting="Accumulated rounds";
+randomModeTotalRound="";
   constructor(public navCtrl: NavController,
     public navParams:NavParams,
     public afs:AngularFirestore,
@@ -65,19 +66,16 @@ selecting="Accumulated rounds";
           }
             this.u+=1;
           }
-        
+
       })
     }
     else if (this.hi["gameMode"] == "Random all players")
     {
       // Peishan's code
-      // Check how many round it currently is (<19)!
-      // Check if users are online/offline
-      // Arrange and see how many rounds can players play with the user
       this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
       this.item = this.itemDoc.valueChanges();
       this.subscription=this.item.subscribe(res=>{
-        
+
         if (this.u==0){
           this.currentround=parseInt(res["round"]);
           this.totalround=parseInt(res["totalround"])-1;
@@ -85,9 +83,11 @@ selecting="Accumulated rounds";
             this.roundss.push(i+1);
           }
             this.u+=1;
-   
-        
-          }})}
+
+
+          }
+        })
+    }
   }
 
   nextround(){
@@ -130,8 +130,10 @@ selecting="Accumulated rounds";
       this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
       this.item = this.itemDoc.valueChanges();
       this.subscription=this.item.subscribe(res=>{
+        this.randomModeTotalRound = res["totalround"];
         if (this.i==0){
           let round=parseInt(res["round"]);
+          //let totalRound=parseInt(res["totalRound"]) * 2;
           if (round<(parseInt(res["totalround"])-1)){
             console.log("Previous round: " + round);
             this.i+=1;
@@ -147,7 +149,7 @@ selecting="Accumulated rounds";
             }).catch((err) => {
                 console.log("Err: "+err);
                 this.item.length=0;
-                this.item.subscribe(res=>{
+                  this.item.subscribe(res=>{
                   this.list.length=0;
                   //console.log(res)
                 })
@@ -178,13 +180,13 @@ selecting="Accumulated rounds";
                     this.responderUUID = res[p].proposerUUID;
                     this.proposerName = res[p].responderName;
                     this.responderName = res[p].proposerName;
-
+                    console.log("HIIIIIII: " + res[p].totalround)
                     var id = this.proposerUUID + round + this.responderUUID + round;
                     this.afs.collection('Game').doc(id).set({
                       gameId:this.hi["gameId"],
                       gameMode: 'Random all players',
                       round: round,
-                      totalRound: 10,
+                      totalRound: this.randomModeTotalRound,
                       dateTime: new Date().toISOString(),
                       proposerUUID: this.proposerUUID,
                       proposerName: this.proposerName,
@@ -205,7 +207,7 @@ selecting="Accumulated rounds";
               })
             }
             else { // randomize player
-              this.assignUserToPlayWithAnotherUser(round);
+              this.assignUserToPlayWithAnotherUser(round, this.randomModeTotalRound);
             }
             //console.log("Added name???");
           }
@@ -232,7 +234,7 @@ selecting="Accumulated rounds";
            let proposerlist={"username":res[p].proposerName,"score":0,"role":"Proposer"}
            this.scoreboard.push(proposerlist)
             }
-            else{  
+            else{
            let proposerlist={"username":res[p].proposerName,"score":100-res[p].proposerAmount,"role":"Proposer"}
            this.scoreboard.push(proposerlist)
             }
@@ -265,7 +267,7 @@ selecting="Accumulated rounds";
   obj2.sort(function(a, b){return a.score - b.score});
   obj2.reverse();
   this.arr=obj2;
-  
+
   for (let i=0; i<this.arr.length;i++){
     this.itemDoc = this.afs.collection<any>('Professor', ref => ref.where('gameId', '==', this.hi["gameId"]));
     this.item = this.itemDoc.valueChanges();
@@ -276,14 +278,14 @@ selecting="Accumulated rounds";
       if (retrievecurrentroundvalue.length!=0){
         console.log(retrievecurrentroundvalue[0].proposerAmount)
        this.arr[i].role="Proposer";
-       this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+       this.arr[i].result=retrievecurrentroundvalue[0].responderResponse;
        if (retrievecurrentroundvalue[0].proposerAmount==0|| retrievecurrentroundvalue[0].responderResponse=="Decline"){
         this.arr[i].scorethisround=0;
-       } 
+       }
        else{
          this.arr[i].scorethisround=100-retrievecurrentroundvalue[0].proposerAmount;
        }
-       
+
       }
       else{
         this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('responderName', '==', this.arr[i].username).where('round', '==', parseInt(ress[0].round)));
@@ -291,17 +293,17 @@ selecting="Accumulated rounds";
         this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
           if (retrievecurrentroundvalue.length!=0&&retrievecurrentroundvalue[0].responderResponse!="Decline"){
             this.arr[i].role="Responder";
-            this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+            this.arr[i].result=retrievecurrentroundvalue[0].responderResponse;
             this.arr[i].scorethisround=retrievecurrentroundvalue[0].proposerAmount;
           }
           else if (retrievecurrentroundvalue.length!=0&&retrievecurrentroundvalue[0].responderResponse=="Decline"){
             this.arr[i].role="Responder";
-            this.arr[i].result=retrievecurrentroundvalue[0].responderResponse; 
+            this.arr[i].result=retrievecurrentroundvalue[0].responderResponse;
             this.arr[i].scorethisround=0;
 
           }
         })
-      
+
       }
 
       })
@@ -309,10 +311,10 @@ selecting="Accumulated rounds";
       }
     })
     }
-    
-      
 
-      
+
+
+
 
   derangementNumber(n) {
     if(n == 0) {
@@ -368,7 +370,7 @@ selecting="Accumulated rounds";
     return array;
   }
 
-  assignUserToPlayWithAnotherUser(currentRound){
+  assignUserToPlayWithAnotherUser(currentRound, totalround){
     // Calling out all the users joining this gameId
     this.itemDoc = this.afs.collection<any>('Participant');
     this.item = this.itemDoc.valueChanges();
@@ -407,14 +409,14 @@ selecting="Accumulated rounds";
       console.log("areaA's id: "+ areaAUUID);
       console.log("areaB's id: "+ areaBUUID);
 
-      this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID, currentRound);
+      this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID, currentRound, totalround);
       // calculating how many rounds it would take for all users to play against each other in 2 groups.
       //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
       //this.assignProposerAndResponder (areaB, areaA,  half_length);
     });
   }
 
-  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, currentRound){
+  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, currentRound, totalround){
 
     var arrangedUsersA = this.derange(proposer);
     var arrangedUsersB = this.derange(responder);
@@ -438,7 +440,7 @@ selecting="Accumulated rounds";
           gameId:this.hi["gameId"],
           gameMode: 'Random all players',
           round: currentRound,
-          totalRound: 10,
+          totalRound: totalround,
           dateTime: new Date().toISOString(),
           proposerUUID: proposerUUID[i],
           proposerName: proposer[i],
@@ -489,32 +491,32 @@ selecting="Accumulated rounds";
         this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('round', '==', selectedValue-1));
       this.item = this.itemDoc.valueChanges();
       this.subscription= this.item.subscribe(retrievecurrentroundvalue=>{
-        for (let i=0;i<retrievecurrentroundvalue.length;i++){   
+        for (let i=0;i<retrievecurrentroundvalue.length;i++){
         if (retrievecurrentroundvalue[i].proposerName!=""){
          if (retrievecurrentroundvalue[i].proposerAmount==0|| retrievecurrentroundvalue[i].responderResponse=="Decline"){
           let selectround={};
           selectround["role"]="Proposer";
           selectround["username"]=retrievecurrentroundvalue[i].proposerName;
-         selectround["result"]=retrievecurrentroundvalue[i].responderResponse; 
+         selectround["result"]=retrievecurrentroundvalue[i].responderResponse;
           selectround["scorethisround"]=0;
           selectround["score"]=0;
           selectround["score"]=0;
           selectround["amt"]=retrievecurrentroundvalue[i].proposerAmount;
          list.push(selectround)
-         } 
+         }
          else if (retrievecurrentroundvalue[i].proposerAmount!=0|| retrievecurrentroundvalue[i].responderResponse=="Accept"){
           let selectround={};
           selectround["role"]="Proposer";
           selectround["username"]=retrievecurrentroundvalue[i].proposerName;
-         selectround["result"]=retrievecurrentroundvalue[i].responderResponse; 
+         selectround["result"]=retrievecurrentroundvalue[i].responderResponse;
            selectround["scorethisround"]=100-retrievecurrentroundvalue[i].proposerAmount;
            selectround["username"]=retrievecurrentroundvalue[i].proposerName;
            selectround["score"]=100-retrievecurrentroundvalue[i].proposerAmount;
            selectround["amt"]=retrievecurrentroundvalue[i].proposerAmount;
-           
+
            list.push(selectround)
          }
-         
+
         }
         if (retrievecurrentroundvalue[i].responderName!=""){
           if (retrievecurrentroundvalue[i].proposerAmount==0|| retrievecurrentroundvalue[i].responderResponse=="Decline"){
@@ -524,9 +526,9 @@ selecting="Accumulated rounds";
             responderdict["role"]="Responder";
            responderdict["username"]=retrievecurrentroundvalue[i].responderName;
            responderdict["result"]=retrievecurrentroundvalue[i].responderResponse;
-           responderdict["amt"]=retrievecurrentroundvalue[i].proposerAmount; 
+           responderdict["amt"]=retrievecurrentroundvalue[i].proposerAmount;
           list.push(responderdict)
-          } 
+          }
         else if (retrievecurrentroundvalue[i].proposerAmount!=0 && retrievecurrentroundvalue[i].responderResponse=="Accept"){
           let responderdict={};
             responderdict["scorethisround"]=retrievecurrentroundvalue[i].proposerAmount;
@@ -534,15 +536,15 @@ selecting="Accumulated rounds";
             responderdict["role"]="Responder";
             responderdict["username"]=retrievecurrentroundvalue[i].responderName;
             responderdict["score"]=retrievecurrentroundvalue[i].proposerAmount;
-            responderdict["result"]=retrievecurrentroundvalue[i].responderResponse; 
-            responderdict["amt"]=retrievecurrentroundvalue[i].proposerAmount; 
+            responderdict["result"]=retrievecurrentroundvalue[i].responderResponse;
+            responderdict["amt"]=retrievecurrentroundvalue[i].proposerAmount;
             list.push(responderdict)
           }
-          
+
          }
-       
-  
-    
+
+
+
        }
        if (this.arr.length!=0){
          this.arr.length=0;
@@ -550,7 +552,7 @@ selecting="Accumulated rounds";
        list.sort(function(a, b){return a.score - b.score});
        list.reverse();
        this.arr=list;
-       
+
        })
 
     }
@@ -568,7 +570,7 @@ selecting="Accumulated rounds";
       this.roundselect(round-1);
       this.roundsselectedfilter=parseInt(round)-1;
       console.log(this.roundsselectedfilter,"filter")
-      
+
     }
 
     gonext(round){
