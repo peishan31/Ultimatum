@@ -99,6 +99,12 @@ export class RespondantPage {
 
    this.subscription= this.item.subscribe(res=>{
      console.log(res,"RESPRES")
+     if (res.length!=0){
+        // user is a responder in the next round
+        this.proposerAmt = res[0].proposerAmount;
+        console.log(res[0].proposerName,"Proposername")
+        this.proposerUsername = res[0].proposerName;
+     }
      //if cannot find the length, we test if its proposer
 if (res.length==0){
   this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all["UUID"]).where('round', '==', parseInt(ress["round"])));
