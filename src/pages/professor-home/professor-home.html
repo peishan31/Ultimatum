@@ -16,8 +16,7 @@
 }
   </style>
 </ion-header>
-<ion-content id="page4" overflow-scroll="true">
-  <body>
+<ion-content id="page4" style="overflow-y: scroll">
     <!-- <button ion-button (click)="gamecode()"></button> -->
 
   <div *ngIf="code==0" style="text-align: center;"><br><br><br><br><br>
@@ -37,10 +36,11 @@
     <button ion-button (click)="gamecode()" block>Generate game code &nbsp;<ion-icon name="color-wand"  style="color:white;font-size:25px;"></ion-icon></button>
 
   </div>
-
-    <p *ngIf="ok" style="color:red; margin-left: auto; margin-right: auto; padding-right: 10px; padding-left: 10px;">
+  <div style="text-align: center;"><ion-label style="color:red;">{{validator}}</ion-label>
+    <p *ngIf="ok" style="color:red;">
       Please choose game mode
-    </p>
+    </p></div>
+    
   <div *ngIf="code!=0 && waitforstudent!=true && (randomm != false || alllsame != false)">
       <div style="text-align: center;" class="selectable">
         <h2>Game code: <p id="gameId">{{code}}</p> &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
@@ -74,7 +74,7 @@
   </button>
   <br>
   <div style="text-align: center;">
-   <h6> Link to website:</h6>
+   <h6> Please scan QR code:</h6>
   <img src="../../assets/img/qrcode.PNG"/>
 </div>
 </div>
@@ -82,5 +82,4 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Symbol_wait_vote.svg/996px-Symbol_wait_vote.svg.png"  style="display:block;width:20%;margin-left:auto;margin-right:auto;"/>
   <h3>Please wait for students to finish their game..</h3>
 </div>
-</body>
 </ion-content>
