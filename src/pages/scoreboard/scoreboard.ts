@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, NavOptions } from 'ionic-angular';
+import { NavController, NavParams, NavOptions, Loading } from 'ionic-angular';
 import { ProfessorHomePage } from '../professor-home/professor-home';
 import { AngularFirestore } from '@angular/fire/firestore';
+import {LoadingController} from 'ionic-angular';
 import { Subscription } from 'rxjs';
 import { UserPresenceStatusProvider } from '../../providers/user-presence-status/user-presence-status';
 import * as firebase from 'firebase';
@@ -36,11 +37,13 @@ retrievedvalue:any;
 u=0;
 roundss=[];
 selecting="Accumulated rounds";
+loader:Loading;
 randomModeTotalRound="";
   constructor(public navCtrl: NavController,
     public navParams:NavParams,
     public afs:AngularFirestore,
-    public UserPresenceStatusProvider: UserPresenceStatusProvider
+    public UserPresenceStatusProvider: UserPresenceStatusProvider,
+    public loadingCtrl:LoadingController
     ) {
     this.hi=navParams.data;
   }
@@ -128,6 +131,11 @@ randomModeTotalRound="";
       // Check how many round it currently is (<19)!
       // Check if users are online/offline
       // Arrange and see how many rounds can players play with the user
+      this.loader =  this.loadingCtrl.create({
+
+      });
+      this.loader.present();
+
       this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
       this.item = this.itemDoc.valueChanges();
       this.subscription=this.item.subscribe(res=>{
@@ -146,6 +154,7 @@ randomModeTotalRound="";
             })
             .then((data) => {
               console.log("Data: ");
+              this.loader.dismiss();
               this.navCtrl.setRoot(ProfessorHomePage,{"gameId": this.hi["gameId"],gameMode: this.hi["gameMode"], waitForStudent:true})
             }).catch((err) => {
                 console.log("Err: "+err);
@@ -217,7 +226,19 @@ randomModeTotalRound="";
           }
         }
       })
+
     }
+  }
+
+  async presentLoading() {
+    this.loader = await this.loadingCtrl.create({
+
+    });
+    await this.loader.present();
+  }
+
+  async dismissLoading() {
+    await this.loader.dismiss();
   }
 
   scoreboardscore(){
