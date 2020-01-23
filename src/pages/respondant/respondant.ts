@@ -88,7 +88,7 @@ export class RespondantPage {
     let all=this.navParams.data;
 
     console.log("<<Respondant.ts>> Game Mode: " + all["gameMode"]);
-    this.storage.set("responder","false");
+    this.storage.set("responder"+all["UUID"],"false");
     this.StartTimer();
     if (all["gameMode"] == "All same opponents") {
 
@@ -229,6 +229,10 @@ console.log(this.res,"RES")
 
                         res.forEach(RespondantGameDoc =>{
 
+                          this.proposerAmt = RespondantGameDoc.data().proposerAmount;
+                          console.log(RespondantGameDoc.data().proposerName,"Proposername")
+                          this.proposerUsername = RespondantGameDoc.data().proposerName;
+
                           if (RespondantGameDoc.data().responderResponse=="" &&
                             RespondantGameDoc.data().proposerAmount!="") {
 
@@ -244,7 +248,6 @@ console.log(this.res,"RES")
               }
             })
           //}
-          // this.StartTimer();
           }
         //}
       //})
@@ -297,7 +300,7 @@ console.log(this.res,"RES")
     let all=this.navParams.data;
     if (all["gameMode"] == "All same opponents") {
       // update responder's response as 'Accept'
-      this.storage.get("responder").then((val) => {
+      this.storage.get("responder"+all["UUID"]).then((val) => {
         console.log("VAL",val)
         if (val=="false"){
 
@@ -338,7 +341,7 @@ console.log(this.res,"RES")
                 gameMode: all["gameMode"],
                 "UUID": all["UUID"]
               };
-              this.storage.set("responder","true")
+              this.storage.set("responder"+all["UUID"],"true")
               this.navCtrl.setRoot(ResultPage,dict);
 
           //   subject.next(this.firebaseId);
@@ -407,9 +410,10 @@ console.log(this.res,"RES")
                           this.responderData = RespondantGameDoc.data();
                           this.firebaseId = RespondantGameDoc.data().proposerUUID + RespondantGameDoc.data().round + RespondantGameDoc.data().responderUUID + RespondantGameDoc.data().round
                           console.log("firebaseId: " + this.firebaseId );
-                          this.storage.set("responder","true")
-                          this.updateResponderStatus(this.firebaseId, 'Accept');
                           let all=this.navParams.data;
+                          this.storage.set("responder"+all["UUID"],"true")
+                          this.updateResponderStatus(this.firebaseId, 'Accept');
+
                           let addround=RespondantGameDoc.data().round+1;
 
                           var nextroundfirebaseid = "2345";
@@ -546,9 +550,10 @@ console.log(this.res,"RES")
                         this.responderData = RespondantGameDoc.data();
                         this.firebaseId =  RespondantGameDoc.data().proposerUUID + RespondantGameDoc.data().round + RespondantGameDoc.data().responderUUID + RespondantGameDoc.data().round;
                         console.log("firebaseId: " + this.firebaseId );
-                        this.storage.set("responder","true")
-                        this.updateResponderStatus(this.firebaseId, 'Decline');
                         let all=this.navParams.data;
+                        this.storage.set("responder"+all["UUID"],"true")
+                        this.updateResponderStatus(this.firebaseId, 'Decline');
+
                         let addround=RespondantGameDoc.data().round+1;
 
                         var nextroundfirebaseid = "2345";
@@ -601,7 +606,8 @@ console.log(this.res,"RES")
      })
     .then((data) => {
       //console.log("Data: "+data);
-      this.storage.set("responder","true");
+      let all=this.navParams.data;
+      this.storage.set("responder"+all["UUID"],"true");
       console.log("DID SET STORAGE")
     }).catch((err) => {
       console.log("Err: "+err);

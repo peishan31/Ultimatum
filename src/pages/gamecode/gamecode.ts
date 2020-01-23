@@ -161,6 +161,12 @@ subscribed=false;
         ref
         .onDisconnect()
         .update({
+          /*
+          UUID: value.UUID,
+          online: true,
+          gameId: value.gameId,
+          inGame: false
+          */
           gameId: all.gameId,
           online: false
         })
@@ -211,7 +217,7 @@ subscribed=false;
       );
 
       var ref = firebase.database().ref(`/` + "User" + `/` + value.UUID + `/`);
-      ref.update({
+      ref.set({
         UUID: value.UUID,
         online: true,
         gameId: value.gameId,
