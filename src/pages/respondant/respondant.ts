@@ -244,7 +244,6 @@ console.log(this.res,"RES")
               }
             })
           //}
-          this.StartTimer();
           }
         //}
       //})
