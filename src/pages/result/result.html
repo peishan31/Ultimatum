@@ -35,6 +35,7 @@
 <br><h3 style="font-size: 18px;">Score: {{totalproposeramount}} <span class="badge badge-success" style="background-color: green;">+{{currentround}} pts</span></h3>
 <br>
 </ion-card>
-<h4 *ngIf="Result!=''">Please wait for professor...</h4>
+<h4 *ngIf="Result!='' && showgobklogin!=true">Please wait for professor...</h4>
+<h4 *ngIf="showgobklogin==true && Result!=''" style="color: cornflowerblue;text-align: center;" (click)="goback()">Play new game</h4>
 </div>
 </ion-content>

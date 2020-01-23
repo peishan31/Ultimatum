@@ -7,6 +7,7 @@ import { RespondantPage } from '../respondant/respondant';
 import { NextroundsPage } from '../nextrounds/nextrounds';
 import { Storage } from '@ionic/storage';
 import {LoadingController} from 'ionic-angular';
+import { UltimatumPage } from '../ultimatum/ultimatum';
 
 /**
  * Generated class for the ResultPage page.
@@ -44,6 +45,7 @@ export class ResultPage {
   professorcodes:any;
   totalproposeramount=0;
   loader:Loading;
+  showgobklogin:Boolean;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore, public storage:Storage, public loadingCtrl:LoadingController) {
 
     var val = this.navCtrl.last().name;
@@ -168,6 +170,9 @@ if (ress.docs.length != 0) {
       }
 
       this.professorcode = this.afs.collection('Professor').doc(this.data["GameId"]).valueChanges().subscribe(ress=>{
+        if (parseInt(res["totalRound"])-1==parseInt(res["round"])){
+          this.showgobklogin=true;
+        }
         this.data=navParams.data;
         //if (res[p].responderUUID == all.UUID && res[p].gameId==all.gamecode) { --> ***GAMECODE TEMP NOT WORKING
         let date=new Date();
@@ -287,6 +292,9 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
           }
       })*/
       this.subscription=  this.afs.collection('Game').doc(this.data["FirebaseId"]).valueChanges().subscribe(res=>{
+        if (parseInt(res["totalRound"])-1==parseInt(res["round"])){
+          this.showgobklogin=true;
+        }
         this.Result=res["responderResponse"];
         this.ProposerName=res["proposerName"];
         this.ResponderName=res["responderName"];
@@ -420,7 +428,6 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                   this.professorcode = this.afs.collection('Professor')
                     .doc(this.data["GameId"]).valueChanges().subscribe(ress=>{
-
                       let date=new Date();
                       this.datetime=date.toISOString();
                       let round=parseInt(res["round"]); // currentRound
@@ -768,4 +775,9 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
   }
     )}
+
+   
+    goback(){
+      this.navCtrl.setRoot(UltimatumPage);
+    }
 }

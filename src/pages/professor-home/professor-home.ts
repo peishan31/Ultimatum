@@ -41,6 +41,7 @@ studentsList={"username": [], "UUID": [], "totalRound": 0};
 retrieveprofessor:any;
 professorcode:any;
 rounds:number;
+validator:string;
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
@@ -128,34 +129,40 @@ if (data["waitForStudent"]==true){
   }
 
   gamecode(){ // Aim: Count and display the user
+    if (this.rounds%2==0){
+      this.validator="";
+      if ((this.randomm != false || this.alllsame != false)) {
 
-    if ((this.randomm != false || this.alllsame != false)) {
+        this.ok = false;
+        //this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
+        this.code = this.randomGeneratedGameCode();
 
-      this.ok = false;
-      //this.code = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1+Math.floor(Math.random()*20)+1;
-      this.code = this.randomGeneratedGameCode();
+        const toast = this.toastCtrl.create({
+          message: 'Waiting for students...',
+          duration:3000
+        });
+        toast.present();
 
-      const toast = this.toastCtrl.create({
-        message: 'Waiting for students...',
-        duration:3000
-      });
-      toast.present();
+        //console.log(this.code);
+        let date=new Date();
 
-      //console.log(this.code);
-      let date=new Date();
+        this.createProCode({gameId:this.code,dateTime:date.toISOString()});
 
-      this.createProCode({gameId:this.code,dateTime:date.toISOString()});
+        this.UserPresenceStatusProvider.updateUserPresenceStatus();
+        let mylist = this.updateCurrentParticipant(this.code);
+        this.list = mylist;
+        this.studentnum = mylist.length;
+        console.log("My list: "+ mylist);
+        //console.log("My list's length: "+ mylist.length);
 
-      this.UserPresenceStatusProvider.updateUserPresenceStatus();
-      let mylist = this.updateCurrentParticipant(this.code);
-      this.list = mylist;
-      this.studentnum = mylist.length;
-      console.log("My list: "+ mylist);
-      //console.log("My list's length: "+ mylist.length);
-
+      }
+      else{
+        this.ok=true;
+      }
     }
+   
     else{
-      this.ok=true;
+      this.validator="Please choose an even number for rounds";
     }
 
   }
