@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ToastController, Loading } from 'ionic-angular';
 import { RespondantPage } from '../respondant/respondant';
 import { AngularFirestore } from '@angular/fire/firestore';
 import {LoadingController} from 'ionic-angular';
@@ -31,11 +31,13 @@ export class ProposerPage {
   goonce=0;
   once=0;
   addround=0
+  loader:Loading;
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public navParams: NavParams,
-    public storage:Storage) {
+    public storage:Storage,
+    public toastCtrl:ToastController) {
 
   }
 
@@ -165,6 +167,7 @@ export class ProposerPage {
   }
 
   submitProposerOffer(){
+
     this.storage.get("proposer").then((val) => {
       if (val=="false"){
         if (this.presstrue==true){
@@ -254,107 +257,110 @@ export class ProposerPage {
   }
 
   submitProposerOfferRandomAllPlayers() {
-    this.storage.get("proposer").then((val) => {
-      if (val=="false"){
-    let all=this.navParams.data;
-    if (this.presstrue) {
 
-      if (this.once!=0){
-        this.once = all["once"]
+      this.storage.get("proposer").then((val) => {
+        if (val=="false"){
+      let all=this.navParams.data;
+      if (this.presstrue) {
+
+        if (this.once!=0){
+          this.once = all["once"]
+        }
       }
-    }
-    //alert("My UUID: " + all.UUID);
-    this.storage.get(all.UUID+"EnteredProposal").then((val) => {
+      //alert("My UUID: " + all.UUID);
+      this.storage.get(all.UUID+"EnteredProposal").then((val) => {
 
-      if (val == false) {
+        if (val == false) {
 
-        this.professorcode = this.afs.collection<any>('Professor').ref
-          .where('gameId', '==', all["GameId"])
-          .get()
-          .then(ress => {
+          this.professorcode = this.afs.collection<any>('Professor').ref
+            .where('gameId', '==', all["GameId"])
+            .get()
+            .then(ress => {
 
-          if (ress.docs.length != 0) {
+            if (ress.docs.length != 0) {
 
-            ress.forEach(ProfessorDoc => {
+              ress.forEach(ProfessorDoc => {
 
-              this.itemDoc = this.afs.collection<any>('Game').ref
-                .where('gameId', '==', all["GameId"])
-                .where('proposerUUID', '==', all["UUID"])
-                .where('round', '==', parseInt(ProfessorDoc.data().round));
+                this.itemDoc = this.afs.collection<any>('Game').ref
+                  .where('gameId', '==', all["GameId"])
+                  .where('proposerUUID', '==', all["UUID"])
+                  .where('round', '==', parseInt(ProfessorDoc.data().round));
 
-              this.itemDoc.get().then(res=>{ //sacso
+                this.itemDoc.get().then(res=>{ //sacso
 
-                if (res.docs.length != 0) {
+                  if (res.docs.length != 0) {
 
-                  res.forEach(ProposerGameDoc =>{
+                    res.forEach(ProposerGameDoc =>{
 
-                    if (ProposerGameDoc.data().proposerUUID == all["UUID"]
-                      && ProposerGameDoc.data().responderResponse==""){
+                      if (ProposerGameDoc.data().proposerUUID == all["UUID"]
+                        && ProposerGameDoc.data().responderResponse==""){
 
-                        this.proposerData = ProposerGameDoc.data();
-                        this.firebaseId= ProposerGameDoc.data().proposerUUID + ProposerGameDoc.data().round +  ProposerGameDoc.data().responderUUID + ProposerGameDoc.data().round;
-                        this.updateProfessorStatus(this.firebaseId);
+                          this.proposerData = ProposerGameDoc.data();
+                          this.firebaseId= ProposerGameDoc.data().proposerUUID + ProposerGameDoc.data().round +  ProposerGameDoc.data().responderUUID + ProposerGameDoc.data().round;
+                          this.updateProfessorStatus(this.firebaseId);
 
-                        let addround=ProposerGameDoc.data().round+1;
+                          let addround=ProposerGameDoc.data().round+1;
 
-                        // round 1, 3, 5, 7, 9 just have to swap their roles
-                        // round 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 is required to randomly generate the user
-                        if ((addround % 2 !=0)) // *****(it starts from 0)
-                        { // swapping roles
-                            let nextroundfirebaseid= ProposerGameDoc.data().responderUUID + addround + ProposerGameDoc.data().proposerUUID + addround;
+                          // round 1, 3, 5, 7, 9 just have to swap their roles
+                          // round 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 is required to randomly generate the user
+                          if ((addround % 2 !=0)) // *****(it starts from 0)
+                          { // swapping roles
+                              let nextroundfirebaseid= ProposerGameDoc.data().responderUUID + addround + ProposerGameDoc.data().proposerUUID + addround;
 
-                            let dict={
-                              UUID: all["UUID"],
-                              username: all["username"],
-                              GameId:all["GameId"],
-                              gameMode: all["gameMode"],
-                              Role:"Proposer", // Current Role
-                              Amount:this.range,
-                              FirebaseId: this.firebaseId,
-                              nextroundfirebaseid:nextroundfirebaseid,
-                              // result
-                              Round:ProposerGameDoc.data().round, // Current round
-                              once:1
-                            };
-
-                          console.log("((proposer.ts)): "+ all["UUID"]);
-                          this.storage.set(all.UUID+"EnteredProposal", true);
-                          this.storage.set("proposer","true")
-                          this.navCtrl.setRoot(ResultPage,dict);
-                        }
-                        else
-                        { // randomizing role in the previous round
-                          let nextroundfirebaseid= "2345"; // nth cos they are randomizing users now
-
-                            let dict={
-                              UUID: all["UUID"],
-                              username: all["username"],
-                              GameId:all["GameId"],
-                              gameMode: all["gameMode"],
-                              Role:"Proposer", // Current Role
-                              Amount:this.range,
-                              FirebaseId: this.firebaseId,
-                              nextroundfirebaseid:nextroundfirebaseid, // "23454" <-- hardcoded for now
-                              Round:ProposerGameDoc.data().round, // Current Round
-                              once:1
-                            };
+                              let dict={
+                                UUID: all["UUID"],
+                                username: all["username"],
+                                GameId:all["GameId"],
+                                gameMode: all["gameMode"],
+                                Role:"Proposer", // Current Role
+                                Amount:this.range,
+                                FirebaseId: this.firebaseId,
+                                nextroundfirebaseid:nextroundfirebaseid,
+                                // result
+                                Round:ProposerGameDoc.data().round, // Current round
+                                once:1
+                              };
 
                             console.log("((proposer.ts)): "+ all["UUID"]);
                             this.storage.set(all.UUID+"EnteredProposal", true);
                             this.storage.set("proposer","true")
                             this.navCtrl.setRoot(ResultPage,dict);
                           }
-                    }
+                          else
+                          { // randomizing role in the previous round
+                            let nextroundfirebaseid= "2345"; // nth cos they are randomizing users now
 
-                  })
-                }
+                              let dict={
+                                UUID: all["UUID"],
+                                username: all["username"],
+                                GameId:all["GameId"],
+                                gameMode: all["gameMode"],
+                                Role:"Proposer", // Current Role
+                                Amount:this.range,
+                                FirebaseId: this.firebaseId,
+                                nextroundfirebaseid:nextroundfirebaseid, // "23454" <-- hardcoded for now
+                                Round:ProposerGameDoc.data().round, // Current Round
+                                once:1
+                              };
+
+                              console.log("((proposer.ts)): "+ all["UUID"]);
+                              this.storage.set(all.UUID+"EnteredProposal", true);
+                              this.storage.set("proposer","true")
+                              this.navCtrl.setRoot(ResultPage,dict);
+                            }
+                      }
+
+                    })
+                  }
+                })
               })
-            })
-          }
-        })
-      }
-    })}
-    })
+            }
+          })
+        }
+      })}
+      })
+
+
 
     /*this.storage.get(all.UUID+"EnteredProposal").then((val) => {
       if (val == true) {
