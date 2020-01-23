@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { UserPresenceStatusProvider } from '../../providers/user-presence-status/user-presence-status';
 import * as firebase from 'firebase';
 import { ViewpastornewPage } from '../viewpastornew/viewpastornew';
+import { snapshotChanges } from '@angular/fire/database';
 
 @Component({
   selector: 'page-scoreboard',
@@ -377,15 +378,40 @@ randomModeTotalRound="";
     this.item.subscribe(res=>{
       this.studentsList["username"] = [];
       this.studentsList["UUID"] = [];
+
       for (let i=0; i<res.length;i++){
+
+        /*db.database.ref('/User/').orderByChild('uID').equalTo(this.uID).once('value', (snapshot) => {
+          console.log(snapshot.val().email)
+      })*/
 
         //if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
         if ((res[i].gameId==this.hi["gameId"])){
           console.log("res[i]: " + JSON.stringify(res[i]));
-          this.studentsList["username"].push(res[i].username);
-          console.log("My username: " + res[i].username);
-          this.studentsList["UUID"].push(res[i].UUID);
-          this.studentnum=this.studentsList["username"].length;
+
+          /*const requestRef = firebase.database().ref(`/` + "User" + `/` + res[i].username + `/`);
+          requestRef.orderByChild('inGame')
+            .equalTo(true)
+            .once('value')
+            .then(snapshot=>{
+              alert(snapshot)
+              alert(JSON.stringify(snapshot.val()));
+            })
+            .then((data) => {// your handle code here})
+                //data.id
+
+            })*/
+            const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/`  + res[i].UUID + `/`);
+            personRefs.on('value', snapshot => {
+
+              if ((snapshot.val().inGame == true)) {
+                //alert(snapshot.val().UUID);
+                this.studentsList["username"].push(res[i].username);
+                console.log("My username: " + res[i].username);
+                this.studentsList["UUID"].push(res[i].UUID);
+                this.studentnum=this.studentsList["username"].length;
+              }
+            })
         }
       }
       this.studentsList["totalRound"] = this.studentsList["username"].length;

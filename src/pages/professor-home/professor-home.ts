@@ -291,9 +291,11 @@ if (data["waitForStudent"]==true){
   }
 
   assignUserToPlayWithAnotherUser(){
+
     // Calling out all the users joining this gameId
     this.itemDoc = this.afs.collection<any>('Participant', ref => ref
       .where("gameId", "==", this.code)
+      .where("online", "==" , true)
     );
     this.item = this.itemDoc.valueChanges();
     this.didsubscribed=true;
@@ -365,11 +367,30 @@ if (data["waitForStudent"]==true){
           responderStatus: "Not Ready",
           gameStatus: "Not Ready"
          })
+
+         var id3 = proposerUUID[i];
+
+            var ref = firebase.database().ref(`/` + "User" + `/` + id3 + `/`);
+            ref.update({
+              UUID: id3,
+              online: true,
+              gameId: this.code,
+              inGame: true
+            });
+
+          var id2 = responderUUID[i];
+
+          var ref2 = firebase.database().ref(`/` + "User" + `/` + id2 + `/`);
+          ref2.update({
+            UUID: id2,
+            online: true,
+            gameId: this.code,
+            inGame: true
+          })
         .then((data) => {
-          //console.log("Data: "+data);
-        }).catch((err) => {
-          console.log("Err: "+err);
-        })
+
+
+          })
 		}
   }
   //yonglin

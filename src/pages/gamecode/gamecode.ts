@@ -89,6 +89,8 @@ subscribed=false;
             for (let p=0;p<res.length;p++){
                  if (res[p].professorStatus=='Ready'){
                   // find out if user is a proposer or responder
+                  //this.updateParticipantInGame(all);
+                  //this.createParticipant(all);
                   this.loader.dismiss();
                   console.log("in")
                   this.inhere+=1;
@@ -134,7 +136,7 @@ subscribed=false;
         console.log("Yoooo: "+ ref);
         ref
         .onDisconnect()
-        .set({
+        .update({
           gameId: all.gameId,
           online: false
         })
@@ -186,8 +188,10 @@ subscribed=false;
 
       var ref = firebase.database().ref(`/` + "User" + `/` + value.UUID + `/`);
       ref.update({
+        UUID: value.UUID,
         online: true,
-        gameId: value.gameId
+        gameId: value.gameId,
+        inGame: false
       });
     })
 
