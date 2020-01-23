@@ -24,6 +24,7 @@ import { Storage } from '@ionic/storage';
 })
 export class GamecodePage {
   subscription:any;
+  professorcodes:any;
 gamecode:string;
 submitted=false;
 itemDoc:any;
@@ -50,9 +51,32 @@ subscribed=false;
 
   }
 
+  validate(){
+    this.professorcodes = this.afs.collection<any>('Professor').ref
+    .where('gameId', '==', this.gamecode)
+    .where('professorStatus', '==', "Not Ready")
+    .get()
+    .then(ress => {
+    console.log(ress)
+    if (ress.docs.length == 0) {
+      // ress.forEach(ProfessorDoc => {
+      
+      // })
+      this.errormsg="Code invalid or game has already started...";
+    }
+    else{
+      this.errormsg="";
+    }
+     }   )
+  
+  }
+
   Next(form: NgForm){
+    this.validate();
     this.submitted = true;
-    if (form.valid && this.gamecode!= '' && this.gamecode!=null && this.inhere==0) {
+    if (form.valid && this.gamecode!= '' && this.gamecode!=null && this.inhere==0 && this.errormsg=="") {
+  
+        
     // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
     // shand[0].style.display="none";
       let data= this.navParams.data;

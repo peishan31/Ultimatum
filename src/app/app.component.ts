@@ -11,6 +11,7 @@ import { UserPresenceStatusProvider } from '../providers/user-presence-status/us
 import { PastscoreboardPage } from '../pages/pastscoreboard/pastscoreboard';
 import { ResetPage } from '../pages/reset/reset';
 import { ViewpastornewPage } from '../pages/viewpastornew/viewpastornew';
+import { AnalyticsPage } from '../pages/analytics/analytics';
 
 
 @Component({
@@ -43,5 +44,8 @@ export class MyApp {
 }reset(params){
   if (!params) params = {};
   this.navCtrl.setRoot(ResetPage);
+}analytics(params){
+  if (!params) params = {};
+  this.navCtrl.setRoot(AnalyticsPage);
 }
 }

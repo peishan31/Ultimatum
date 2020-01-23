@@ -38,6 +38,7 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
 
 import { IonicStorageModule } from '@ionic/storage';
 import { ResetPage } from '../pages/reset/reset';
+import {AnalyticsPage} from '../pages/analytics/analytics';
 
 const config= {}
 
@@ -57,7 +58,8 @@ const config= {}
     PastscoreboardPage,
     ViewpastornewPage,
     NextroundsPage,
-    ResetPage
+    ResetPage,
+    AnalyticsPage
   ],
   imports: [
     BrowserModule,
@@ -85,7 +87,8 @@ const config= {}
     PastscoreboardPage,
     ViewpastornewPage,
     NextroundsPage,
-    ResetPage
+    ResetPage,
+    AnalyticsPage
   ],
   providers: [
     StatusBar,
