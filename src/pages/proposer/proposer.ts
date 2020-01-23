@@ -107,12 +107,14 @@ export class ProposerPage {
   }
 
   ionViewDidEnter(){
-    this.storage.set("proposer","false")
+    let all=this.navParams.data;
+    this.storage.set("proposer"+all["UUID"],"false")
 
   }
 
   ngOnInit(){
-    this.storage.set("proposer","false")
+    let all=this.navParams.data;
+    this.storage.set("proposer"+all["UUID"],"false")
     this.presstrue=false;
     this.StartTimer();
 
@@ -168,7 +170,8 @@ export class ProposerPage {
 
   submitProposerOffer(){
 
-    this.storage.get("proposer").then((val) => {
+    let all=this.navParams.data;
+    this.storage.get("proposer"+all["UUID"]).then((val) => {
       if (val=="false"){
         if (this.presstrue==true){
           let data=this.navParams.data;
@@ -225,7 +228,7 @@ export class ProposerPage {
                   let nextroundfirebaseid= res[p].proposerUUID + addround +  res[p].responderUUID + addround;
                   let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"UUID":res[p].proposerUUID,"Amount":this.range,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid, gameMode: data["gameMode"]};
                   this.presstrue=false;
-                  this.storage.set("proposer","true")
+                  this.storage.set("proposer"+all["UUID"],"true")
                   this.navCtrl.setRoot(ResultPage,dict);
                   this.presstrue=false;
                 }
@@ -233,7 +236,7 @@ export class ProposerPage {
                   let nextroundfirebaseid=res[p].responderUUID + addround + res[p].proposerUUID  + addround;
                   let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range,"UUID":res[p].proposerUUID,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid, gameMode: data["gameMode"]};
                   this.presstrue=false;
-                  this.storage.set("proposer","true")
+                  this.storage.set("proposer"+all["UUID"],"true")
                   this.navCtrl.setRoot(ResultPage,dict);
                   this.presstrue=false;
                 }
@@ -258,9 +261,10 @@ export class ProposerPage {
 
   submitProposerOfferRandomAllPlayers() {
 
-      this.storage.get("proposer").then((val) => {
+    let all=this.navParams.data;
+      this.storage.get("proposer"+all["UUID"]).then((val) => {
         if (val=="false"){
-      let all=this.navParams.data;
+
       if (this.presstrue) {
 
         if (this.once!=0){
@@ -323,7 +327,7 @@ export class ProposerPage {
 
                             console.log("((proposer.ts)): "+ all["UUID"]);
                             this.storage.set(all.UUID+"EnteredProposal", true);
-                            this.storage.set("proposer","true")
+                            this.storage.set("proposer"+all["UUID"],"true")
                             this.navCtrl.setRoot(ResultPage,dict);
                           }
                           else
@@ -345,7 +349,7 @@ export class ProposerPage {
 
                               console.log("((proposer.ts)): "+ all["UUID"]);
                               this.storage.set(all.UUID+"EnteredProposal", true);
-                              this.storage.set("proposer","true")
+                              this.storage.set("proposer"+all["UUID"],"true")
                               this.navCtrl.setRoot(ResultPage,dict);
                             }
                       }

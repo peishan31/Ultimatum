@@ -160,7 +160,7 @@ if (data["waitForStudent"]==true){
         this.ok=true;
       }
     }
-   
+
     else{
       this.validator="Please choose an even number for rounds";
     }
@@ -235,6 +235,7 @@ if (data["waitForStudent"]==true){
         gameId:value.gameId,
         dateTime:value.dateTime,
         professorStatus: "Not Ready",
+        gameEnded: false,
         totalround:this.rounds,
         round:""
 
