@@ -1,25 +1,26 @@
 <ion-header>
-  <!-- <ion-navbar>
+  <ion-navbar color="primary">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>
       Scoreboard
     </ion-title>
-  </ion-navbar> -->
+  </ion-navbar>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'><link rel="stylesheet" href="../../assets/css/style.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
 </ion-header>
 <ion-content id="page5">
-  <br>
+
   <h3 id="scoreboard-heading3" style="color:#000000;text-align: center;"> 
   </h3>
   <div class="form-group" *ngIf="currentround==totalround" style="text-align: center;"> 
-    <label for="gender1" class="col-sm-2 control-label"></label>
+    <label for="gender1" class="col-sm-1 control-label"></label>
     <label for="gender1" class="col-sm-1 control-label">Filter:&nbsp;<ion-icon name="options" style="color:cornflowerblue"></ion-icon></label>
-    <div class="col-sm-3">
+    <div class="col-sm-4">
     <ion-select class="form-control" id="gender1" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
       <ion-option>Individual round</ion-option>
       <ion-option>Accumulated rounds</ion-option>

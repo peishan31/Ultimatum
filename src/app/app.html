@@ -1,6 +1,6 @@
 <ion-menu [content]="mainContent">
   <ion-header>
-    <ion-toolbar>
+    <ion-toolbar color="primary">
       <ion-title>
         Menu
       </ion-title>
@@ -8,14 +8,20 @@
   </ion-header>
   <ion-content id="side-menu21">
     <ion-list id="menu-list1">
-      <ion-item color="none" menuClose="" on-click="goToUltimatum()" id="menu-list-item1">
+      <ion-item class="ui" color="none" menuClose="" on-click="goHome()" id="menu-list-item1">
         Home
       </ion-item>
-      <ion-item color="none" menuClose="" on-click="goToProposer()" id="menu-list-item2">
-        Cart
+      <ion-item color="none" menuClose="" on-click="newgame()" id="menu-list-item2">
+        Start new game
       </ion-item>
-      <ion-item color="none" menuClose="" on-click="goToRespondant()" id="menu-list-item3">
-        Cloud
+      <ion-item color="none" menuClose="" on-click="pastscore()" id="menu-list-item2">
+        View past scoreboards
+      </ion-item>
+      <ion-item color="none" menuClose="" on-click="reset()" id="menu-list-item3">
+        Reset password
+      </ion-item>
+      <ion-item color="none" menuClose="" on-click="goToUltimatum()" id="menu-list-item3">
+        Log Out
       </ion-item>
     </ion-list>
   </ion-content>
