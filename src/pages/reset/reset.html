@@ -14,5 +14,36 @@
 </ion-header>
 
 <ion-content padding>
+  <form #submitUltimatumForm="ngForm" class="form" [formGroup]="validations_form" >
+    <!--<ion-item id="ultimatum-input1">
+      <ion-label></ion-label>
+      <ion-input type="text" placeholder="USERNAME" [(ngModel)]="Username" [ngModelOptions]="{standalone:true}" (keyup.enter)="Next(submitUltimatumForm)"></ion-input><br>
+    </ion-item>
+    <ion-item>
+      <ion-input type="password" placeholder="  Password" formControlName="password" clearOnEdit="false" (keyup.enter)="Next(submitUltimatumForm)"></ion-input>
+    </ion-item>-->
+    <div id="userCurrentPasswordId">
+      <ion-item>
+        <ion-label floating>Current Password</ion-label>
+        <ion-input [type]="currentPasswordType" clearOnEdit="false" name="currentPassword" formControlName="currentPassword"></ion-input>
+        <ion-icon item-end [name]="currentPasswordIcon" class="passwordIcon" (click)='hideShowCurrentPassword()'></ion-icon>
+      </ion-item>
+    </div>
+    <div id="userNewPasswordId">
+      <ion-item>
+        <ion-label floating>New Password</ion-label>
+        <ion-input [type]="newPasswordType" clearOnEdit="false" formControlName="newPassword" id="newPassword"></ion-input>
+        <ion-icon item-end [name]="newPasswordIcon" class="passwordIcon" (click)='hideShowNewPassword()'></ion-icon>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Confirm Password</ion-label>
+        <ion-input [type]="confirmPasswordType" clearOnEdit="false" formControlName="confirmPassword" id="confirmPassword"></ion-input>
+        <ion-icon item-end [name]="confirmPasswordIcon" class="passwordIcon" (click)='hideShowConfirmPassword()'></ion-icon>
+      </ion-item>
+    </div>
+  </form>
+   <br>
+    <button ion-button (click)="changepassword()" block>Change password &nbsp;<ion-icon name="key"  style="color:white;font-size:25px;"></ion-icon></button>
 
+  <!-- </div> -->
 </ion-content>
