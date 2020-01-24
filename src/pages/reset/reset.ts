@@ -81,28 +81,37 @@ export class ResetPage {
               let userConfirmPassword=this.validations_form.get('confirmPassword').value;
 
               if (userNewPassword != null && userNewPassword != "") {
+
                 if ((userNewPassword == userConfirmPassword) && (userNewPassword!=null) && (userNewPassword!="")) {
 
-                  // Generate new salt;
-                  const saltValue = Crypto.randomBytes(30).toString('hex');
-                  // Hashing
-                  var userAttemptNewPasswordHash = this.hashing(userNewPassword + saltValue);
+                  var regex = /(?=^.{8,100}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@%+\\\/'!#$^?:.(){}\[\]~\-_.])(?!.*\s).*$/;
+                  if ((regex.test(userNewPassword))) {
 
-                  // Storing in db
-                  new Promise<any>((resolve, reject) => {
-                    var id = "ProfessorAccount1"
-                    this.afs.collection('ProfessorAccount').doc(id).set({
-                      PasswordHash: userAttemptNewPasswordHash,
-                      PasswordSalt: saltValue,
-                      Username: "Professor123"
+                    // Generate new salt;
+                    const saltValue = Crypto.randomBytes(30).toString('hex');
+                    // Hashing
+                    var userAttemptNewPasswordHash = this.hashing(userNewPassword + saltValue);
+
+                    // Storing in db
+                    new Promise<any>((resolve, reject) => {
+                      var id = "ProfessorAccount1"
+                      this.afs.collection('ProfessorAccount').doc(id).set({
+                        PasswordHash: userAttemptNewPasswordHash,
+                        PasswordSalt: saltValue,
+                        Username: "Professor123"
+                      })
+                      .then(
+                        res => resolve(res),
+                        err => reject(err)
+                      );
                     })
-                    .then(
-                      res => resolve(res),
-                      err => reject(err)
-                    );
-                  })
-                  alert("Password changed!");
-                  this.navCtrl.setRoot(ViewpastornewPage);
+                    alert("Password changed!");
+                    this.navCtrl.setRoot(ViewpastornewPage);
+                  }
+                  else {
+                    alert("Your password must contain 8 characters, at least one small-case letter, at least one capital letter, at least one number and at least one symbol")
+                  }
+
                 }
                 else {
                   alert("Password do not match! Please try again!");
