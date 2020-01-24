@@ -19,8 +19,7 @@ import { AnalyticsPage } from '../pages/analytics/analytics';
 })
 export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
-    //rootPage:any = UltimatumPage;
-    rootPage:any = ResetPage;
+    rootPage:any = UltimatumPage;
 
   constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
