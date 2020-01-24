@@ -11,6 +11,7 @@ import { UserPresenceStatusProvider } from '../providers/user-presence-status/us
 import { PastscoreboardPage } from '../pages/pastscoreboard/pastscoreboard';
 import { ResetPage } from '../pages/reset/reset';
 import { ViewpastornewPage } from '../pages/viewpastornew/viewpastornew';
+import { AnalyticsPage } from '../pages/analytics/analytics';
 
 
 @Component({
@@ -18,7 +19,8 @@ import { ViewpastornewPage } from '../pages/viewpastornew/viewpastornew';
 })
 export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
-    rootPage:any = UltimatumPage;
+    //rootPage:any = UltimatumPage;
+    rootPage:any = ResetPage;
 
   constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
@@ -43,5 +45,8 @@ export class MyApp {
 }reset(params){
   if (!params) params = {};
   this.navCtrl.setRoot(ResetPage);
+}analytics(params){
+  if (!params) params = {};
+  this.navCtrl.setRoot(AnalyticsPage);
 }
 }

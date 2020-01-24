@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ProfessorHomePage } from '../professor-home/professor-home';
 import { PastscoreboardPage } from '../pastscoreboard/pastscoreboard';
 import { ScoreboardPage } from '../scoreboard/scoreboard';
+import { ResetPage } from '../reset/reset';
+import { AnalyticsPage } from '../analytics/analytics';
 
 /**
  * Generated class for the ViewpastornewPage page.
@@ -34,4 +36,11 @@ this.navCtrl.setRoot(PastscoreboardPage)
    this.navCtrl.setRoot(ProfessorHomePage)
   }
 
+  reset(){
+    this.navCtrl.setRoot(ResetPage);
+  }
+
+  analytics(){
+    this.navCtrl.setRoot(AnalyticsPage)
+  }
 }
