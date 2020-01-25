@@ -446,8 +446,36 @@ randomModeTotalRound="";
         this.studentsList["UUID"].push("101");
         //this.studentsIdList[this.studentsList.length] = 1;
       }*/
+       // randomizing
+      /*var firstusername = this.studentsList["username"].shift();
+       this.studentsList["username"].push(firstusername);
 
-      // splitting users into 2 groups
+       var firstUUID = this.studentsList["UUID"].shift();
+       this.studentsList["UUID"].push(firstUUID);*/
+
+      var chosenIndex = Math.floor(Math.random() * this.studentsList["username"].length);
+      console.log("chosenIndex: " + chosenIndex);
+
+      console.log("chosenVal: " + this.studentsList["username"][chosenIndex]);
+      console.log("Before: " + this.studentsList["username"]);
+
+      var storeChosenVal = this.studentsList["username"][chosenIndex];
+      this.studentsList["username"].splice(chosenIndex, 1);
+
+      this.studentsList["username"].push(storeChosenVal);
+      console.log("After: " + this.studentsList["username"]);
+
+      console.log("chosenVal: " + this.studentsList["UUID"][chosenIndex]);
+      console.log("Before: " + this.studentsList["UUID"]);
+
+      var storeChosenValUUID = this.studentsList["UUID"][chosenIndex];
+      this.studentsList["UUID"].splice(chosenIndex, 1);
+
+      this.studentsList["UUID"].push(storeChosenValUUID);
+      console.log("After: " + this.studentsList["UUID"]);
+
+
+       // splitting users into 2 groups
       var half_length = Math.ceil(this.studentsList["username"].length / 2);
       var areaA = this.studentsList["username"].splice(0, half_length);
       var areaB = this.studentsList["username"];
@@ -467,12 +495,18 @@ randomModeTotalRound="";
 
   assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID, currentRound, totalround){
 
-    var arrangedUsersA = this.derange(proposer);
-    var arrangedUsersB = this.derange(responder);
-    if ( (proposer.length+responder.length) == 4) {
-      arrangedUsersA = this.shuffle(proposer);
-      arrangedUsersB = this.shuffle(responder);
+
+    /*if ( (proposer.length+responder.length) == 4) {
+      var arrangedUsersA = this.shuffle(proposer);
+      var arrangedUsersB = this.shuffle(responder);
     }
+    else {
+      arrangedUsersA = this.derange(proposer);
+      arrangedUsersB = this.derange(responder);
+    }*/
+
+    var arrangedUsersA = proposer;
+    var arrangedUsersB = responder;
 
     console.log("Before shuffle: (areaA)" + proposer);
 		console.log("Now: (areaA)" + arrangedUsersA);

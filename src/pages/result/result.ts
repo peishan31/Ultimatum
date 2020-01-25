@@ -776,7 +776,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
   }
     )}
 
-   
+
     goback(){
       this.navCtrl.setRoot(UltimatumPage);
     }
