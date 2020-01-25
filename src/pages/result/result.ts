@@ -46,6 +46,7 @@ export class ResultPage {
   totalproposeramount=0;
   loader:Loading;
   showgobklogin:Boolean;
+  firstcome = 0;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore, public storage:Storage, public loadingCtrl:LoadingController) {
 
     var val = this.navCtrl.last().name;
@@ -519,12 +520,15 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
 
                         //this.loader = null;
+                       if (this.firstcome == 0) {
+
+                        this.firstcome+=1;
                         this.loader =  this.loadingCtrl.create({
                           duration: 8000
                         });
 
                         this.loader.present();
-
+                        console.log("How many times?");
 
                         this.loader.onDidDismiss(() => {
                           this.afs.collection<any>('Game').ref
@@ -612,8 +616,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                             }
                           });
                         });
-
-
+                       }
 
                       }
 

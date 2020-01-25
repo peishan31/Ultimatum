@@ -272,9 +272,9 @@ export class ProposerPage {
         }
       }
       //alert("My UUID: " + all.UUID);
-      this.storage.get(all.UUID+"EnteredProposal").then((val) => {
+      //this.storage.get(all.UUID+"EnteredProposal").then((val) => {
 
-        if (val == false) {
+        //if (val == false) {
 
           this.professorcode = this.afs.collection<any>('Professor').ref
             .where('gameId', '==', all["GameId"])
@@ -360,9 +360,10 @@ export class ProposerPage {
               })
             }
           })
-        }
-      })}
-      })
+        //}
+        // })
+      }
+    })
 
 
 

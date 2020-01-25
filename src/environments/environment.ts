@@ -9,7 +9,7 @@
 //   measurementId: "G-6RQ61HDYPW"
 // };
  // Your web app's Firebase configuration
-  /*export const firebaseConfig = {
+export const firebaseConfig = {
    apiKey: "AIzaSyCev4ycC2FpUXua-nJYVLoeoTPr0TZHcbE",
    authDomain: "ultimatum-temp.firebaseapp.com",
    databaseURL: "https://ultimatum-temp.firebaseio.com",
@@ -18,7 +18,7 @@
    messagingSenderId: "722126898430",
    appId: "1:722126898430:web:f5ca3c4aa193d9e65791af",
    measurementId: "G-WL3V2ZLXCY"
- }*/
+ }
 //  export const firebaseConfig = {
 //    apiKey: "AIzaSyCeZaKyIEK37DPBgfrAL5ITTML5JR-R0Rg",
 //    authDomain: "library-system-fe78b.firebaseapp.com",
@@ -40,7 +40,7 @@
 //   measurementId: "G-YRQ7HXHNR1"
 // };
 
-export const firebaseConfig = {
+/*export const firebaseConfig = {
   apiKey: "AIzaSyCeZaKyIEK37DPBgfrAL5ITTML5JR-R0Rg",
   authDomain: "library-system-fe78b.firebaseapp.com",
   databaseURL: "https://library-system-fe78b.firebaseio.com",
@@ -48,7 +48,7 @@ export const firebaseConfig = {
   storageBucket: "library-system-fe78b.appspot.com",
   messagingSenderId: "260274564770",
   appId: "1:260274564770:web:db127062acae7446bf71fb"
-};
+};*/
 
 /*export const firebaseConfig = {
   apiKey: "AIzaSyDMSWJXbWuK5Da3HLcWIAjoIYJ7IxvOVoo",
