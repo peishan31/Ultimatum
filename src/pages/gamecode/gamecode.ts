@@ -32,6 +32,7 @@ item:any;
 list=[];
 loader:Loading;
 hide:Boolean;
+showLoading: Boolean;
 myPerson={};
 errormsg:string;
 inhere=0;
@@ -60,7 +61,7 @@ subscribed=false;
     console.log(ress)
     if (ress.docs.length == 0) {
       // ress.forEach(ProfessorDoc => {
-      
+
       // })
       this.errormsg="Code invalid or game has already started...";
     }
@@ -68,15 +69,15 @@ subscribed=false;
       this.errormsg="";
     }
      }   )
-  
+
   }
 
   Next(form: NgForm){
     this.validate();
     this.submitted = true;
     if (form.valid && this.gamecode!= '' && this.gamecode!=null && this.inhere==0 && this.errormsg=="") {
-  
-        
+
+
     // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
     // shand[0].style.display="none";
       let data= this.navParams.data;
@@ -125,11 +126,14 @@ subscribed=false;
             }
 
           })
+
+
         }
 
         else{
           // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
           // shand[0].style.display="";
+
           this.errormsg="Already have exising username..";
         }
 
