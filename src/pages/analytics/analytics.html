@@ -14,69 +14,90 @@
 </ion-header>
 
 <ion-content padding>
-  <div class="form-group" style="text-align: center;"> 
-    <label for="gender1" class="col-sm-1 control-label"></label>
-    <label for="gender1" class="col-sm-1 control-label">Game code:</label>
-    <div class="col-sm-2">
-      <ion-select class="form-control" id="gender1" [(ngModel)]="chosengamecode" (ionChange)="gamecodes($event)">
-        <ion-option *ngFor = "let i of gamecode">{{i}}</ion-option>
-      
-      </ion-select>          
-      </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>Gameid:</ion-label>
+          <ion-select placeholder="Select One" [(ngModel)]="chosengamecode" (ionChange)="gamecodes($event)">
+            <ion-option *ngFor = "let i of gamecode">{{i}}</ion-option>
+            <!-- <ion-select-option value="m">Male</ion-select-option> -->
+          </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label>Filter:</ion-label>
+          <ion-select placeholder="Select One" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
+            <ion-option>Individual round</ion-option>
+            <ion-option>Accumulated rounds</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label>Sort by:</ion-label>
+          <ion-select placeholder="Select One"  [(ngModel)]="scorefilter" (ionChange)="scorefiltering($event)">
+            <ion-option>Score-High to Low</ion-option>
+            <ion-option>Score-Low to High</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-    <label for="gender1" class="col-sm-1 control-label">Filter:&nbsp;<ion-icon name="options" style="color:cornflowerblue"></ion-icon></label>
-    <div class="col-sm-4">
-    <ion-select class="form-control" id="gender1" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
-      <ion-option>Individual round</ion-option>
-      <ion-option>Accumulated rounds</ion-option>
-    
-
-    </ion-select>          
-      
-    </div>
  
-      <label for="gender1" class="col-sm-1 control-label">Sort by: &nbsp;<ion-icon name="swap" style="color:cornflowerblue"></ion-icon></label>
-      <div class="col-sm-2">
-        <ion-select class="form-control" [(ngModel)]="scorefilter" (ionChange)="scorefiltering($event)">
-          <!-- <option>Speed- Fastest to Slowest</option>
-          <option>Speed- Slowest to Fastest</option> -->
-      <ion-option>-</ion-option>    
-      <ion-option>Score-High to Low</ion-option>
-      <ion-option>Score-Low to High</ion-option>
-      
-        </ion-select>          
-          
-        </div>
 
-</div>          
+        
 <br><br>
-  <ion-card>
-    <ion-card-header> 
- <ion-card-title>Game of Thrones</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <canvas #barChart></canvas>
-    </ion-card-content>
-  </ion-card>
+<ion-grid>
+  <ion-row>
+    <ion-col style="width:50%">
+      <div>
+        <ion-card>
+          <ion-card-header> 
+       <ion-card-title>Game of Thrones</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <canvas #barChart></canvas>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-col>
+    <ion-col style="width:50%">
+      <div>
+        <ion-card>
+          <ion-card-header> 
+       <ion-card-title>Game of Thrones 2</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <canvas #lineChart></canvas>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-col>
+   
+  </ion-row>
+</ion-grid>
 
+<ion-grid>
+  <ion-row>
+    <ion-col style='width:50%'>
+      <div>
+        <ion-card>
+          <ion-card-header> 
+       <ion-card-title>Game of Thrones 3</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <canvas #hrzBars></canvas>
+          </ion-card-content>
+        </ion-card>
+      </div>
+    </ion-col>
+    <ion-col style='width:50%'>
+      <div>
+       
   <ion-card>
-    <ion-card-header> 
- <ion-card-title>Game of Thrones 2</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <canvas #lineChart></canvas>
-    </ion-card-content>
-  </ion-card>
-<br><br><br><br>
-  <ion-card>
-    <ion-card-header> 
- <ion-card-title>Game of Thrones 3</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <canvas #hrzBars></canvas>
-    </ion-card-content>
-  </ion-card>
-  <ion-card >
     <ion-card-header> 
  <ion-card-title>Game of Thrones 4</ion-card-title>
     </ion-card-header>
@@ -84,10 +105,18 @@
       <canvas #doubleline></canvas>
     </ion-card-content>
   </ion-card>
+      </div>
+    </ion-col>
+   
+  </ion-row>
+</ion-grid>
+ 
+
+
+
   
   
 </ion-content>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
-  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans'><link rel="stylesheet" href="../../assets/css/style.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css"> -->
+
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous"> -->

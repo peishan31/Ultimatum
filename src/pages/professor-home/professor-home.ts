@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Alert } from 'ionic-angular';
 import { ScoreboardPage } from '../scoreboard/scoreboard';
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
@@ -325,6 +325,13 @@ if (data["waitForStudent"]==true){
         //this.studentsIdList[this.studentsList.length] = 1;
       }*/
 
+      // randomizing
+      var firstusername = this.studentsList["username"].shift();
+      this.studentsList["username"].push(firstusername);
+
+      var firstUUID = this.studentsList["UUID"].shift();
+      this.studentsList["UUID"].push(firstUUID);
+      //alert("this.studentsList['UUID']: " + this.studentsList["UUID"]);
       // splitting users into 2 groups
       var half_length = Math.ceil(this.studentsList["username"].length / 2);
       var areaA = this.studentsList["username"].splice(0, half_length);
@@ -345,8 +352,15 @@ if (data["waitForStudent"]==true){
 
   assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID){
 
-    var arrangedUsersA = this.derange(proposer);
-    var arrangedUsersB = this.derange(responder);
+    /*var arrangedUsersA = this.derange(proposer);
+    var arrangedUsersB = this.derange(responder);*/
+    /*var firstUserA = proposer.shift();
+    proposer.push(firstUserA);
+    var firstUUIDA = proposerUUID.shift();
+    proposerUUID.push(firstUUIDA);*/
+
+    var arrangedUsersA = proposer;
+    var arrangedUsersB = responder;
 
     console.log("Before shuffle: (areaA)" + proposer);
 		console.log("Now: (areaA)" + arrangedUsersA);
@@ -359,6 +373,8 @@ if (data["waitForStudent"]==true){
       console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
 
       var id = proposerUUID[i] + "0" + responderUUID[i] + "0";
+      //alert(id);
+      //alert("ResponderUUID: " + responderUUID);
         this.afs.collection('Game').doc(id).set({
           gameId:this.code,
           gameMode: 'Random all players',
