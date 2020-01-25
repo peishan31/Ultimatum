@@ -75,6 +75,7 @@ subscribed=false;
   Next(form: NgForm){
     this.submitted = true;
     if (form.valid && this.gamecode!= '' && this.gamecode!=null && this.inhere==0) {
+      this.showLoading=true;
       this.professorcodes = this.afs.collection<any>('Professor').ref
       .where('gameId', '==', this.gamecode)
       .where('professorStatus', '==', "Not Ready")

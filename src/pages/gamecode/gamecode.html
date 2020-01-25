@@ -11,6 +11,7 @@
 </ion-header> -->
 
 <ion-content padding>
+  <div *ngIf="showLoading!=true">
   <div *ngIf="hide!=true">
     <img src="assets/img/F8bSjVZITEiuY4kgVA98_ultimatumlogo.PNG" style="display:block;width:40%;margin-left:auto;margin-right:auto;" />
     <form #submitUltimatumForm="ngForm">
@@ -39,6 +40,7 @@
 <br>
    </ion-card>
   </div>
+</div>
   <div *ngIf="showLoading==true" style="text-align: center;">
     <ion-card>
       <br>
