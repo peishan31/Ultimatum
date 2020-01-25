@@ -43,11 +43,12 @@ export class PastscoreboardPage {
  professorcodes:any;
  gamecode=[];
  gamemode:string;
+ mode:string;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs:AngularFirestore,) {
   }
 
   ionViewDidEnter(){
-    this.scorefilter="-";
+    this.scorefilter="Score-High to Low";
     this.professorcodes = this.afs.collection<any>('Professor').ref
     .where('professorStatus', '==', "Ready")
     .get()
@@ -66,7 +67,7 @@ console.log(ress)
   }
 
   scoreboardscore(){ 
-    this.scorefilter="-";
+    this.scorefilter="Score-High to Low";
     this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.chosengamecode).where('proposerStatus', '==', "Ready"));
     this.scoreboard.length=0;
     this.item = this.itemDoc.valueChanges();
@@ -160,19 +161,19 @@ console.log(ress)
     }
 
   onSelectChange(selectedValue: any) {
-    this.scorefilter="-";
+    this.scorefilter="Score-High to Low";
     console.log('Selected', selectedValue);
     if (selectedValue=="Individual round"){
      this.selecting="Individual round";
      this.roundsselectedfilter=1;
      this.roundselect(this.roundsselectedfilter);
     }
-    // else if (selectedValue=="Score- High to Low"){
+    // else if (selectedValue=="Score-High to Low"){
       // let shandss = document.getElementsByClassName('hidecollectedby') as HTMLCollectionOf<HTMLElement>;
       // shandss[0].style.display="";
       // let shandsss = document.getElementsByClassName('hidesign') as HTMLCollectionOf<HTMLElement>;
       // shandsss[0].style.display="";
-    //   this.selecting="Score- High to Low";
+    //   this.selecting="Score-High to Low";
     // }
     // else if (selectedValue=="Score- Low to High"){
     // this.selecting="Score- Low to High";
@@ -185,7 +186,7 @@ console.log(ress)
   }
 
     roundselect(selectedValue: any) {
-      this.scorefilter="-";
+      this.scorefilter="Score-High to Low";
       this.roundsselectedfilter=parseInt(selectedValue);
       let list=[];
         this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.chosengamecode).where('round', '==', selectedValue-1));
@@ -260,10 +261,9 @@ console.log(ress)
     scorefiltering(selectedValue: any){
      this.scorefilter=selectedValue;
      console.log(this.scorefilter)
-     if (selectedValue=="-"){
-       this.scorefilter="Score- High to Low";
-     }
-     else if (selectedValue=="Score- High to Low"){
+  if (selectedValue=="Score-High to Low"){
+    this.scorefilter="Score-High to Low";
+       this.arr.reverse();
        
      }
      else {
@@ -291,6 +291,7 @@ console.log(ress)
           if ( ProfessorDoc.data().professorStatus=='Ready' && parseInt(ProfessorDoc.data().round)==parseInt(ProfessorDoc.data().totalround)-1) {
             this.totalround= parseInt(ProfessorDoc.data().totalround);
             this.gamemode=ProfessorDoc.data().gameMode;
+            
           }
         }
         )
@@ -302,7 +303,7 @@ console.log(ress)
     }
 
     prevround(round){
-      this.scorefilter="-";
+      this.scorefilter="Score-High to Low";
       console.log(round);
       this.roundselect(round-1);
       this.roundsselectedfilter=parseInt(round)-1;
@@ -311,7 +312,7 @@ console.log(ress)
     }
 
     gonext(round){
-      this.scorefilter="-";
+      this.scorefilter="Score-High to Low";
       console.log(round);
       this.roundselect(round+1);
       this.roundsselectedfilter=parseInt(round)+1;

@@ -13,51 +13,72 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
 </ion-header>
-<ion-content id="page5">
+<ion-content id="page5" padding>
+  <ion-grid *ngIf="currentround==totalround">
+    <ion-row>
+      <ion-col *ngIf="currentround==totalround">
+        <ion-item>
+          <ion-label>Filter:</ion-label>
+          <ion-select placeholder="Select One" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
+            <ion-option>Individual round</ion-option>
+            <ion-option>Accumulated rounds</ion-option>
+          
+          </ion-select>
+        </ion-item>
+      </ion-col>
 
-  <h3 id="scoreboard-heading3" style="color:#000000;text-align: center;"> 
-  </h3>
-  <div class="form-group" *ngIf="currentround==totalround" style="text-align: center;"> 
-    <label for="gender1" class="col-sm-1 control-label"></label>
-    <label for="gender1" class="col-sm-1 control-label">Filter:&nbsp;<ion-icon name="options" style="color:cornflowerblue"></ion-icon></label>
-    <div class="col-sm-4">
-    <ion-select class="form-control" id="gender1" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
-      <ion-option>Individual round</ion-option>
-      <ion-option>Accumulated rounds</ion-option>
-    
+      <ion-col  *ngIf="selecting=='Individual round'">
+        <ion-item>
+          <ion-label>Round:</ion-label>
+          <ion-select placeholder="Select One"  (ionChange)="roundselect($event)" [(ngModel)]="roundsselectedfilter">
+            <ion-option *ngFor = "let i of roundss">{{i}}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
 
-    </ion-select>          
-      
-    </div>
-    <label for="gender1"  *ngIf="selecting=='Individual round'" class="col-sm-1 control-label">Round:</label>
-    <div class="col-sm-1" *ngIf="selecting=='Individual round'">
-      <ion-select class="form-control" (ionChange)="roundselect($event)" [(ngModel)]="roundsselectedfilter">
-        <!-- <option>Speed- Fastest to Slowest</option>
-        <option>Speed- Slowest to Fastest</option> -->
-        <ion-option *ngFor = "let i of roundss">{{i}}</ion-option>
-    
-      </ion-select>          
-        
-      </div>
-      <label for="gender1" class="col-sm-1 control-label">Sort by: &nbsp;<ion-icon name="swap" style="color:cornflowerblue"></ion-icon></label>
+      <ion-col  *ngIf="selecting!='Individual round'">
+        <ion-item>
+          <ion-label>Round:</ion-label>
+          <ion-select disabled placeholder="-"  (ionChange)="roundselect($event)" [(ngModel)]="roundsselectedfilter">
+            <ion-option *ngFor = "let i of roundss">{{i}}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <ion-col>
+        <ion-item>
+          <ion-label>Sort by:</ion-label>
+          <ion-select placeholder="Select One" [(ngModel)]="scorefilter" (ionChange)="scorefiltering($event)">
+            <ion-option>Score- High to Low</ion-option>
+            <ion-option>Score- Low to High</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    </ion-grid>
+  
+
+    <h4 style="text-align: center;">Game mode: {{mode}}</h4>
+      <!-- <label for="gender1" class="col-sm-1 control-label">Sort by: &nbsp;<ion-icon name="swap" style="color:cornflowerblue"></ion-icon></label>
       <div class="col-sm-3">
         <ion-select class="form-control" (ionChange)="scorefiltering($event)">
-          <!-- <option>Speed- Fastest to Slowest</option>
-          <option>Speed- Slowest to Fastest</option> -->
+    <option>Speed- Fastest to Slowest</option>
+          <option>Speed- Slowest to Fastest</option> 
       <ion-option>-</ion-option>    
       <ion-option>Score- High to Low</ion-option>
       <ion-option>Score- Low to High</ion-option>
       
         </ion-select>          
           
-        </div>
+        </div> -->
 
-</div>          
+        
 
  <br>
 <br><br><br><br>
   <ion-icon name="arrow-dropleft-circle" style="font-size:60px;float:left;margin-top:10%;margin-left:10%" *ngIf="currentround==totalround && selecting=='Individual round' && (roundsselectedfilter-1)!=0" (click)="prevround(roundsselectedfilter)"></ion-icon>
   <ion-icon name="arrow-dropright-circle" style="font-size:60px;float:right;margin-top:10%;margin-right:10%" *ngIf="currentround==totalround && selecting=='Individual round' && roundsselectedfilter!=totalround+1" (click)="gonext(roundsselectedfilter)"></ion-icon>
+
   <div class="leaderboard">
     <h1 *ngIf="currentround==totalround && selecting=='Accumulated rounds'">
       <svg class="ico-cup">

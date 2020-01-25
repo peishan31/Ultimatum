@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Chart } from 'chart.js';
+import { AngularFirestore } from '@angular/fire/firestore';
 /**
  * Generated class for the AnalyticsPage page.
  *
@@ -18,6 +19,9 @@ export class AnalyticsPage {
   @ViewChild('lineChart') lineChart;
   @ViewChild('hrzBars') hrzBars;
   @ViewChild('doubleline') doubleline;
+  professorcodes:any;
+  gamecode=[];
+  scorefilter:string;
   
 
   
@@ -31,13 +35,30 @@ export class AnalyticsPage {
   doublebars:any;
   doublelines:any;
 
-  constructor() { }
+  constructor(public afs:AngularFirestore) { }
 
   ionViewDidEnter() {
     this.createBarChart();
     this.createLineChart();
     this.createHrzBarChart();
     this.doubleLineChart();
+
+    this.scorefilter="Score-High to Low";
+    this.professorcodes = this.afs.collection<any>('Professor').ref
+    .where('professorStatus', '==', "Ready")
+    .get()
+    .then(ress => {
+console.log(ress)
+    if (ress.docs.length != 0) {
+      ress.forEach(ProfessorDoc => {
+        if ( ProfessorDoc.data().professorStatus=='Ready' && parseInt(ProfessorDoc.data().round)==parseInt(ProfessorDoc.data().totalround)-1) {
+          this.gamecode.push(ProfessorDoc.data().gameId);
+        }
+      }
+      )
+
+    }
+  })
   }
 
   createBarChart() {

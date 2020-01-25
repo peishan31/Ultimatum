@@ -14,6 +14,7 @@ import { snapshotChanges } from '@angular/fire/database';
   templateUrl: 'scoreboard.html'
 })
 export class ScoreboardPage {
+mode:string;
 hi:any;
 item:any;
 itemDoc:any;
@@ -46,6 +47,7 @@ randomModeTotalRound="";
     public loadingCtrl:LoadingController
     ) {
     this.hi=navParams.data;
+    this.mode=this.hi["gameMode"] ;
   }
 
   Home(){
