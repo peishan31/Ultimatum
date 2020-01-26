@@ -39,31 +39,36 @@ export class AnalyticsPage {
   doublebars:any;
   doublelines:any;
 
+  empty:string;
   constructor(public afs:AngularFirestore) { }
 
   ionViewDidEnter() {
     this.chosengamecode="-";
+    this.professorcodes = this.afs.collection<any>('Professor').ref
+    .where('professorStatus', '==', "Ready")
+    .get()
+    .then(ress => {
+console.log(ress.docs.length)
+    if (ress.docs.length != 0) {
+      ress.forEach(ProfessorDoc => {
+        if ( ProfessorDoc.data().professorStatus=='Ready') {
+         
+          this.gamecode.push(ProfessorDoc.data().gameId);
+          console.log(this.gamecode,"list")
+        }
+      }
+      )
+
+    }
+   
+  })
     this.createBarChart();
     this.createLineChart();
     this.createHrzBarChart();
     this.doubleLineChart();
     this.createPieChart();
 
-    this.professorcodes = this.afs.collection<any>('Professor').ref
-    .where('professorStatus', '==', "Ready")
-    .get()
-    .then(ress => {
-console.log(ress)
-    if (ress.docs.length != 0) {
-      ress.forEach(ProfessorDoc => {
-        if ( ProfessorDoc.data().professorStatus=='Ready' && parseInt(ProfessorDoc.data().round)==parseInt(ProfessorDoc.data().totalround)-1) {
-          this.gamecode.push(ProfessorDoc.data().gameId);
-        }
-      }
-      )
 
-    }
-  })
   }
 
   createBarChart() {
@@ -141,6 +146,10 @@ console.log(ress)
               }
             }
           });
+        }
+
+        else{
+          this.empty="No data yet";
         }
 
       })
