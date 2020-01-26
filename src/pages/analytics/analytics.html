@@ -20,12 +20,13 @@
         <ion-item>
           <ion-label>Gameid:</ion-label>
           <ion-select placeholder="Select One" [(ngModel)]="chosengamecode" (ionChange)="gamecodes($event)">
+            <ion-option>-</ion-option>
             <ion-option *ngFor = "let i of gamecode">{{i}}</ion-option>
             <!-- <ion-select-option value="m">Male</ion-select-option> -->
           </ion-select>
         </ion-item>
       </ion-col>
-      <ion-col>
+      <!-- <ion-col>
         <ion-item>
           <ion-label>Filter:</ion-label>
           <ion-select placeholder="Select One" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
@@ -42,7 +43,7 @@
             <ion-option>Score-Low to High</ion-option>
           </ion-select>
         </ion-item>
-      </ion-col>
+      </ion-col> -->
     </ion-row>
   </ion-grid>
 
@@ -56,7 +57,7 @@
       <div>
         <ion-card>
           <ion-card-header> 
-       <ion-card-title>Game of Thrones</ion-card-title>
+       <ion-card-title>Proposer's offer</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <canvas #barChart></canvas>
@@ -68,7 +69,7 @@
       <div>
         <ion-card>
           <ion-card-header> 
-       <ion-card-title>Game of Thrones 2</ion-card-title>
+       <ion-card-title>Amount accepted by Responders</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <canvas #lineChart></canvas>
