@@ -23,6 +23,7 @@ export class AnalyticsPage {
   gamecode=[];
   scorefilter:string;
   
+  chosengamecode:string;
 
   
 
@@ -38,12 +39,12 @@ export class AnalyticsPage {
   constructor(public afs:AngularFirestore) { }
 
   ionViewDidEnter() {
+    this.chosengamecode="-";
     this.createBarChart();
     this.createLineChart();
     this.createHrzBarChart();
     this.doubleLineChart();
 
-    this.scorefilter="Score-High to Low";
     this.professorcodes = this.afs.collection<any>('Professor').ref
     .where('professorStatus', '==', "Ready")
     .get()
@@ -62,38 +63,228 @@ console.log(ress)
   }
 
   createBarChart() {
-    this.bars = new Chart(this.barChart.nativeElement, {
-      type: 'bar',
-      data: {
-        labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
-        datasets: [{
-          label: 'Viewers in millions',
-          data: [2.5, 3.8, 5, 6.9, 6.9, 7.5, 10, 17],
-          backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
-          borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
+    if (this.chosengamecode=="-"){
+      this.afs.collection<any>('Game').ref
+      // .where('gameId', '==', this.data["GameId"])
+      // .where('round', '==', changeparse)
+      // .where('responderUUID', '==', this.data["UUID"])
+      .get()
+      .then(res=>{
+        if (res.docs.length != 0){ 
+          let one=0;
+          let two=0;
+          let three=0;
+          let four=0;
+          let five=0;
+          let six=0;
+          let seven=0;
+          let eight=0;
+          let nine=0;
+          let ten=0;
+  
+          res.forEach(ResponderGameDoc=>{
+             if (ResponderGameDoc.data().proposerAmount<=10 ){
+                one+=1;
+             }
+             else if (ResponderGameDoc.data().proposerAmount<=20 ){
+              two+=1;
             }
-          }]
+            else if (ResponderGameDoc.data().proposerAmount<=30 ){
+              three+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=40 ){
+              four+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=50 ){
+              five+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=60 ){
+              six+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=70 ){
+              seven+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=80 ){
+              eight+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=90 ){
+              nine+=1;
+            }
+            else{
+              ten+=1;
+            }
+            // var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
+          })
+          this.bars = new Chart(this.barChart.nativeElement, {
+            type: 'bar',
+            data: {
+              labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
+              datasets: [{
+                label: "Proposers' offer",
+                data: [one,two,three,four,five,six,seven,eight,nine,ten],
+                backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
+                borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
+              }
+            }
+          });
         }
-      }
-    });
+      
+      })
+    }
+    else{
+      this.afs.collection<any>('Game').ref
+      .where('gameId', '==', this.chosengamecode)
+      // .where('round', '==', changeparse)
+      // .where('responderUUID', '==', this.data["UUID"])
+      .get()
+      .then(res=>{
+        if (res.docs.length != 0){ 
+          let one=0;
+          let two=0;
+          let three=0;
+          let four=0;
+          let five=0;
+          let six=0;
+          let seven=0;
+          let eight=0;
+          let nine=0;
+          let ten=0;
+  
+          res.forEach(ResponderGameDoc=>{
+             if (ResponderGameDoc.data().proposerAmount<=10 ){
+                one+=1;
+             }
+             else if (ResponderGameDoc.data().proposerAmount<=20 ){
+              two+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=30 ){
+              three+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=40 ){
+              four+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=50 ){
+              five+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=60 ){
+              six+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=70 ){
+              seven+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=80 ){
+              eight+=1;
+            }
+            else if (ResponderGameDoc.data().proposerAmount<=90 ){
+              nine+=1;
+            }
+            else{
+              ten+=1;
+            }
+            // var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
+          })
+          this.bars = new Chart(this.barChart.nativeElement, {
+            type: 'bar',
+            data: {
+              labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
+              datasets: [{
+                label: "Proposers' offer",
+                data: [one,two,three,four,five,six,seven,eight,nine,ten],
+                backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
+                borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
+              }
+            }
+          });
+        }
+      
+      })
+    }
+   
+    
+    
+    
   }
 
   createLineChart(){
+  if (this.chosengamecode=="-"){
+    this.afs.collection<any>('Game').ref
+    // .where('gameId', '==', this.data["GameId"])
+    // .where('round', '==', changeparse)
+    .where('responderResponse', '==', "Accept")
+    .get()
+    .then(res=>{
+      if (res.docs.length != 0){ 
+        let one=0;
+        let two=0;
+        let three=0;
+        let four=0;
+        let five=0;
+        let six=0;
+        let seven=0;
+        let eight=0;
+        let nine=0;
+        let ten=0;
+
+        res.forEach(ResponderGameDoc=>{
+           if (ResponderGameDoc.data().proposerAmount<=10 ){
+              one+=1;
+           }
+           else if (ResponderGameDoc.data().proposerAmount<=20 ){
+            two+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=30 ){
+            three+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=40 ){
+            four+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=50 ){
+            five+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=60 ){
+            six+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=70 ){
+            seven+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=80 ){
+            eight+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=90 ){
+            nine+=1;
+          }
+          else{
+            ten+=1;
+          }
+          // var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
+        })
 this.lines = new Chart(this.lineChart.nativeElement, {
       type: 'line',
       data: {
-        labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
+        labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
         datasets: [{
-          label: 'Viewers in millions',
-          data: [2.5, 3.8, 5, 6.9, 6.9, 7.5, 10, 17],
+          label: 'Amount accepted by Responders',
+          data:  [one,two,three,four,five,six,seven,eight,nine,ten],
           backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
           borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
           borderWidth: 1
@@ -110,6 +301,86 @@ this.lines = new Chart(this.lineChart.nativeElement, {
       }
     });
   }
+})
+  }
+  else{
+    this.afs.collection<any>('Game').ref
+    .where('gameId', '==', this.chosengamecode)
+    // .where('round', '==', changeparse)
+    .where('responderResponse', '==', "Accept")
+    .get()
+    .then(res=>{
+      if (res.docs.length != 0){ 
+        let one=0;
+        let two=0;
+        let three=0;
+        let four=0;
+        let five=0;
+        let six=0;
+        let seven=0;
+        let eight=0;
+        let nine=0;
+        let ten=0;
+
+        res.forEach(ResponderGameDoc=>{
+           if (ResponderGameDoc.data().proposerAmount<=10 ){
+              one+=1;
+           }
+           else if (ResponderGameDoc.data().proposerAmount<=20 ){
+            two+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=30 ){
+            three+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=40 ){
+            four+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=50 ){
+            five+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=60 ){
+            six+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=70 ){
+            seven+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=80 ){
+            eight+=1;
+          }
+          else if (ResponderGameDoc.data().proposerAmount<=90 ){
+            nine+=1;
+          }
+          else{
+            ten+=1;
+          }
+          // var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
+        })
+this.lines = new Chart(this.lineChart.nativeElement, {
+      type: 'line',
+      data: {
+        labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
+        datasets: [{
+          label: 'Amount accepted by Responders',
+          data:  [one,two,three,four,five,six,seven,eight,nine,ten],
+          backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
+          borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  }
+})
+  }
+}
 
   createHrzBarChart() {
     this.doublebars = new Chart(this.hrzBars.nativeElement, {
@@ -164,4 +435,14 @@ this.lines = new Chart(this.lineChart.nativeElement, {
           }
         });
       }
+
+      gamecodes(selectedValue:any){
+        this.chosengamecode=selectedValue;
+        this.createBarChart();
+        this.createLineChart();
+        this.createHrzBarChart();
+        this.doubleLineChart();
+      
+      }
+  
 }
