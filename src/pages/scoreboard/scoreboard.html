@@ -55,7 +55,7 @@
     </ion-grid>
   
 <br>
-    <h2 style="text-align: center;font-size:14px;">Game mode: {{mode}}</h2>
+    <h1 style="text-align: center;font-size:18px;">Game mode: {{mode}}</h1>
       <!-- <label for="gender1" class="col-sm-1 control-label">Sort by: &nbsp;<ion-icon name="swap" style="color:cornflowerblue"></ion-icon></label>
       <div class="col-sm-3">
         <ion-select class="form-control" (ionChange)="scorefiltering($event)">
@@ -81,20 +81,20 @@
       <svg class="ico-cup">
         <use xlink:href="#cup"></use>
       </svg>
-     Accumulated Rounds Leaderboard
+     Accumulated Rounds Leaderboard ({{mode}})
     </h1>
     <h1 *ngIf="currentround!=totalround && selecting!='Individual round'">
       <svg class="ico-cup">
         <use xlink:href="#cup"></use>
       </svg>
-     Round {{currentround+1}} Leaderboard
+     Round {{currentround+1}} Leaderboard ({{mode}})
     </h1>
 
     <h1 *ngIf="selecting=='Individual round'">
       <svg class="ico-cup">
         <use xlink:href="#cup"></use>
       </svg>
-     Round {{roundsselectedfilter}} Leaderboard
+     Round {{roundsselectedfilter}} Leaderboard ({{mode}})
     </h1>
 
     <ol *ngIf="scorefilter=='Score- Low to High'">
