@@ -319,4 +319,13 @@ console.log(ress)
 
     }
 
+    ngOnDestroy() {
+
+      let all=this.navParams.data;
+      if (all["gameMode"] == "Random all players") {
+        if (this.subscription) this.subscription.unsubscribe();
+      }
+    }
+
+
 }
