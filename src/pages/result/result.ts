@@ -524,7 +524,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                         this.firstcome+=1;
                         this.loader =  this.loadingCtrl.create({
-                          duration: 5000
+                          duration: 8000
                         });
 
                         this.loader.present();
