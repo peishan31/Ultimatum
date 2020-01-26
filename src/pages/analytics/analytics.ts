@@ -40,6 +40,9 @@ export class AnalyticsPage {
   doublelines:any;
 
   empty:string;
+
+  averageproposed:string;
+  averageaccepted:string;
   constructor(public afs:AngularFirestore) { }
 
   ionViewDidEnter() {
@@ -80,6 +83,8 @@ console.log(ress.docs.length)
       .get()
       .then(res=>{
         if (res.docs.length != 0){
+          let length=res.docs.length;
+          let sum=0;
           let one=0;
           let two=0;
           let three=0;
@@ -92,6 +97,7 @@ console.log(ress.docs.length)
           let ten=0;
 
           res.forEach(ResponderGameDoc=>{
+            sum+=ResponderGameDoc.data().proposerAmount;
              if (ResponderGameDoc.data().proposerAmount<=10 ){
                 one+=1;
              }
@@ -124,13 +130,14 @@ console.log(ress.docs.length)
             }
             // var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
           })
+          this.averageproposed=(sum/length).toFixed(2);
           this.bars = new Chart(this.barChart.nativeElement, {
             type: 'bar',
             data: {
               labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
               datasets: [{
                 label: "Proposers' offer",
-                data: [one,two,three,four,five,six,seven,eight,nine,ten],
+                data: [one.toFixed(0),two,three,four.toFixed(0),five,six,seven,eight,nine,ten],
                 backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
                 borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
                 borderWidth: 1
@@ -162,6 +169,9 @@ console.log(ress.docs.length)
       .get()
       .then(res=>{
         if (res.docs.length != 0){
+          let length=res.docs.length;
+          let sum=0;
+
           let one=0;
           let two=0;
           let three=0;
@@ -174,6 +184,7 @@ console.log(ress.docs.length)
           let ten=0;
 
           res.forEach(ResponderGameDoc=>{
+            sum+=ResponderGameDoc.data().proposerAmount;
              if (ResponderGameDoc.data().proposerAmount<=10 ){
                 one+=1;
              }
@@ -205,14 +216,17 @@ console.log(ress.docs.length)
               ten+=1;
             }
             // var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
-          })
+          }
+
+        )
+        this.averageproposed= (sum/length).toFixed(2);
           this.bars = new Chart(this.barChart.nativeElement, {
             type: 'bar',
             data: {
               labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
               datasets: [{
                 label: "Proposers' offer",
-                data: [one,two,three,four,five,six,seven,eight,nine,ten],
+                data: [one,two,three,four,five,six,seven.toFixed(0),eight,nine,ten],
                 backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
                 borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
                 borderWidth: 1
@@ -247,6 +261,9 @@ console.log(ress.docs.length)
     .get()
     .then(res=>{
       if (res.docs.length != 0){
+        let length=res.docs.length;
+        let sum=0;
+
         let one=0;
         let two=0;
         let three=0;
@@ -259,6 +276,8 @@ console.log(ress.docs.length)
         let ten=0;
 
         res.forEach(ResponderGameDoc=>{
+
+           sum+=ResponderGameDoc.data().proposerAmount;
            if (ResponderGameDoc.data().proposerAmount<=10 ){
               one+=1;
            }
@@ -291,13 +310,14 @@ console.log(ress.docs.length)
           }
           // var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
         })
+        this.averageaccepted=(sum/length).toFixed(2);
 this.lines = new Chart(this.lineChart.nativeElement, {
       type: 'line',
       data: {
         labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
         datasets: [{
           label: 'Amount accepted by Responders',
-          data:  [one,two,three,four,five,six,seven,eight,nine,ten],
+          data:  [one,two,three,four,five,six,seven,eight.toFixed(0),nine,ten],
           backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
           borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
           borderWidth: 1
@@ -324,6 +344,9 @@ this.lines = new Chart(this.lineChart.nativeElement, {
     .get()
     .then(res=>{
       if (res.docs.length != 0){
+        let length=res.docs.length;
+        let sum=0;
+
         let one=0;
         let two=0;
         let three=0;
@@ -336,6 +359,7 @@ this.lines = new Chart(this.lineChart.nativeElement, {
         let ten=0;
 
         res.forEach(ResponderGameDoc=>{
+          sum+=ResponderGameDoc.data().proposerAmount;
            if (ResponderGameDoc.data().proposerAmount<=10 ){
               one+=1;
            }
@@ -368,13 +392,14 @@ this.lines = new Chart(this.lineChart.nativeElement, {
           }
           // var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
         })
+        this.averageaccepted=(sum/length).toFixed(2);
 this.lines = new Chart(this.lineChart.nativeElement, {
       type: 'line',
       data: {
         labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
         datasets: [{
           label: 'Amount accepted by Responders',
-          data:  [one,two,three,four,five,six,seven,eight,nine,ten],
+          data:  [one,two,three,four,five,six,seven,eight,nine.toFixed(0),ten],
           backgroundColor: 'rgb(38, 194, 129)', // array should have same number of elements as number of dataset
           borderColor: 'rgb(38, 194, 129)',// array should have same number of elements as number of dataset
           borderWidth: 1
