@@ -34,6 +34,7 @@ export class RespondantPage {
   itemm:any;
   gohereonceagn=0;
   loader:Loading;
+  username="";
 
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
@@ -86,6 +87,19 @@ export class RespondantPage {
 
   ionViewDidEnter(){
     let all=this.navParams.data;
+
+    this.afs.collection<any>('Participant').ref
+      .where('UUID', '==', all["UUID"])
+      .get()
+      .then(ress => {
+
+      if (ress.docs.length != 0) {
+
+        ress.forEach(ParticipantDoc => {
+          this.username = ParticipantDoc.data().username;
+        })
+      }
+      });
 
     console.log("<<Respondant.ts>> Game Mode: " + all["gameMode"]);
     this.storage.set("responder"+all["UUID"],"false");

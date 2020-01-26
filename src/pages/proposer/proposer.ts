@@ -32,6 +32,7 @@ export class ProposerPage {
   once=0;
   addround=0
   loader:Loading;
+  username="";
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
@@ -108,6 +109,18 @@ export class ProposerPage {
 
   ionViewDidEnter(){
     let all=this.navParams.data;
+    this.afs.collection<any>('Participant').ref
+      .where('UUID', '==', all["UUID"])
+      .get()
+      .then(ress => {
+
+      if (ress.docs.length != 0) {
+
+        ress.forEach(ParticipantDoc => {
+          this.username = ParticipantDoc.data().username;
+        })
+      }
+      });
     this.storage.set("proposer"+all["UUID"],"false")
 
   }
