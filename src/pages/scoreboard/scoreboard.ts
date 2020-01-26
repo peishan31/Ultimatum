@@ -141,6 +141,7 @@ randomModeTotalRound="";
       this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
       this.item = this.itemDoc.valueChanges();
       this.subscription=this.item.subscribe(res=>{
+        if (parseInt(res["totalround"])!=res["round"]+1){
         this.randomModeTotalRound = res["totalround"];
         if (this.i==0){
           let round=parseInt(res["round"]);
@@ -227,7 +228,7 @@ randomModeTotalRound="";
             console.log("Cannot click another further!");
           }
         }
-      })
+      }})
 
     }
   }
@@ -396,21 +397,23 @@ randomModeTotalRound="";
 
   assignUserToPlayWithAnotherUser(currentRound, totalround){
     // Calling out all the users joining this gameId
-    this.itemDoc = this.afs.collection<any>('Participant');
-    this.item = this.itemDoc.valueChanges();
-    this.item.subscribe(res=>{
+   this.itemDoc = this.afs.collection<any>('Participant').ref
+             .get()
+             .then(ress => {
+    console.log(ress)
+
       this.studentsList["username"] = [];
       this.studentsList["UUID"] = [];
 
-      for (let i=0; i<res.length;i++){
+      ress.forEach(ProfessorDoc => {
 
         /*db.database.ref('/User/').orderByChild('uID').equalTo(this.uID).once('value', (snapshot) => {
           console.log(snapshot.val().email)
       })*/
 
         //if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
-        if ((res[i].gameId==this.hi["gameId"])){
-          console.log("res[i]: " + JSON.stringify(res[i]));
+        if ((ProfessorDoc.data().gameId==this.hi["gameId"])){
+          // console.log("res[i]: " + JSON.stringify(res[i]));
 
           /*const requestRef = firebase.database().ref(`/` + "User" + `/` + res[i].username + `/`);
           requestRef.orderByChild('inGame')
@@ -424,19 +427,19 @@ randomModeTotalRound="";
                 //data.id
 
             })*/
-            const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/`  + res[i].UUID + `/`);
+            const personRefs: firebase.database.Reference = firebase.database().ref(`/` + "User" + `/`  + ProfessorDoc.data().UUID + `/`);
             personRefs.on('value', snapshot => {
 
               if ((snapshot.val().inGame == true)) {
                 //alert(snapshot.val().UUID);
-                this.studentsList["username"].push(res[i].username);
-                console.log("My username: " + res[i].username);
-                this.studentsList["UUID"].push(res[i].UUID);
+                this.studentsList["username"].push(ProfessorDoc.data().username);
+                console.log("My username: " + ProfessorDoc.data().username);
+                this.studentsList["UUID"].push(ProfessorDoc.data().UUID);
                 this.studentnum=this.studentsList["username"].length;
               }
             })
         }
-      }
+      })
       this.studentsList["totalRound"] = this.studentsList["username"].length;
       console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
