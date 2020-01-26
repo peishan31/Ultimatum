@@ -422,7 +422,9 @@ if (data["waitForStudent"]==true){
   }
   //yonglin
   assignsameplayers(){
-    this.itemDoc = this.afs.collection<any>('Participant');
+    this.itemDoc = this.afs.collection<any>('Participant', ref => ref
+    .where("gameId", "==", this.code)
+    .where("online", "==" , true));
     this.item = this.itemDoc.valueChanges();
     this.didsubscribed=true;
     this.subscription=this.item.subscribe(res=>{
