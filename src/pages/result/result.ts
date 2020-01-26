@@ -783,4 +783,14 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
     goback(){
       this.navCtrl.setRoot(UltimatumPage);
     }
+
+    ngOnDestroy() {
+
+      let all=this.navParams.data;
+      if (all["gameMode"] == "Random all players") {
+        if (this.subscription) this.subscription.unsubscribe();
+        if (this.subscription1) this.subscription1.unsubscribe();
+        if (this.professorcode) this.professorcode.unsubscribe();
+      }
+    }
 }

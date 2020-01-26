@@ -90,4 +90,13 @@ itemm: any;
     })*/
   }
 
+  ngOnDestroy() {
+
+    let all=this.navParams.data;
+      if (all["gameMode"] == "Random all players") {
+        if (this.subscription) this.subscription.unsubscribe();
+        if (this.professorcode) this.professorcode.unsubscribe();
+      }
+  }
+
 }

@@ -409,5 +409,15 @@ export class ProposerPage {
    // this.offer.unsubscribe();
   //  this.game.unsubscribe();
   }
+
+  ngOnDestroy() {
+
+    let all=this.navParams.data;
+    if (all["gameMode"] == "Random all players") {
+      if (this.subscription) this.subscription.unsubscribe();
+      if (this.subscriptionn) this.subscriptionn.unsubscribe();
+    }
+
+  }
 }
 

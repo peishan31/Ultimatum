@@ -18,6 +18,7 @@ export class UserPresenceStatusProvider {
   list=[];
   myPerson = {};
   studentnum=0;
+  subscription: any;
 
   constructor(
     public http: HttpClient,
@@ -68,7 +69,7 @@ export class UserPresenceStatusProvider {
     this.itemDoc = this.afs.collection<any>('Participant')
     this.item = this.itemDoc.valueChanges();
     this.item.length=0;
-    this.item.subscribe(res=>{
+    this.subscription = this.item.subscribe(res=>{
       this.list.length=0;
       //console.log(res)
 
@@ -97,10 +98,16 @@ export class UserPresenceStatusProvider {
       //console.log("Coming from user-presence-status: "+ this.list)
     })
     //console.log("Coming from user-presence-status 2: "+ this.list)
+    if (this.subscription) this.subscription.unsubscribe();
     return this.list;
     /*{
       mylist: this.list,
       mystudentnum: this.studentnum
     };*/
+  }
+
+  ngOnDestroy(){
+
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }
