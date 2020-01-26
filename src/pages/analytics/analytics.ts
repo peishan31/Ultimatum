@@ -17,15 +17,18 @@ import { AngularFirestore } from '@angular/fire/firestore';
 export class AnalyticsPage {
   @ViewChild('barChart') barChart;
   @ViewChild('lineChart') lineChart;
+  @ViewChild('pieChart') pieChart;
   @ViewChild('hrzBars') hrzBars;
   @ViewChild('doubleline') doubleline;
   professorcodes:any;
   gamecode=[];
   scorefilter:string;
-  
+  acceptedAmount=0;
+  rejectedAmount=0;
+
   chosengamecode:string;
 
-  
+
 
   bars: any;
   colorArray: any;
@@ -44,6 +47,7 @@ export class AnalyticsPage {
     this.createLineChart();
     this.createHrzBarChart();
     this.doubleLineChart();
+    this.createPieChart();
 
     this.professorcodes = this.afs.collection<any>('Professor').ref
     .where('professorStatus', '==', "Ready")
@@ -70,7 +74,7 @@ console.log(ress)
       // .where('responderUUID', '==', this.data["UUID"])
       .get()
       .then(res=>{
-        if (res.docs.length != 0){ 
+        if (res.docs.length != 0){
           let one=0;
           let two=0;
           let three=0;
@@ -81,7 +85,7 @@ console.log(ress)
           let eight=0;
           let nine=0;
           let ten=0;
-  
+
           res.forEach(ResponderGameDoc=>{
              if (ResponderGameDoc.data().proposerAmount<=10 ){
                 one+=1;
@@ -138,7 +142,7 @@ console.log(ress)
             }
           });
         }
-      
+
       })
     }
     else{
@@ -148,7 +152,7 @@ console.log(ress)
       // .where('responderUUID', '==', this.data["UUID"])
       .get()
       .then(res=>{
-        if (res.docs.length != 0){ 
+        if (res.docs.length != 0){
           let one=0;
           let two=0;
           let three=0;
@@ -159,7 +163,7 @@ console.log(ress)
           let eight=0;
           let nine=0;
           let ten=0;
-  
+
           res.forEach(ResponderGameDoc=>{
              if (ResponderGameDoc.data().proposerAmount<=10 ){
                 one+=1;
@@ -216,13 +220,13 @@ console.log(ress)
             }
           });
         }
-      
+
       })
     }
-   
-    
-    
-    
+
+
+
+
   }
 
   createLineChart(){
@@ -233,7 +237,7 @@ console.log(ress)
     .where('responderResponse', '==', "Accept")
     .get()
     .then(res=>{
-      if (res.docs.length != 0){ 
+      if (res.docs.length != 0){
         let one=0;
         let two=0;
         let three=0;
@@ -310,7 +314,7 @@ this.lines = new Chart(this.lineChart.nativeElement, {
     .where('responderResponse', '==', "Accept")
     .get()
     .then(res=>{
-      if (res.docs.length != 0){ 
+      if (res.docs.length != 0){
         let one=0;
         let two=0;
         let three=0;
@@ -382,8 +386,115 @@ this.lines = new Chart(this.lineChart.nativeElement, {
   }
 }
 
+createPieChart(){
+
+ if (this.chosengamecode=="-"){
+
+    this.afs.collection<any>('Game').ref
+    .where('responderResponse', '==', 'Accept')
+    .get()
+    .then(ress => {
+
+      if (ress.docs.length != 0) {
+
+        this.acceptedAmount = ress.docs.length;
+      }
+      else {
+
+        this.acceptedAmount = 0;
+      }
+
+      this.afs.collection<any>('Game').ref
+      .where('responderResponse', '==', 'Decline')
+      .get()
+      .then(ress => {
+
+        if (ress.docs.length != 0) {
+
+          this.rejectedAmount = ress.docs.length;
+        }
+        else {
+
+          this.rejectedAmount = 0;
+        }
+
+        this.lines = new Chart(this.pieChart.nativeElement, {
+          type: 'pie',
+          data: {
+              datasets: [{
+                  label: 'Colors',
+                  data: [this.acceptedAmount, this.rejectedAmount],
+                  backgroundColor: ["#2ECC40", "#FF4136"]
+              }],
+              labels: ['No. of accepted times','No. of rejected times']
+          },
+          options: {
+              responsive: true,
+              title:{
+                  display: true,
+                  text: "Total acceptance and rejection rate"
+              }
+          }
+        });
+      });
+    });
+ }
+ else {
+
+  this.afs.collection<any>('Game').ref
+    .where('responderResponse', '==', 'Accept')
+    .where('gameId', '==', this.chosengamecode)
+    .get()
+    .then(ress => {
+
+      if (ress.docs.length != 0) {
+
+        this.acceptedAmount = ress.docs.length;
+      }
+      else {
+
+        this.acceptedAmount = 0;
+      }
+
+      this.afs.collection<any>('Game').ref
+      .where('responderResponse', '==', 'Decline')
+      .get()
+      .then(ress => {
+
+        if (ress.docs.length != 0) {
+
+          this.rejectedAmount = ress.docs.length;
+        }
+        else {
+
+          this.rejectedAmount = 0;
+        }
+
+        this.lines = new Chart(this.pieChart.nativeElement, {
+          type: 'pie',
+          data: {
+              datasets: [{
+                  label: 'Colors',
+                  data: [this.acceptedAmount, this.rejectedAmount],
+                  backgroundColor: ["#2ECC40", "#FF4136"]
+              }],
+              labels: ['No. of accepted times','No. of rejected times']
+          },
+          options: {
+              responsive: true,
+              title:{
+                  display: true,
+                  text: "Total acceptance and rejection rate"
+              }
+          }
+        });
+      });
+    });
+ }
+
+ }
   createHrzBarChart() {
-    this.doublebars = new Chart(this.hrzBars.nativeElement, {
+    /*this.doublebars = new Chart(this.hrzBars.nativeElement, {
       type: 'horizontalBar',
       data: {
         labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
@@ -402,12 +513,486 @@ this.lines = new Chart(this.lineChart.nativeElement, {
           borderWidth: 1
         }]
       },
-    });
+    });*/
+
+    var totalAcceptedAmount=[];
+
+    if (this.chosengamecode=="-"){
+
+      this.afs.collection<any>('Game').ref
+      .where('responderResponse', '==', 'Accept')
+      .get()
+      .then(ress => {
+
+        if (ress.docs.length != 0) {
+
+          ress.forEach(GameDoc => {
+
+            if (GameDoc.data().responderResponse == "Accept") {
+              var amt = 100-GameDoc.data().proposerAmount
+              totalAcceptedAmount.push(amt);
+            }
+          })
+
+          // 1. sorting totalAceptedAmountCounts
+          if (totalAcceptedAmount.length!=0 || totalAcceptedAmount.length!=null) {
+            var  counts = {};
+            totalAcceptedAmount.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
+            console.log(counts);
+
+            // sorting
+            // Create items array
+            var items = Object.keys(counts).map(function(key) {
+              return [key, counts[key]];
+            });
+
+            // Sort the array based on the second element
+            items.sort(function(first, second) {
+              return second[1] - first[1];
+            });
+            console.log("Accepted amount: "+ items);
+            console.log(items[0]);
+            console.log(items[1]);
+          }
+
+          var top1; var top1Accepted;
+          var top2; var top2Accepted;
+          var top3; var top3Accepted;
+          var top4; var top4Accepted;
+          var top5; var top5Accepted;
+          if (items.length > 4) {
+            if (items[4][0] != null) {
+              top5 = 100 - items[4][0]
+              top5Accepted=items[4][1];
+            }
+          }
+          else {
+            top5 = "";
+            top5Accepted=""
+          }
+          if (items.length > 3) {
+            if (items[3][0] != null) {
+              top4 = 100 - items[3][0]
+              top4Accepted=items[3][1];
+            }
+          }
+          else {
+            top4 = "";
+            top4Accepted=""
+          }
+          if (items.length > 2) {
+            if (items[2][0] != null) {
+              top3 = 100 - items[2][0]
+              top3Accepted=items[2][1];
+            }
+          }
+          else {
+            top3 = "";
+            top3Accepted=""
+          }
+          if (items.length > 1) {
+            if (items[1][0] != null) {
+              top2 = 100 - items[1][0]
+              top2Accepted=items[1][1];
+            }
+          }
+          else {
+            top2 = "";
+            top2Accepted=""
+          }
+          if (items.length > 0) {
+            if (items[0][0] != null) {
+              top1 = 100 - items[0][0]
+              top1Accepted=items[0][1];
+            }
+          }
+          else {
+            top1 = "";
+            top1Accepted="";
+          }
+          console.log(top1Accepted);
+          console.log(top2Accepted);
+          console.log(top3Accepted);
+          console.log(top4Accepted);
+          console.log(top5Accepted);
+          this.doublebars = new Chart(this.hrzBars.nativeElement, {
+            type: 'horizontalBar',
+            data: {
+              labels: [top1, top2, top3, top4, top5],
+              datasets: [{
+                label: 'No. of times accepted',
+                data: [top1Accepted, top2Accepted, top3Accepted, top4Accepted, top5Accepted],
+                backgroundColor: '#ddee44', // array should have same number of elements as number of dataset
+                borderColor: '#ddee44',// array should have same number of elements as number of dataset
+                borderWidth: 1
+              }]
+            },
+          });
+        }
+      })
+    }
+    else {
+      this.afs.collection<any>('Game').ref
+      .where('responderResponse', '==', 'Accept')
+      .where('gameId', '==', this.chosengamecode)
+      .get()
+      .then(ress => {
+
+        if (ress.docs.length != 0) {
+
+          ress.forEach(GameDoc => {
+
+            if (GameDoc.data().responderResponse == "Accept") {
+              var amt = 100-GameDoc.data().proposerAmount
+              totalAcceptedAmount.push(amt);
+            }
+          })
+
+          // 1. sorting totalAceptedAmountCounts
+          if (totalAcceptedAmount.length!=0 || totalAcceptedAmount.length!=null) {
+            var  counts = {};
+            totalAcceptedAmount.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
+            console.log(counts);
+
+            // sorting
+            // Create items array
+            var items = Object.keys(counts).map(function(key) {
+              return [key, counts[key]];
+            });
+
+            // Sort the array based on the second element
+            items.sort(function(first, second) {
+              return second[1] - first[1];
+            });
+            console.log("Accepted amount: "+ items);
+            console.log(items[0]);
+            console.log(items[1]);
+          }
+
+          var top1; var top1Accepted;
+          var top2; var top2Accepted;
+          var top3; var top3Accepted;
+          var top4; var top4Accepted;
+          var top5; var top5Accepted;
+          if (items.length > 4) {
+            if (items[4][0] != null) {
+              top5 = 100 - items[4][0]
+              top5Accepted=items[4][1];
+            }
+          }
+          else {
+            top5 = "";
+            top5Accepted=""
+          }
+          if (items.length > 3) {
+            if (items[3][0] != null) {
+              top4 = 100 - items[3][0]
+              top4Accepted=items[3][1];
+            }
+          }
+          else {
+            top4 = "";
+            top4Accepted=""
+          }
+          if (items.length > 2) {
+            if (items[2][0] != null) {
+              top3 = 100 - items[2][0]
+              top3Accepted=items[2][1];
+            }
+          }
+          else {
+            top3 = "";
+            top3Accepted=""
+          }
+          if (items.length > 1) {
+            if (items[1][0] != null) {
+              top2 = 100 - items[1][0]
+              top2Accepted=items[1][1];
+            }
+          }
+          else {
+            top2 = "";
+            top2Accepted=""
+          }
+          if (items.length > 0) {
+            if (items[0][0] != null) {
+              top1 = 100 - items[0][0]
+              top1Accepted=items[0][1];
+            }
+          }
+          else {
+            top1 = "";
+            top1Accepted="";
+          }
+          console.log(top1Accepted);
+          console.log(top2Accepted);
+          console.log(top3Accepted);
+          console.log(top4Accepted);
+          console.log(top5Accepted);
+          this.doublebars = new Chart(this.hrzBars.nativeElement, {
+            type: 'horizontalBar',
+            data: {
+              labels: [top1, top2, top3, top4, top5],
+              datasets: [{
+                label: 'No. of times accepted',
+                data: [top1Accepted, top2Accepted, top3Accepted, top4Accepted, top5Accepted],
+                backgroundColor: '#ddee44', // array should have same number of elements as number of dataset
+                borderColor: '#ddee44',// array should have same number of elements as number of dataset
+                borderWidth: 1
+              }]
+            },
+          });
+        }
+      })
+    }
   }
 
   doubleLineChart(){
-    this.doublelines = new Chart(this.doubleline.nativeElement, {
-          type: 'line',
+    var totalAcceptedAmount=[];
+
+    if (this.chosengamecode=="-"){
+      this.afs.collection<any>('Game').ref
+      .where('responderResponse', '==', 'Decline')
+      .get()
+      .then(ress => {
+
+        if (ress.docs.length != 0) {
+
+          ress.forEach(GameDoc => {
+
+            if (GameDoc.data().responderResponse == "Decline") {
+              var amt = 100-GameDoc.data().proposerAmount
+              totalAcceptedAmount.push(amt);
+            }
+          })
+
+          // 1. sorting totalAceptedAmountCounts
+          if (totalAcceptedAmount.length!=0 || totalAcceptedAmount.length!=null) {
+            var  counts = {};
+            totalAcceptedAmount.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
+            console.log(counts);
+
+            // sorting
+            // Create items array
+            var items = Object.keys(counts).map(function(key) {
+              return [key, counts[key]];
+            });
+
+            // Sort the array based on the second element
+            items.sort(function(first, second) {
+              return second[1] - first[1];
+            });
+            console.log("Accepted amount: "+ items);
+            console.log("Accepted amount length: "+ items.length);
+            /*console.log(items[0]);
+            console.log(items[1]);*/
+          }
+          var top1; var top1Accepted;
+          var top2; var top2Accepted;
+          var top3; var top3Accepted;
+          var top4; var top4Accepted;
+          var top5; var top5Accepted;
+          if (items.length > 4) {
+            if (items[4][0] != null) {
+              top5 = 100 - items[4][0]
+              top5Accepted=items[4][1];
+            }
+          }
+          else {
+            top5 = "";
+            top5Accepted=""
+          }
+          if (items.length > 3) {
+            if (items[3][0] != null) {
+              top4 = 100 - items[3][0]
+              top4Accepted=items[3][1];
+            }
+          }
+          else {
+            top4 = "";
+            top4Accepted=""
+          }
+          if (items.length > 2) {
+            if (items[2][0] != null) {
+              top3 = 100 - items[2][0]
+              top3Accepted=items[2][1];
+            }
+          }
+          else {
+            top3 = "";
+            top3Accepted=""
+          }
+          if (items.length > 1) {
+            if (items[1][0] != null) {
+              top2 = 100 - items[1][0]
+              top2Accepted=items[1][1];
+            }
+          }
+          else {
+            top2 = "";
+            top2Accepted=""
+          }
+          if (items.length > 0) {
+            if (items[0][0] != null) {
+              top1 = 100 - items[0][0]
+              top1Accepted=items[0][1];
+            }
+          }
+          else {
+            top1 = "";
+            top1Accepted="";
+          }
+
+          console.log(top1Accepted);
+          console.log(top2Accepted);
+          console.log(top3Accepted);
+          console.log(top4Accepted);
+          console.log(top5Accepted);
+          this.doublelines = new Chart(this.doubleline.nativeElement, {
+            type: 'horizontalBar',
+            data: {
+              labels: [top1, top2, top3, top4, top5],
+              datasets: [{
+                label: 'No. of times rejected',
+                data: [top1Accepted, top2Accepted, top3Accepted],
+                backgroundColor: '#dd1144', // array should have same number of elements as number of dataset
+                borderColor: '#dd1144',// array should have same number of elements as number of dataset
+                borderWidth: 1
+              }]
+            },
+          });
+        }
+      })
+    }
+    else {
+      this.afs.collection<any>('Game').ref
+      .where('responderResponse', '==', 'Decline')
+      .where('gameId', '==', this.chosengamecode)
+      .get()
+      .then(ress => {
+
+        if (ress.docs.length != 0) {
+
+          ress.forEach(GameDoc => {
+
+            if (GameDoc.data().responderResponse == "Decline") {
+              var amt = 100-GameDoc.data().proposerAmount
+              totalAcceptedAmount.push(amt);
+            }
+          })
+
+          // 1. sorting totalAceptedAmountCounts
+          if (totalAcceptedAmount.length!=0 || totalAcceptedAmount.length!=null) {
+            var  counts = {};
+            totalAcceptedAmount.forEach(function(x) { counts[x] = (counts[x] || 0)+1; });
+            console.log(counts);
+
+            // sorting
+            // Create items array
+            var items = Object.keys(counts).map(function(key) {
+              return [key, counts[key]];
+            });
+
+            // Sort the array based on the second element
+            items.sort(function(first, second) {
+              return second[1] - first[1];
+            });
+            console.log("Accepted amount: "+ items);
+            console.log("Accepted amount length: "+ items.length);
+            /*console.log(items[0]);
+            console.log(items[1]);*/
+          }
+          var top1; var top1Accepted;
+          var top2; var top2Accepted;
+          var top3; var top3Accepted;
+          var top4; var top4Accepted;
+          var top5; var top5Accepted;
+          if (items.length > 4) {
+            if (items[4][0] != null) {
+              top5 = 100 - items[4][0]
+              top5Accepted=items[4][1];
+            }
+          }
+          else {
+            top5 = "";
+            top5Accepted=""
+          }
+          if (items.length > 3) {
+            if (items[3][0] != null) {
+              top4 = 100 - items[3][0]
+              top4Accepted=items[3][1];
+            }
+          }
+          else {
+            top4 = "";
+            top4Accepted=""
+          }
+          if (items.length > 2) {
+            if (items[2][0] != null) {
+              top3 = 100 - items[2][0]
+              top3Accepted=items[2][1];
+            }
+          }
+          else {
+            top3 = "";
+            top3Accepted=""
+          }
+          if (items.length > 1) {
+            if (items[1][0] != null) {
+              top2 = 100 - items[1][0]
+              top2Accepted=items[1][1];
+            }
+          }
+          else {
+            top2 = "";
+            top2Accepted=""
+          }
+          if (items.length > 0) {
+            if (items[0][0] != null) {
+              top1 = 100 - items[0][0]
+              top1Accepted=items[0][1];
+            }
+          }
+          else {
+            top1 = "";
+            top1Accepted="";
+          }
+
+          console.log(top1Accepted);
+          console.log(top2Accepted);
+          console.log(top3Accepted);
+          console.log(top4Accepted);
+          console.log(top5Accepted);
+          this.doublelines = new Chart(this.doubleline.nativeElement, {
+            type: 'horizontalBar',
+            data: {
+              labels: [top1, top2, top3, top4, top5],
+              datasets: [{
+                label: 'No. of times rejected',
+                data: [top1Accepted, top2Accepted, top3Accepted],
+                backgroundColor: '#dd1144', // array should have same number of elements as number of dataset
+                borderColor: '#dd1144',// array should have same number of elements as number of dataset
+                borderWidth: 1
+              }]
+            },
+          });
+        }
+      })
+    }
+    /*this.doublelines = new Chart(this.doubleline.nativeElement, {
+
+      type: 'horizontalBar',
+      data: {
+        labels: ['S1', 'S2', 'S3', 'S4', 'S5'],
+        datasets: [{
+          label: 'Most Popular Accepted Amount Offered',
+          data: [2.5, 3.8, 5, 6.9, 6.9, 7.5, 10, 17],
+          backgroundColor: '#dd1144', // array should have same number of elements as number of dataset
+          borderColor: '#dd1144',// array should have same number of elements as number of dataset
+          borderWidth: 1
+        }]
+      },*/
+          /*type: 'line',
           data: {
             labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
             datasets: [{
@@ -432,8 +1017,8 @@ this.lines = new Chart(this.lineChart.nativeElement, {
                 }
               }]
             }
-          }
-        });
+          }*/
+        //});
       }
 
       gamecodes(selectedValue:any){
@@ -442,7 +1027,7 @@ this.lines = new Chart(this.lineChart.nativeElement, {
         this.createLineChart();
         this.createHrzBarChart();
         this.doubleLineChart();
-      
+
       }
-  
+
 }
