@@ -444,7 +444,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                         console.log("{{Result.ts}} User went from Proposer to Responder: ");
 
                         this.loader =  this.loadingCtrl.create({
-                          duration: 3000
+                          duration: 1000
                         });
 
                         this.loader.present();
@@ -481,7 +481,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                         console.log("<<Result.ts>> Changing position round: User went from Responder to Proposer: ");
 
                         this.loader =  this.loadingCtrl.create({
-                          duration: 3000
+                          duration: 1000
                         });
 
                         this.loader.present();
@@ -524,7 +524,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                         this.firstcome+=1;
                         this.loader =  this.loadingCtrl.create({
-                          duration: 8000
+                          duration: 5000
                         });
 
                         this.loader.present();
