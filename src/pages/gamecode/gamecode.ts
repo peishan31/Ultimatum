@@ -75,7 +75,7 @@ subscribed=false;
   Next(form: NgForm){
     this.submitted = true;
     if (form.valid && this.gamecode!= '' && this.gamecode!=null && this.inhere==0) {
-     
+
       this.professorcodes = this.afs.collection<any>('Professor').ref
       .where('gameId', '==', this.gamecode)
       .where('professorStatus', '==', "Not Ready")
@@ -84,14 +84,14 @@ subscribed=false;
       console.log(ress)
       if (ress.docs.length == 0) {
         // ress.forEach(ProfessorDoc => {
-        
+
         // })
         this.errormsg="Code invalid or game has already started...";
       }
       else{
         this.errormsg="";
-    
-       
+
+
      if (this.errormsg==""){
       this.showLoading=true;
  // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
@@ -169,8 +169,8 @@ subscribed=false;
   })
      }
     }
-      )  } 
-   
+      )  }
+
   }
 
   userDisconnectState(all) {
@@ -417,6 +417,7 @@ subscribed=false;
 
           // }
           else{
+            this.showLoading=false;
             this.hide=true;
           }
 
