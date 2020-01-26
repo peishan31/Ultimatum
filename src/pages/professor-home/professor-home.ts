@@ -86,11 +86,11 @@ if (data["waitForStudent"]==true){
     toast.present();
     this.professorcode = this.afs.collection<any>('Professor').doc(this.code);
     this.retrieveprofessor = this.professorcode.valueChanges();
-   this.retrieveprofessor.subscribe(ress=>{
+    this.subscription = this.retrieveprofessor.subscribe(ress=>{
     this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('round', '==', parseInt(ress["round"])).where('gameId', '==', this.code));
     this.item = this.itemDoc.valueChanges();
 
-    this.item.subscribe(res=>{
+    this.subscription = this.item.subscribe(res=>{
       console.log(res);
       this.allgameinround1.length=0;
       this.alreadydone.length=0;
@@ -173,7 +173,7 @@ if (data["waitForStudent"]==true){
     this.itemDoc = this.afs.collection<any>('Participant')
     this.item = this.itemDoc.valueChanges();
     this.item.length=0;
-    this.item.subscribe(res=>{
+    this.subscription = this.item.subscribe(res=>{
       this.list.length=0;
       //console.log(res)
 
@@ -308,6 +308,8 @@ if (data["waitForStudent"]==true){
     this.item = this.itemDoc.valueChanges();
     this.didsubscribed=true;
     this.subscription = this.item.subscribe(res=>{
+      if (res.length!=0 && res.length%2==0) { // there is data
+
       for (let i=0; i<res.length;i++){
         //if (res[i].gameId==this.code){
           this.studentsList["username"].push(res[i].username);
@@ -347,6 +349,7 @@ if (data["waitForStudent"]==true){
       // calculating how many rounds it would take for all users to play against each other in 2 groups.
       //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
       //this.assignProposerAndResponder (areaB, areaA,  half_length);
+      }
     });
   }
 
@@ -538,7 +541,11 @@ if (this.assgnsame.length%2==0){
     if (this.didsubscribed==true){
       this.subscription.unsubscribe();
     }
-
+    if (this.subscription) this.subscription.unsubscribe();
     // this.professorcode.unsubscribe();
+  }
+  ngOnDestroy() {
+    if (this.subscription) this.subscription.unsubscribe();
+
   }
 }

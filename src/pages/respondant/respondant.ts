@@ -622,4 +622,11 @@ console.log(this.res,"RES")
     //this.subscription.unsubscribe();
 
   }
+  ngOnDestroy() {
+
+    let all=this.navParams.data;
+    if (all["gameMode"] == "Random all players") {
+      if (this.subscription) this.subscription.unsubscribe();
+    }
+  }
 }

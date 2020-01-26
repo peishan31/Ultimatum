@@ -452,5 +452,9 @@ subscribed=false;
       this.subscription.unsubscribe();
     }
   }
+  ngOnDestroy() {
+
+    if (this.subscription) this.subscription.unsubscribe();
+  }
 }
 

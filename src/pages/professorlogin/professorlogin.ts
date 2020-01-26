@@ -26,6 +26,7 @@ export class ProfessorloginPage {
   item:any;
   validations_form: FormGroup;
   errorMessage = '';
+  subscription:any;
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     private _FB: FormBuilder,
@@ -51,7 +52,7 @@ export class ProfessorloginPage {
     this.itemDoc = this.afs.collection<any>('ProfessorAccount');
     this.item = this.itemDoc.valueChanges();
 
-    this.item.subscribe(res=>{
+    this.subscription = this.item.subscribe(res=>{
       console.log(res);
       for (let p=0;p<res.length;p++){
         if (res[p]==undefined || res[p]==null){
@@ -84,4 +85,9 @@ export class ProfessorloginPage {
   hashing = function(length){
     return Crypto.createHash('sha256').update(length).digest('base64');
   };
+
+  ngOnDestroy(){
+
+    if (this.subscription) this.subscription.unsubscribe();
+  }
 }
