@@ -522,33 +522,40 @@ randomModeTotalRound="";
 		console.log("Before shuffle: (areaB)" + responder);
     console.log("Now: (areaB)" + arrangedUsersB);
 
-    for (var i=0 ; i < arrangedUsersA.length; i++) {
+    var totalUser = proposer.length + responder.length;
+    
+    if (totalUser%2==0) {
+      for (var i=0 ; i < arrangedUsersA.length; i++) {
 
-      console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
+        console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
 
-      var id = proposerUUID[i] + currentRound + responderUUID[i] + currentRound;
-        this.afs.collection('Game').doc(id).set({
-          gameId:this.hi["gameId"],
-          gameMode: 'Random all players',
-          round: currentRound,
-          totalRound: totalround,
-          dateTime: new Date().toISOString(),
-          proposerUUID: proposerUUID[i],
-          proposerName: proposer[i],
-          responderUUID: responderUUID[i],
-          responderName: responder[i],
-          proposerAmount: "",
-          responderResponse: "",
-          proposerStatus: "Not Ready",
-          responderStatus: "Not Ready",
-          gameStatus: "Not Ready"
-         })
-        .then((data) => {
-          //console.log("Data: "+data);
-        }).catch((err) => {
-          console.log("Err: "+err);
-        })
-		}
+        var id = proposerUUID[i] + currentRound + responderUUID[i] + currentRound;
+          this.afs.collection('Game').doc(id).set({
+            gameId:this.hi["gameId"],
+            gameMode: 'Random all players',
+            round: currentRound,
+            totalRound: totalround,
+            dateTime: new Date().toISOString(),
+            proposerUUID: proposerUUID[i],
+            proposerName: proposer[i],
+            responderUUID: responderUUID[i],
+            responderName: responder[i],
+            proposerAmount: "",
+            responderResponse: "",
+            proposerStatus: "Not Ready",
+            responderStatus: "Not Ready",
+            gameStatus: "Not Ready"
+           })
+          .then((data) => {
+            //console.log("Data: "+data);
+          }).catch((err) => {
+            console.log("Err: "+err);
+          })
+      }
+    }
+    else {
+      alert("HELL NOOOOOOOOOOOOOOO @scoreboard.ts");
+    }
   }
 
   onSelectChange(selectedValue: any) {
