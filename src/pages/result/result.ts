@@ -531,6 +531,11 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                         console.log("How many times?");
 
                         this.loader.onDidDismiss(() => {
+
+                          this.loader =  this.loadingCtrl.create({
+                          });
+
+                          this.loader.present();
                           this.afs.collection<any>('Game').ref
                           .where('gameId', '==', this.data["GameId"])
                           .where('round', '==', changeparse)
@@ -550,6 +555,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                                 this.storage.set(this.data.UUID+"EnteredResult", false);
                                 this.storage.set(this.data.UUID+"EnteredNextRound", false);
 
+                                this.loader.dismiss();
                                 this.navCtrl.setRoot(ProposerPage, {
                                   UUID: ProposerGameDoc.data().proposerUUID,
                                   username: ProposerGameDoc.data().proposerName,
@@ -604,12 +610,111 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                                     this.storage.set(this.data.UUID+"EnteredResult", false);
                                     this.storage.set(this.data.UUID+"EnteredNextRound", false);
 
+                                    this.loader.dismiss();
                                     this.navCtrl.setRoot(NextroundsPage,passnextpg);
 
                                   })
                                 }
                                 else {
-                                  //alert("Error! User is not assigned to any roles!");
+                                  this.loader.dismiss();
+                                  this.loader =  this.loadingCtrl.create({
+                                    duration: 8000
+                                  });
+
+                                  this.loader.present();
+                                  console.log("How many times?");
+
+                                  this.loader.onDidDismiss(() => {
+
+                                    //alert("Error! User is not assigned to any roles!");
+                                  this.afs.collection<any>('Game').ref
+                                  .where('gameId', '==', this.data["GameId"])
+                                  .where('round', '==', changeparse)
+                                  .where('proposerUUID', '==', this.data["UUID"])
+                                  .get()
+                                  .then(res=>{
+
+                                    if (res.docs.length != 0){ // user is a proposer!
+
+                                      res.forEach(ProposerGameDoc=>{
+                                        console.log(ProposerGameDoc.data());
+                                        var nextroundfirebaseid = ProposerGameDoc.data().proposerUUID + changeparse + ProposerGameDoc.data().responderUUID + changeparse;
+
+                                        this.storage.set(this.data.UUID+"EnteredGameCode", false);
+                                        this.storage.set(this.data.UUID+"EnteredProposal", false);
+                                        this.storage.set(this.data.UUID+"EnteredRespondant", false);
+                                        this.storage.set(this.data.UUID+"EnteredResult", false);
+                                        this.storage.set(this.data.UUID+"EnteredNextRound", false);
+
+                                        this.navCtrl.setRoot(ProposerPage, {
+                                          UUID: ProposerGameDoc.data().proposerUUID,
+                                          username: ProposerGameDoc.data().proposerName,
+                                          GameId: this.data["GameId"],
+                                          gameMode:this.data["gameMode"],
+                                          Role: "Proposer", // new role
+                                          FirebaseId:this.data["FirebaseId"],
+                                          nextroundfirebaseid:nextroundfirebaseid,
+                                          // result
+                                          Round: changeparse, // new round
+                                          dateTime:this.datetime,
+                                          //once:0,
+                                          gonextround:0
+                                        })
+
+                                      })
+                                    }
+                                    else { // check if user is a respondant!
+
+                                      this.afs.collection<any>('Game').ref
+                                      .where('gameId', '==', this.data["GameId"])
+                                      .where('round', '==', changeparse)
+                                      .where('responderUUID', '==', this.data["UUID"])
+                                      .get()
+                                      .then(res=>{
+
+                                        if (res.docs.length != 0){ // user is a responder!
+
+                                          res.forEach(ResponderGameDoc=>{
+
+                                            var nextroundfirebaseid = ResponderGameDoc.data().proposerUUID + changeparse + ResponderGameDoc.data().responderUUID + changeparse;
+
+                                            let passnextpg = {
+                                              UUID: ResponderGameDoc.data().responderUUID,
+                                              username: ResponderGameDoc.data().responderName,
+                                              GameId: this.data["GameId"],
+                                              gameMode:this.data["gameMode"],
+                                              Role: "Respondant", // new role
+                                              FirebaseId:this.data["FirebaseId"],
+                                              nextroundfirebaseid: nextroundfirebaseid,
+                                              // result
+                                              Round: changeparse, // new round
+                                              dateTime:this.datetime,
+                                              once:0,
+                                              gonextround:0
+                                            };
+
+                                            // Resetting local storage
+                                            this.storage.set(this.data.UUID+"EnteredGameCode", false);
+                                            this.storage.set(this.data.UUID+"EnteredProposal", false);
+                                            this.storage.set(this.data.UUID+"EnteredRespondant", false);
+                                            this.storage.set(this.data.UUID+"EnteredResult", false);
+                                            this.storage.set(this.data.UUID+"EnteredNextRound", false);
+
+                                            this.navCtrl.setRoot(NextroundsPage,passnextpg);
+
+                                          })
+                                        }
+                                        else {
+                                          alert("Error! User is not assigned to any roles! Please try again!");
+                                        }
+
+                                      })
+                                    }
+                                  });
+
+                                  });
+
+                          //======================================
                                 }
 
                               })

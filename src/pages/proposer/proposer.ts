@@ -278,16 +278,16 @@ export class ProposerPage {
       this.storage.get("proposer"+all["UUID"]).then((val) => {
         if (val=="false"){
 
-      if (this.presstrue) {
+      /*if (this.presstrue) {
 
         if (this.once!=0){
           this.once = all["once"]
         }
-      }
+      }*/
       //alert("My UUID: " + all.UUID);
-      //this.storage.get(all.UUID+"EnteredProposal").then((val) => {
+      this.storage.get(all.UUID+"EnteredProposal").then((val) => {
 
-        //if (val == false) {
+        if (val == false) {
 
           this.professorcode = this.afs.collection<any>('Professor').ref
             .where('gameId', '==', all["GameId"])
@@ -373,8 +373,8 @@ export class ProposerPage {
               })
             }
           })
-        //}
-        // })
+        }
+        })
       }
     })
 
