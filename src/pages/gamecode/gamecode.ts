@@ -93,7 +93,7 @@ subscribed=false;
 
 
      if (this.errormsg==""){
-      this.showLoading=true;
+     
  // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
     // shand[0].style.display="none";
     let data= this.navParams.data;
@@ -103,7 +103,7 @@ subscribed=false;
 
       this.subscribed = true;
       if (res.length==0){
-
+        this.showLoading=true;
         //means currently no user with same username
         this.loader =  this.loadingCtrl.create({
 

@@ -13,6 +13,12 @@
 <ion-content id="page5" padding  style="overflow-y: scroll"><br>
   <ion-grid *ngIf="currentround==totalround">
     <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label>Game code: {{hi["gameId"]}}</ion-label>
+         
+        </ion-item>
+      </ion-col>
       <ion-col *ngIf="currentround==totalround">
         <ion-item>
           <ion-label>Filter:</ion-label>
