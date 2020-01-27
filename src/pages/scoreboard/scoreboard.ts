@@ -101,6 +101,10 @@ randomModeTotalRound="";
     if (this.hi["gameMode"] == "All same opponents")
     {
       // Yong Lin's code
+      this.loader =  this.loadingCtrl.create({
+
+      });
+      this.loader.present();
       this.itemDoc = this.afs.collection<any>('Professor').doc(this.hi["gameId"])
       this.item = this.itemDoc.valueChanges();
       this.subscription=this.item.subscribe(res=>{
@@ -114,6 +118,7 @@ randomModeTotalRound="";
             })
             .then((data) => {
               console.log("Data: ");
+              this.loader.dismiss();
               this.navCtrl.setRoot(ProfessorHomePage,{"gameId": this.hi["gameId"],gameMode: this.hi["gameMode"], waitForStudent:true})
             }).catch((err) => {
                 console.log("Err: "+err);
