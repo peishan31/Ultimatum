@@ -31,13 +31,19 @@ export class AnalyticsPage {
 
 
   bars: any;
+  bars1: any;
   colorArray: any;
 
   lines:any;
+  lines1: any;
+  lines2: any;
+
   colorArrayLine:any;
 
   doublebars:any;
+  doublebars1:any;
   doublelines:any;
+  doublelines2:any;
 
   empty:string;
 
@@ -55,7 +61,7 @@ console.log(ress.docs.length)
     if (ress.docs.length != 0) {
       ress.forEach(ProfessorDoc => {
         if ( ProfessorDoc.data().professorStatus=='Ready') {
-         
+
           this.gamecode.push(ProfessorDoc.data().gameId);
           console.log(this.gamecode,"list")
         }
@@ -63,7 +69,7 @@ console.log(ress.docs.length)
       )
 
     }
-   
+
   })
     this.createBarChart();
     this.createLineChart();
@@ -136,6 +142,7 @@ console.log(ress.docs.length)
           let average=(sum/length).toFixed(2);
           let splitthis=average.split(".");
           this.averageproposed=splitthis[0];
+
           this.bars = new Chart(this.barChart.nativeElement, {
             type: 'bar',
             data: {
@@ -230,7 +237,7 @@ console.log(ress.docs.length)
           let splitthis=average.split(".");
           this.averageproposed=splitthis[0];
 
-          this.bars = new Chart(this.barChart.nativeElement, {
+          this.bars1 = new Chart(this.barChart.nativeElement, {
             type: 'bar',
             data: {
               labels: ['0-10', '11-20', '21-30', '31-40', '41-50', '51-60', '61-70', '71-80','81-90','91-100'],
@@ -287,7 +294,7 @@ console.log(ress.docs.length)
 
         res.forEach(ResponderGameDoc=>{
 
-           
+
            if (ResponderGameDoc.data().proposerAmount!=""){
             sum+=ResponderGameDoc.data().proposerAmount;
            }
@@ -473,7 +480,7 @@ createPieChart(){
           this.rejectedAmount = 0;
         }
 
-        this.lines = new Chart(this.pieChart.nativeElement, {
+        this.lines1 = new Chart(this.pieChart.nativeElement, {
           type: 'pie',
           data: {
               datasets: [{
@@ -524,8 +531,7 @@ createPieChart(){
 
           this.rejectedAmount = 0;
         }
-
-        this.lines = new Chart(this.pieChart.nativeElement, {
+        this.lines2 = new Chart(this.pieChart.nativeElement, {
           type: 'pie',
           data: {
               datasets: [{
@@ -682,6 +688,16 @@ createPieChart(){
                 borderWidth: 1
               }]
             },
+            options: {
+                scales: {
+                    xAxes: [{
+                      ticks: {
+                        //min: 0,
+                        stepSize: 1
+                      }
+                    }]
+                }
+            }
           });
         }
       })
@@ -784,7 +800,7 @@ createPieChart(){
           console.log(top3Accepted);
           console.log(top4Accepted);
           console.log(top5Accepted);
-          this.doublebars = new Chart(this.hrzBars.nativeElement, {
+          this.doublebars1 = new Chart(this.hrzBars.nativeElement, {
             type: 'horizontalBar',
             data: {
               labels: [top1, top2, top3, top4, top5],
@@ -794,8 +810,18 @@ createPieChart(){
                 backgroundColor: '#ddee44', // array should have same number of elements as number of dataset
                 borderColor: '#ddee44',// array should have same number of elements as number of dataset
                 borderWidth: 1
-              }]
+              }],
             },
+            options: {
+              scales: {
+                  xAxes: [{
+                    ticks: {
+                      //min: 0,
+                      stepSize: 1
+                    }
+                  }]
+              }
+            }
           });
         }
       })
@@ -915,6 +941,16 @@ createPieChart(){
                 borderWidth: 1
               }]
             },
+            options: {
+              scales: {
+                  xAxes: [{
+                    ticks: {
+                      //min: 0,
+                      stepSize: 1
+                    }
+                  }]
+              }
+            }
           });
         }
       })
@@ -1018,7 +1054,7 @@ createPieChart(){
           console.log(top3Accepted);
           console.log(top4Accepted);
           console.log(top5Accepted);
-          this.doublelines = new Chart(this.doubleline.nativeElement, {
+          this.doublelines2 = new Chart(this.doubleline.nativeElement, {
             type: 'horizontalBar',
             data: {
               labels: [top1, top2, top3, top4, top5],
@@ -1030,6 +1066,16 @@ createPieChart(){
                 borderWidth: 1
               }]
             },
+            options: {
+              scales: {
+                  xAxes: [{
+                    ticks: {
+                      //min: 0,
+                      stepSize: 1
+                    }
+                  }]
+              }
+            }
           });
         }
       })
@@ -1077,12 +1123,23 @@ createPieChart(){
       }
 
       gamecodes(selectedValue:any){
+
+        if (this.bars) this.bars.destroy();
+        if (this.bars1) this.bars1.destroy();
+        if (this.lines) this.lines.destroy();
+        if (this.lines1) this.lines1.destroy();
+        if (this.lines2) this.lines2.destroy();
+        if (this.doublebars) this.doublebars.destroy();
+        if (this.doublebars1) this.doublebars1.destroy();
+        if (this.doublelines) this.doublelines.destroy();
+        if (this.doublelines2) this.doublelines2.destroy();
+
         this.chosengamecode=selectedValue;
         this.createBarChart();
         this.createLineChart();
         this.createHrzBarChart();
         this.doubleLineChart();
-
+        this.createPieChart();
       }
 
 }

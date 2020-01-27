@@ -307,6 +307,10 @@ export class ProposerPage {
 
                   if (res.docs.length != 0) {
 
+                    this.loader =  this.loadingCtrl.create({
+
+                    });
+                    this.loader.present();
                     res.forEach(ProposerGameDoc =>{
 
                       if (ProposerGameDoc.data().proposerUUID == all["UUID"]
@@ -341,6 +345,7 @@ export class ProposerPage {
                             console.log("((proposer.ts)): "+ all["UUID"]);
                             this.storage.set(all.UUID+"EnteredProposal", true);
                             this.storage.set("proposer"+all["UUID"],"true")
+                            this.loader.dismiss();
                             this.navCtrl.setRoot(ResultPage,dict);
                           }
                           else
@@ -363,6 +368,7 @@ export class ProposerPage {
                               console.log("((proposer.ts)): "+ all["UUID"]);
                               this.storage.set(all.UUID+"EnteredProposal", true);
                               this.storage.set("proposer"+all["UUID"],"true")
+                              this.loader.dismiss();
                               this.navCtrl.setRoot(ResultPage,dict);
                             }
                       }

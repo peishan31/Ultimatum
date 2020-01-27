@@ -308,48 +308,49 @@ if (data["waitForStudent"]==true){
     this.item = this.itemDoc.valueChanges();
     this.didsubscribed=true;
     this.subscription = this.item.subscribe(res=>{
-      if (res.length!=0 && res.length%2==0) { // there is data
 
-      for (let i=0; i<res.length;i++){
-        //if (res[i].gameId==this.code){
-          this.studentsList["username"].push(res[i].username);
-          this.studentsList["UUID"].push(res[i].UUID);
-          this.studentnum=this.studentsList["username"].length;
-        //}
-      }
-      this.studentsList["totalRound"] = this.studentsList["username"].length;
-      console.log("Student List: "+this.studentsList["username"]); // push users in this id
+        if (res.length!=0 && res.length%2==0) { // there is data
 
-      /*if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
-      {
-        this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
-        this.studentsList["UUID"].push("101");
-        //this.studentsIdList[this.studentsList.length] = 1;
-      }*/
+        for (let i=0; i<res.length;i++){
+          //if (res[i].gameId==this.code){
+            this.studentsList["username"].push(res[i].username);
+            this.studentsList["UUID"].push(res[i].UUID);
+            this.studentnum=this.studentsList["username"].length;
+          //}
+        }
+        this.studentsList["totalRound"] = this.studentsList["username"].length;
+        console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
-      // randomizing
-      var firstusername = this.studentsList["username"].shift();
-      this.studentsList["username"].push(firstusername);
+        /*if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
+        {
+          this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
+          this.studentsList["UUID"].push("101");
+          //this.studentsIdList[this.studentsList.length] = 1;
+        }*/
 
-      var firstUUID = this.studentsList["UUID"].shift();
-      this.studentsList["UUID"].push(firstUUID);
-      //alert("this.studentsList['UUID']: " + this.studentsList["UUID"]);
-      // splitting users into 2 groups
-      var half_length = Math.ceil(this.studentsList["username"].length / 2);
-      var areaA = this.studentsList["username"].splice(0, half_length);
-      var areaB = this.studentsList["username"];
-      var areaAUUID = this.studentsList["UUID"].splice(0, half_length);
-      var areaBUUID = this.studentsList["UUID"];
-      console.log("areaA: "+ areaA);
-      console.log("areaB: "+ areaB);
-      console.log("areaA's id: "+ areaAUUID);
-      console.log("areaB's id: "+ areaBUUID);
+        // randomizing
+        var firstusername = this.studentsList["username"].shift();
+        this.studentsList["username"].push(firstusername);
 
-      this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID);
-      // calculating how many rounds it would take for all users to play against each other in 2 groups.
-      //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
-      //this.assignProposerAndResponder (areaB, areaA,  half_length);
-      }
+        var firstUUID = this.studentsList["UUID"].shift();
+        this.studentsList["UUID"].push(firstUUID);
+        //alert("this.studentsList['UUID']: " + this.studentsList["UUID"]);
+        // splitting users into 2 groups
+        var half_length = Math.ceil(this.studentsList["username"].length / 2);
+        var areaA = this.studentsList["username"].splice(0, half_length);
+        var areaB = this.studentsList["username"];
+        var areaAUUID = this.studentsList["UUID"].splice(0, half_length);
+        var areaBUUID = this.studentsList["UUID"];
+        console.log("areaA: "+ areaA);
+        console.log("areaB: "+ areaB);
+        console.log("areaA's id: "+ areaAUUID);
+        console.log("areaB's id: "+ areaBUUID);
+
+        this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID);
+        // calculating how many rounds it would take for all users to play against each other in 2 groups.
+        //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
+        //this.assignProposerAndResponder (areaB, areaA,  half_length);
+        }
     });
   }
 
@@ -371,54 +372,62 @@ if (data["waitForStudent"]==true){
 		console.log("Before shuffle: (areaB)" + responder);
     console.log("Now: (areaB)" + arrangedUsersB);
 
-    for (var i=0 ; i < arrangedUsersA.length; i++) {
+    var totalUser = proposer.length + responder.length;
 
-      console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
+    if (totalUser%2==0) {
 
-      var id = proposerUUID[i] + "0" + responderUUID[i] + "0";
-      //alert(id);
-      //alert("ResponderUUID: " + responderUUID);
-        this.afs.collection('Game').doc(id).set({
-          gameId:this.code,
-          gameMode: 'Random all players',
-          round: 0,
-          totalRound: this.rounds,
-          dateTime: new Date().toISOString(),
-          proposerUUID: proposerUUID[i],
-          proposerName: proposer[i],
-          responderUUID: responderUUID[i],
-          responderName: responder[i],
-          proposerAmount: "",
-          responderResponse: "",
-          proposerStatus: "Not Ready",
-          responderStatus: "Not Ready",
-          gameStatus: "Not Ready"
-         })
+      for (var i=0 ; i < arrangedUsersA.length; i++) {
 
-         var id3 = proposerUUID[i];
+        console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
 
-            var ref = firebase.database().ref(`/` + "User" + `/` + id3 + `/`);
-            ref.update({
-              UUID: id3,
+        var id = proposerUUID[i] + "0" + responderUUID[i] + "0";
+        //alert(id);
+        //alert("ResponderUUID: " + responderUUID);
+          this.afs.collection('Game').doc(id).set({
+            gameId:this.code,
+            gameMode: 'Random all players',
+            round: 0,
+            totalRound: this.rounds,
+            dateTime: new Date().toISOString(),
+            proposerUUID: proposerUUID[i],
+            proposerName: proposer[i],
+            responderUUID: responderUUID[i],
+            responderName: responder[i],
+            proposerAmount: "",
+            responderResponse: "",
+            proposerStatus: "Not Ready",
+            responderStatus: "Not Ready",
+            gameStatus: "Not Ready"
+          })
+
+          var id3 = proposerUUID[i];
+
+              var ref = firebase.database().ref(`/` + "User" + `/` + id3 + `/`);
+              ref.update({
+                UUID: id3,
+                online: true,
+                gameId: this.code,
+                inGame: true
+              });
+
+            var id2 = responderUUID[i];
+
+            var ref2 = firebase.database().ref(`/` + "User" + `/` + id2 + `/`);
+            ref2.update({
+              UUID: id2,
               online: true,
               gameId: this.code,
               inGame: true
-            });
-
-          var id2 = responderUUID[i];
-
-          var ref2 = firebase.database().ref(`/` + "User" + `/` + id2 + `/`);
-          ref2.update({
-            UUID: id2,
-            online: true,
-            gameId: this.code,
-            inGame: true
-          })
-        .then((data) => {
+            })
+          .then((data) => {
 
 
-          })
-		}
+            })
+      }
+    }
+    else {
+      alert("HELL NOOOOOOOOOOOOOOO @professor-home.ts");
+    }
   }
   //yonglin
   assignsameplayers(){
