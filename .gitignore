@@ -31,3 +31,5 @@ npm-debug.log*
 /www
 
 *.d3d3.cache
+
+src/environments/environment.ts
