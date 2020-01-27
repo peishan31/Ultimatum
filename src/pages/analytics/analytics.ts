@@ -450,7 +450,9 @@ this.lines = new Chart(this.lineChart.nativeElement, {
 
 createPieChart(){
 
- if (this.chosengamecode=="-"){
+  if (this.chosengamecode=="-"){
+    this.acceptedAmount=0;
+    this.rejectedAmount=0;
 
     this.afs.collection<any>('Game').ref
     .where('responderResponse', '==', 'Accept')
@@ -480,6 +482,8 @@ createPieChart(){
           this.rejectedAmount = 0;
         }
 
+        console.log("Specific gameId: " + this.rejectedAmount)
+        console.log("Specific gameId: " + this.acceptedAmount)
         this.lines1 = new Chart(this.pieChart.nativeElement, {
           type: 'pie',
           data: {
@@ -503,6 +507,8 @@ createPieChart(){
  }
  else {
 
+  this.acceptedAmount=0;
+  this.rejectedAmount=0;
   this.afs.collection<any>('Game').ref
     .where('responderResponse', '==', 'Accept')
     .where('gameId', '==', this.chosengamecode)
@@ -520,6 +526,7 @@ createPieChart(){
 
       this.afs.collection<any>('Game').ref
       .where('responderResponse', '==', 'Decline')
+      .where('gameId', '==', this.chosengamecode)
       .get()
       .then(ress => {
 
@@ -531,6 +538,8 @@ createPieChart(){
 
           this.rejectedAmount = 0;
         }
+        console.log("Specific gameId: " + this.rejectedAmount)
+        console.log("Specific gameId: " + this.acceptedAmount)
         this.lines2 = new Chart(this.pieChart.nativeElement, {
           type: 'pie',
           data: {
@@ -555,26 +564,6 @@ createPieChart(){
 
  }
   createHrzBarChart() {
-    /*this.doublebars = new Chart(this.hrzBars.nativeElement, {
-      type: 'horizontalBar',
-      data: {
-        labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8'],
-        datasets: [{
-          label: 'Online viewers in millions',
-          data: [2.5, 3.8, 5, 6.9, 6.9, 7.5, 10, 17],
-          backgroundColor: '#ddee44', // array should have same number of elements as number of dataset
-          borderColor: '#ddee44',// array should have same number of elements as number of dataset
-          borderWidth: 1
-        },
-        {
-          label: 'Offline viewers in millions',
-          data: [1.5, 2.8, 4, 4.9, 3.9, 4.5, 7, 12],
-          backgroundColor: '#dd1144', // array should have same number of elements as number of dataset
-          borderColor: '#dd1144',// array should have same number of elements as number of dataset
-          borderWidth: 1
-        }]
-      },
-    });*/
 
     var totalAcceptedAmount=[];
 
