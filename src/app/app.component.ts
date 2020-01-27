@@ -12,7 +12,7 @@ import { PastscoreboardPage } from '../pages/pastscoreboard/pastscoreboard';
 import { ResetPage } from '../pages/reset/reset';
 import { ViewpastornewPage } from '../pages/viewpastornew/viewpastornew';
 import { AnalyticsPage } from '../pages/analytics/analytics';
-
+// import { Network } from '@ionic-native/network';
 
 @Component({
   templateUrl: 'app.html'
@@ -20,15 +20,26 @@ import { AnalyticsPage } from '../pages/analytics/analytics';
 export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
     rootPage:any = UltimatumPage;
-
+    public onlineOffline: boolean = navigator.onLine
   constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
+
+      if (!navigator.onLine) {
+      alert("Offline");
+        }
+        window.addEventListener('offline', () => {
+          alert("offline")
+          });
+        window.addEventListener('online', () => {
+         alert('back online');
+        });
     });
   }
+  
   goToUltimatum(params){
     if (!params) params = {};
     this.navCtrl.setRoot(UltimatumPage);
