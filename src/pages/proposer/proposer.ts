@@ -245,7 +245,7 @@ export class ProposerPage {
                   let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"UUID":res[p].proposerUUID,"Amount":this.range,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid, gameMode: data["gameMode"]};
                   this.presstrue=false;
                   this.storage.set("proposer"+all["UUID"],"true")
-                  clearTimeout(this.timer); 
+                  clearTimeout(this.timer);
                   this.navCtrl.setRoot(ResultPage,dict);
                   this.presstrue=false;
                 }
@@ -254,7 +254,7 @@ export class ProposerPage {
                   let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range,"UUID":res[p].proposerUUID,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid, gameMode: data["gameMode"]};
                   this.presstrue=false;
                   this.storage.set("proposer"+all["UUID"],"true")
-                  clearTimeout(this.timer); 
+                  clearTimeout(this.timer);
                   this.navCtrl.setRoot(ResultPage,dict);
                   this.presstrue=false;
                 }
@@ -315,10 +315,10 @@ export class ProposerPage {
                     // alert("Proposer: " + res.docs.length); // there's an error!!
                     if (res.docs.length != 0) {
 
-                      this.loader =  this.loadingCtrl.create({
+                      /*this.loader =  this.loadingCtrl.create({
 
                       });
-                      this.loader.present();
+                      this.loader.present();*/
                       res.forEach(ProposerGameDoc =>{
 
                         if (ProposerGameDoc.data().proposerUUID == all["UUID"]
@@ -354,7 +354,7 @@ export class ProposerPage {
                               console.log("((proposer.ts)): "+ all["UUID"]);
                               this.storage.set(all.UUID+"EnteredProposal", true);
                               this.storage.set("proposer"+all["UUID"],"true")
-                              this.loader.dismiss();
+                              //this.loader.dismiss();
 
                               clearTimeout(this.timer);
 
@@ -382,7 +382,7 @@ export class ProposerPage {
                                 console.log("((proposer.ts)): "+ all["UUID"]);
                                 this.storage.set(all.UUID+"EnteredProposal", true);
                                 this.storage.set("proposer"+all["UUID"],"true")
-                                this.loader.dismiss();
+                                //this.loader.dismiss();
 
                                 clearTimeout(this.timer);
 

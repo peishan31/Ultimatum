@@ -3,7 +3,7 @@ import { NavController, NavParams, Alert } from 'ionic-angular';
 import { ScoreboardPage } from '../scoreboard/scoreboard';
 import { AngularFirestore } from '@angular/fire/firestore';
 import 'firebase/firestore';
-import {LoadingController,ToastController} from 'ionic-angular';
+import {LoadingController,ToastController, MenuController} from 'ionic-angular';
 import * as firebase from 'firebase';
 import { UserPresenceStatusProvider } from '../../providers/user-presence-status/user-presence-status';
 import { Subscription } from 'rxjs';
@@ -47,7 +47,8 @@ validator:string;
     public loadingCtrl:LoadingController,
     public toastCtrl:ToastController,
     public navParams:NavParams,
-    public UserPresenceStatusProvider: UserPresenceStatusProvider
+    public UserPresenceStatusProvider: UserPresenceStatusProvider,
+    public menuCtrl: MenuController
     ) {
 let data=this.navParams.data;
 if (data["waitForStudent"]==true){
@@ -55,6 +56,12 @@ if (data["waitForStudent"]==true){
   this.code="trying to make this not empty";
 
 }
+  }
+
+  ionViewWillEnter(){
+
+    this.menuCtrl.swipeEnable(true, 'left');
+    this.menuCtrl.enable(true, 'left');
   }
 
   Next(){

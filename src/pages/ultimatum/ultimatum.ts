@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, DateTime } from 'ionic-angular';
+import { NavController, DateTime, MenuController } from 'ionic-angular';
 import { ProposerPage } from '../proposer/proposer';
 import { ProfessorHomePage } from '../professor-home/professor-home';
 import * as firebase from 'firebase';
@@ -23,11 +23,13 @@ export class UltimatumPage {
 
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
-    public loadingCtrl:LoadingController
+    public loadingCtrl:LoadingController,
+    public menuCtrl: MenuController
     ) {
   }
 
   ionViewWillEnter() {
+    this.menuCtrl.swipeEnable(false, 'left');
     //this.random = Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+Math.floor(Math.random()*20)+1;
     this.random = this.uuidv4();
     console.log(this.random)
