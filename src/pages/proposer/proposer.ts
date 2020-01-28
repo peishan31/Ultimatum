@@ -45,7 +45,7 @@ export class ProposerPage {
   StartTimer(){
     this.timer = setTimeout(x =>
       {
-          if(this.maxtime <= 0) { }
+          if(this.maxtime <= 0) { this.maxtime=30; }
           this.maxtime -= 1;
 
           if(this.maxtime>0){
@@ -54,6 +54,8 @@ export class ProposerPage {
           }
 
           else if (this.maxtime==0){
+
+            this.maxtime=30;
             this.range=0;
             let all=this.navParams.data;
             console.log("((proposer.ts page)): " + all["gameMode"]);
@@ -62,6 +64,7 @@ export class ProposerPage {
               // Yong Lin
               this.presstrue=true;
 
+              this.maxtime=30;
             this.submitProposerOffer();
 
 
@@ -98,8 +101,8 @@ export class ProposerPage {
               // Peishan
               this.presstrue=true;
               this.submitProposerOfferRandomAllPlayers();
+              this.maxtime=30;
             }
-
           }
 
       }, 1000);
@@ -277,114 +280,126 @@ export class ProposerPage {
   submitProposerOfferRandomAllPlayers() {
 
     let all=this.navParams.data;
-      this.storage.get("proposer"+all["UUID"]).then((val) => {
+    this.storage.get("proposer"+all["UUID"]).then((val) => {
         if (val=="false"){
-
-      /*if (this.presstrue) {
+        //alert("Current val: " + val);
+      if (this.presstrue) {
 
         if (this.once!=0){
           this.once = all["once"]
         }
-      }*/
+
       //alert("My UUID: " + all.UUID);
-      this.storage.get(all.UUID+"EnteredProposal").then((val) => {
+        this.storage.get(all.UUID+"EnteredProposal").then((val) => {
 
         if (val == false) {
 
-          this.professorcode = this.afs.collection<any>('Professor').ref
-            .where('gameId', '==', all["GameId"])
-            .get()
-            .then(ress => {
+            this.itemDoc = this.afs.collection<any>('Professor').ref
+              .where('gameId', '==', all["GameId"])
+              .get()
+              .then(ress => {
+                //alert("Professor doc: " + ress.docs.length);
+              if (ress.docs.length != 0) {
 
-            if (ress.docs.length != 0) {
+                ress.forEach(ProfessorDoc => {
 
-              ress.forEach(ProfessorDoc => {
+                  this.itemDoc = this.afs.collection<any>('Game').ref
+                    .where('gameId', '==', all["GameId"])
+                    .where('proposerUUID', '==', all["UUID"])
+                    //.where('round', '==', parseInt(ProfessorDoc.data().round));
 
-                this.itemDoc = this.afs.collection<any>('Game').ref
-                  .where('gameId', '==', all["GameId"])
-                  .where('proposerUUID', '==', all["UUID"])
-                  .where('round', '==', parseInt(ProfessorDoc.data().round));
+                  this.itemDoc.get().then(res=>{ //sacso
+                    // alert("Proposer's gameId: " + all["GameId"]);
+                    // alert("Proposer's UUID: " + all["UUID"]);
+                    // alert("Proposer's round: " + parseInt(ProfessorDoc.data().round));
+                    // alert("Proposer: " + res.docs.length); // there's an error!!
+                    if (res.docs.length != 0) {
 
-                this.itemDoc.get().then(res=>{ //sacso
+                      this.loader =  this.loadingCtrl.create({
 
-                  if (res.docs.length != 0) {
+                      });
+                      this.loader.present();
+                      res.forEach(ProposerGameDoc =>{
 
-                    this.loader =  this.loadingCtrl.create({
+                        if (ProposerGameDoc.data().proposerUUID == all["UUID"]
+                          && ProposerGameDoc.data().responderResponse==""
+                          && ProfessorDoc.data().round == ProposerGameDoc.data().round){
 
-                    });
-                    this.loader.present();
-                    res.forEach(ProposerGameDoc =>{
+                            this.proposerData = ProposerGameDoc.data();
+                            this.firebaseId= ProposerGameDoc.data().proposerUUID + ProposerGameDoc.data().round +  ProposerGameDoc.data().responderUUID + ProposerGameDoc.data().round;
+                            this.updateProfessorStatus(this.firebaseId);
 
-                      if (ProposerGameDoc.data().proposerUUID == all["UUID"]
-                        && ProposerGameDoc.data().responderResponse==""){
+                            let addround=ProposerGameDoc.data().round+1;
 
-                          this.proposerData = ProposerGameDoc.data();
-                          this.firebaseId= ProposerGameDoc.data().proposerUUID + ProposerGameDoc.data().round +  ProposerGameDoc.data().responderUUID + ProposerGameDoc.data().round;
-                          this.updateProfessorStatus(this.firebaseId);
+                            // round 1, 3, 5, 7, 9 just have to swap their roles
+                            // round 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 is required to randomly generate the user
+                            if ((addround % 2 !=0)) // *****(it starts from 0)
+                            { // swapping roles
+                                let nextroundfirebaseid= ProposerGameDoc.data().responderUUID + addround + ProposerGameDoc.data().proposerUUID + addround;
 
-                          let addround=ProposerGameDoc.data().round+1;
-
-                          // round 1, 3, 5, 7, 9 just have to swap their roles
-                          // round 0, 2, 4, 6, 8, 10, 12, 14, 16, 18 is required to randomly generate the user
-                          if ((addround % 2 !=0)) // *****(it starts from 0)
-                          { // swapping roles
-                              let nextroundfirebaseid= ProposerGameDoc.data().responderUUID + addround + ProposerGameDoc.data().proposerUUID + addround;
-
-                              let dict={
-                                UUID: all["UUID"],
-                                username: all["username"],
-                                GameId:all["GameId"],
-                                gameMode: all["gameMode"],
-                                Role:"Proposer", // Current Role
-                                Amount:this.range,
-                                FirebaseId: this.firebaseId,
-                                nextroundfirebaseid:nextroundfirebaseid,
-                                // result
-                                Round:ProposerGameDoc.data().round, // Current round
-                                once:1
-                              };
-
-                            console.log("((proposer.ts)): "+ all["UUID"]);
-                            this.storage.set(all.UUID+"EnteredProposal", true);
-                            this.storage.set("proposer"+all["UUID"],"true")
-                            this.loader.dismiss();
-                            clearTimeout(this.timer); 
-                            this.navCtrl.setRoot(ResultPage,dict);
-                          }
-                          else
-                          { // randomizing role in the previous round
-                            let nextroundfirebaseid= "2345"; // nth cos they are randomizing users now
-
-                              let dict={
-                                UUID: all["UUID"],
-                                username: all["username"],
-                                GameId:all["GameId"],
-                                gameMode: all["gameMode"],
-                                Role:"Proposer", // Current Role
-                                Amount:this.range,
-                                FirebaseId: this.firebaseId,
-                                nextroundfirebaseid:nextroundfirebaseid, // "23454" <-- hardcoded for now
-                                Round:ProposerGameDoc.data().round, // Current Round
-                                once:1
-                              };
+                                let dict={
+                                  UUID: all["UUID"],
+                                  username: all["username"],
+                                  GameId:all["GameId"],
+                                  gameMode: all["gameMode"],
+                                  Role:"Proposer", // Current Role
+                                  Amount:this.range,
+                                  FirebaseId: this.firebaseId,
+                                  nextroundfirebaseid:nextroundfirebaseid,
+                                  // result
+                                  Round:ProposerGameDoc.data().round, // Current round
+                                  once:1
+                                };
 
                               console.log("((proposer.ts)): "+ all["UUID"]);
                               this.storage.set(all.UUID+"EnteredProposal", true);
                               this.storage.set("proposer"+all["UUID"],"true")
                               this.loader.dismiss();
-                              clearTimeout(this.timer); 
-                              this.navCtrl.setRoot(ResultPage,dict);
-                            }
-                      }
 
-                    })
-                  }
+                              clearTimeout(this.timer);
+
+                              this.navCtrl.setRoot(ResultPage,dict);
+                              this.presstrue=false;
+
+                            }
+                            else
+                            { // randomizing role in the previous round
+                              let nextroundfirebaseid= "2345"; // nth cos they are randomizing users now
+
+                                let dict={
+                                  UUID: all["UUID"],
+                                  username: all["username"],
+                                  GameId:all["GameId"],
+                                  gameMode: all["gameMode"],
+                                  Role:"Proposer", // Current Role
+                                  Amount:this.range,
+                                  FirebaseId: this.firebaseId,
+                                  nextroundfirebaseid:nextroundfirebaseid, // "23454" <-- hardcoded for now
+                                  Round:ProposerGameDoc.data().round, // Current Round
+                                  once:1
+                                };
+
+                                console.log("((proposer.ts)): "+ all["UUID"]);
+                                this.storage.set(all.UUID+"EnteredProposal", true);
+                                this.storage.set("proposer"+all["UUID"],"true")
+                                this.loader.dismiss();
+
+                                clearTimeout(this.timer);
+
+                                this.navCtrl.setRoot(ResultPage,dict)
+                                this.presstrue=false;
+                              }
+                        }
+
+                      })
+                    }
+                  })
                 })
-              })
-            }
+              }
+            })
+          }
           })
         }
-        })
       }
     })
 
@@ -422,9 +437,9 @@ export class ProposerPage {
   }
 
   ionViewDidLeave(){
-  // clearTimeout(this.timer); 
-  // console.log("Should I leave? Yes"); 
-  // return true; 
+  clearTimeout(this.timer);
+  // console.log("Should I leave? Yes");
+  // return true;
     if (this.subscribed==true){
          this.subscription.unsubscribe();
     }
@@ -438,6 +453,7 @@ export class ProposerPage {
 
   ngOnDestroy() {
 
+    clearTimeout(this.timer);
     let all=this.navParams.data;
     if (all["gameMode"] == "Random all players") {
       if (this.subscription) this.subscription.unsubscribe();

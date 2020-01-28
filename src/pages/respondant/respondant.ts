@@ -282,7 +282,7 @@ console.log(this.res,"RES")
   StartTimer(){
     this.timer = setTimeout(x =>
       {
-          if(this.maxtime <= 0) { }
+          if(this.maxtime <= 0) { this.maxtime=30; }
           this.maxtime -= 1;
 
           if(this.maxtime>0){
@@ -291,7 +291,7 @@ console.log(this.res,"RES")
           }
 
           else if (this.maxtime==0){
-
+            this.maxtime=30;
            this.Accept();
 
 
@@ -356,9 +356,9 @@ console.log(this.res,"RES")
                 "UUID": all["UUID"]
               };
               this.storage.set("responder"+all["UUID"],"true")
-              clearTimeout(this.timer); 
+
               this.navCtrl.setRoot(ResultPage,dict);
-              
+              clearTimeout(this.timer);
 
           //   subject.next(this.firebaseId);
             }
@@ -454,7 +454,7 @@ console.log(this.res,"RES")
                           };
                           localStorage.setItem("enterGameCode"+all.UUID, "NO");
                           this.storage.set(all.UUID+"EnteredRespondant", true);
-                          clearTimeout(this.timer); 
+                          clearTimeout(this.timer);
                           this.navCtrl.setRoot(ResultPage, dict);
                         }
                       })
@@ -516,7 +516,7 @@ console.log(this.res,"RES")
                   gameMode: all["gameMode"],
                   "UUID": all["UUID"]
                 };
-                clearTimeout(this.timer); 
+                clearTimeout(this.timer);
                 this.navCtrl.setRoot(ResultPage,dict)
 
               }
@@ -594,8 +594,8 @@ console.log(this.res,"RES")
                           // once
                         };
                         localStorage.setItem("enterGameCode"+all.UUID, "NO");
-                        this.storage.set(all.UUID+"EnteredRespondant", true); 
-                        clearTimeout(this.timer); 
+                        this.storage.set(all.UUID+"EnteredRespondant", true);
+                        clearTimeout(this.timer);
                         this.navCtrl.setRoot(ResultPage,dict)
                       }
 
@@ -638,7 +638,7 @@ console.log(this.res,"RES")
   // }
 
   ionViewDidLeave(){
-  // console.log("Should I leave? Yes"); return true; 
+  // console.log("Should I leave? Yes"); return true;
     //this.subscription.unsubscribe();
 
   }
