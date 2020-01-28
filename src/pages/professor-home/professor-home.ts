@@ -274,109 +274,107 @@ if (data["waitForStudent"]==true){
     setTimeout(() => {
       // alert('Hello...')
        // Calling out all the users joining this gameId
-    this.itemDoc = this.afs.collection<any>('Participant', ref => ref
-    .where("gameId", "==", this.code)
-    .where("online", "==" , true)
-  );
-  this.item = this.itemDoc.valueChanges();
-  this.didsubscribed=true;
-  this.subscription = this.item.subscribe(res=>{
-    if (res.length!=0 && res.length%2==0) { // there is data
+      this.itemDoc = this.afs.collection<any>('Participant', ref => ref
+      .where("gameId", "==", this.code)
+      .where("online", "==" , true)
+      );
+      this.item = this.itemDoc.valueChanges();
+      this.didsubscribed=true;
+      this.subscription = this.item.subscribe(res=>{
+        if (res.length!=0 && res.length%2==0) { // there is data
 
-    for (let i=0; i<res.length;i++){
-      //if (res[i].gameId==this.code){
-        this.studentsList["username"].push(res[i].username);
-        this.studentsList["UUID"].push(res[i].UUID);
-        this.studentnum=this.studentsList["username"].length;
-      //}
-    }
-    this.studentsList["totalRound"] = this.studentsList["username"].length;
-    console.log("Student List: "+this.studentsList["username"]); // push users in this id
+        for (let i=0; i<res.length;i++){
+          //if (res[i].gameId==this.code){
+            this.studentsList["username"].push(res[i].username);
+            this.studentsList["UUID"].push(res[i].UUID);
+            this.studentnum=this.studentsList["username"].length;
+          //}
+        }
+        this.studentsList["totalRound"] = this.studentsList["username"].length;
+        console.log("Student List: "+this.studentsList["username"]); // push users in this id
 
-    /*if (this.studentsList["username"].length % 2 != 0) // odd number; needs to generate AI
-    {
-      this.studentsList["username"][this.studentsList["username"].length] = "AI-101";
-      this.studentsList["UUID"].push("101");
-      //this.studentsIdList[this.studentsList.length] = 1;
-    }*/
+        if (this.studentsList["username"].length % 2 == 0)
+        {
+          // randomizing
+          var firstusername = this.studentsList["username"].shift();
+          this.studentsList["username"].push(firstusername);
 
-    // randomizing
-    var firstusername = this.studentsList["username"].shift();
-    this.studentsList["username"].push(firstusername);
+          var firstUUID = this.studentsList["UUID"].shift();
+          this.studentsList["UUID"].push(firstUUID);
+          //alert("this.studentsList['UUID']: " + this.studentsList["UUID"]);
+          // splitting users into 2 groups
+          var half_length = Math.ceil(this.studentsList["username"].length / 2);
+          var areaA = this.studentsList["username"].splice(0, half_length);
+          var areaB = this.studentsList["username"];
+          var areaAUUID = this.studentsList["UUID"].splice(0, half_length);
+          var areaBUUID = this.studentsList["UUID"];
+          console.log("areaA: "+ areaA);
+          console.log("areaB: "+ areaB);
+          console.log("areaA's id: "+ areaAUUID);
+          console.log("areaB's id: "+ areaBUUID);
 
-    var firstUUID = this.studentsList["UUID"].shift();
-    this.studentsList["UUID"].push(firstUUID);
-    //alert("this.studentsList['UUID']: " + this.studentsList["UUID"]);
-    // splitting users into 2 groups
-    var half_length = Math.ceil(this.studentsList["username"].length / 2);
-    var areaA = this.studentsList["username"].splice(0, half_length);
-    var areaB = this.studentsList["username"];
-    var areaAUUID = this.studentsList["UUID"].splice(0, half_length);
-    var areaBUUID = this.studentsList["UUID"];
-    console.log("areaA: "+ areaA);
-    console.log("areaB: "+ areaB);
-    console.log("areaA's id: "+ areaAUUID);
-    console.log("areaB's id: "+ areaBUUID);
+          //this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID);
+          var arrangedUsersA = areaA;
+          var arrangedUsersB = areaB;
 
-    //this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID);
-    var arrangedUsersA = areaA;
-    var arrangedUsersB = areaB;
+          for (var i=0 ; i < arrangedUsersA.length; i++) {
 
-    for (var i=0 ; i < arrangedUsersA.length; i++) {
+            console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
 
-      console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
+            var id = areaAUUID[i] + "0" + areaBUUID[i] + "0";
+            //alert(id);
+            //alert("ResponderUUID: " + responderUUID);
+              this.afs.collection('Game').doc(id).set({
+                gameId:this.code,
+                gameMode: 'Random all players',
+                round: 0,
+                totalRound: this.rounds,
+                dateTime: new Date().toISOString(),
+                proposerUUID: areaAUUID[i],
+                proposerName: areaA[i],
+                responderUUID: areaBUUID[i],
+                responderName: areaB[i],
+                proposerAmount: "",
+                responderResponse: "",
+                proposerStatus: "Not Ready",
+                responderStatus: "Not Ready",
+                gameStatus: "Not Ready"
+              })
 
-      var id = areaAUUID[i] + "0" + areaBUUID[i] + "0";
-      //alert(id);
-      //alert("ResponderUUID: " + responderUUID);
-        this.afs.collection('Game').doc(id).set({
-          gameId:this.code,
-          gameMode: 'Random all players',
-          round: 0,
-          totalRound: this.rounds,
-          dateTime: new Date().toISOString(),
-          proposerUUID: areaAUUID[i],
-          proposerName: areaA[i],
-          responderUUID: areaBUUID[i],
-          responderName: areaB[i],
-          proposerAmount: "",
-          responderResponse: "",
-          proposerStatus: "Not Ready",
-          responderStatus: "Not Ready",
-          gameStatus: "Not Ready"
-         })
+              var id3 = areaAUUID[i];
 
-         var id3 = areaAUUID[i];
+              var ref = firebase.database().ref(`/` + "User" + `/` + id3 + `/`);
+              ref.update({
+                UUID: id3,
+                online: true,
+                gameId: this.code,
+                inGame: true
+              });
 
-            var ref = firebase.database().ref(`/` + "User" + `/` + id3 + `/`);
-            ref.update({
-              UUID: id3,
-              online: true,
-              gameId: this.code,
-              inGame: true
-            });
+                var id2 = areaBUUID[i];
 
-          var id2 = areaBUUID[i];
-
-          var ref2 = firebase.database().ref(`/` + "User" + `/` + id2 + `/`);
-          ref2.update({
-            UUID: id2,
-            online: true,
-            gameId: this.code,
-            inGame: true
-          })
-        .then((data) => {
+                var ref2 = firebase.database().ref(`/` + "User" + `/` + id2 + `/`);
+                ref2.update({
+                  UUID: id2,
+                  online: true,
+                  gameId: this.code,
+                  inGame: true
+                })
+              .then((data) => {
 
 
-          })
-		}
-
-    // calculating how many rounds it would take for all users to play against each other in 2 groups.
-    //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
-    //this.assignProposerAndResponder (areaB, areaA,  half_length);
-    }
-  });
-  }, 2000);
+                })
+          }
+        }
+        else {
+          alert("There is currently odd number of students in the game! Please try again!");
+        }
+        // calculating how many rounds it would take for all users to play against each other in 2 groups.
+        //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
+        //this.assignProposerAndResponder (areaB, areaA,  half_length);
+        }
+      });
+  }, 1500);
 
   }
 

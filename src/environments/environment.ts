@@ -9,16 +9,16 @@
 //   measurementId: "G-6RQ61HDYPW"
 // };
  // Your web app's Firebase configuration
-export const firebaseConfig = {
-   apiKey: "AIzaSyCev4ycC2FpUXua-nJYVLoeoTPr0TZHcbE",
-   authDomain: "ultimatum-temp.firebaseapp.com",
-   databaseURL: "https://ultimatum-temp.firebaseio.com",
-   projectId: "ultimatum-temp",
-   storageBucket: "ultimatum-temp.appspot.com",
-   messagingSenderId: "722126898430",
-   appId: "1:722126898430:web:f5ca3c4aa193d9e65791af",
-   measurementId: "G-WL3V2ZLXCY"
- }
+// export const firebaseConfig = {
+//    apiKey: "AIzaSyCev4ycC2FpUXua-nJYVLoeoTPr0TZHcbE",
+//    authDomain: "ultimatum-temp.firebaseapp.com",
+//    databaseURL: "https://ultimatum-temp.firebaseio.com",
+//    projectId: "ultimatum-temp",
+//    storageBucket: "ultimatum-temp.appspot.com",
+//    messagingSenderId: "722126898430",
+//    appId: "1:722126898430:web:f5ca3c4aa193d9e65791af",
+//    measurementId: "G-WL3V2ZLXCY"
+//  }
 //  export const firebaseConfig = {
 //    apiKey: "AIzaSyCeZaKyIEK37DPBgfrAL5ITTML5JR-R0Rg",
 //    authDomain: "library-system-fe78b.firebaseapp.com",
@@ -60,16 +60,16 @@ export const firebaseConfig = {
 //   appId: "1:573323748620:web:6445c64b07f3d34d181529",
 //   measurementId: "G-YRQ7HXHNR1"
 // };
-// export const firebaseConfig = {
-//   apiKey: "AIzaSyDqpv_ySo8mlr7YrkxvqgkaOtDhqPMi5vA",
-//   authDomain: "hello-5b711.firebaseapp.com",
-//   databaseURL: "https://hello-5b711.firebaseio.com",
-//   projectId: "hello-5b711",
-//   storageBucket: "hello-5b711.appspot.com",
-//   messagingSenderId: "491086858896",
-//   appId: "1:491086858896:web:75120911dd2e35ec16a615",
-//   measurementId: "G-E08E0GDTDM"
-// };
+export const firebaseConfig = {
+  apiKey: "AIzaSyDqpv_ySo8mlr7YrkxvqgkaOtDhqPMi5vA",
+  authDomain: "hello-5b711.firebaseapp.com",
+  databaseURL: "https://hello-5b711.firebaseio.com",
+  projectId: "hello-5b711",
+  storageBucket: "hello-5b711.appspot.com",
+  messagingSenderId: "491086858896",
+  appId: "1:491086858896:web:75120911dd2e35ec16a615",
+  measurementId: "G-E08E0GDTDM"
+};
 // export const firebaseConfig = {
 //   apiKey: "AIzaSyCWHRcdC1g5VZOGiixIb09_izIboPgbJDU",
 //   authDomain: "crack-atlas-257614.firebaseapp.com",

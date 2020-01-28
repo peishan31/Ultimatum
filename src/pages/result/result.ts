@@ -720,7 +720,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                               })
                             }
-                          });
+                          }, error => { this.loader.dismiss() });
                         });
                        }
 
