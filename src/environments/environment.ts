@@ -60,3 +60,13 @@ export const firebaseConfig = {
 //   appId: "1:573323748620:web:6445c64b07f3d34d181529",
 //   measurementId: "G-YRQ7HXHNR1"
 // };
+export const firebaseConfig = {
+  apiKey: "AIzaSyDqpv_ySo8mlr7YrkxvqgkaOtDhqPMi5vA",
+  authDomain: "hello-5b711.firebaseapp.com",
+  databaseURL: "https://hello-5b711.firebaseio.com",
+  projectId: "hello-5b711",
+  storageBucket: "hello-5b711.appspot.com",
+  messagingSenderId: "491086858896",
+  appId: "1:491086858896:web:75120911dd2e35ec16a615",
+  measurementId: "G-E08E0GDTDM"
+};

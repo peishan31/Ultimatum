@@ -356,7 +356,9 @@ console.log(this.res,"RES")
                 "UUID": all["UUID"]
               };
               this.storage.set("responder"+all["UUID"],"true")
+              clearTimeout(this.timer); 
               this.navCtrl.setRoot(ResultPage,dict);
+              
 
           //   subject.next(this.firebaseId);
             }
@@ -452,6 +454,7 @@ console.log(this.res,"RES")
                           };
                           localStorage.setItem("enterGameCode"+all.UUID, "NO");
                           this.storage.set(all.UUID+"EnteredRespondant", true);
+                          clearTimeout(this.timer); 
                           this.navCtrl.setRoot(ResultPage, dict);
                         }
                       })
@@ -513,6 +516,7 @@ console.log(this.res,"RES")
                   gameMode: all["gameMode"],
                   "UUID": all["UUID"]
                 };
+                clearTimeout(this.timer); 
                 this.navCtrl.setRoot(ResultPage,dict)
 
               }
@@ -590,7 +594,8 @@ console.log(this.res,"RES")
                           // once
                         };
                         localStorage.setItem("enterGameCode"+all.UUID, "NO");
-                        this.storage.set(all.UUID+"EnteredRespondant", true);
+                        this.storage.set(all.UUID+"EnteredRespondant", true); 
+                        clearTimeout(this.timer); 
                         this.navCtrl.setRoot(ResultPage,dict)
                       }
 
@@ -633,6 +638,7 @@ console.log(this.res,"RES")
   // }
 
   ionViewDidLeave(){
+  // console.log("Should I leave? Yes"); return true; 
     //this.subscription.unsubscribe();
 
   }
