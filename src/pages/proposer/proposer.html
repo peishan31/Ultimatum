@@ -15,7 +15,7 @@ margin-bottom: 10px;
 }
 </style>
 </ion-header>
-<ion-content padding id="page2">
+<ion-content padding id="page2" *ngIf="dontshow!=true">
   <!-- <countdown units="Seconds"  end="July 22, 2019"></countdown> -->
   <h5>Hello {{username}}</h5>
   <h3 id="proposer-heading5" style="color:#000000;">

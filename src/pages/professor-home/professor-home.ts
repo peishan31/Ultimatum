@@ -299,6 +299,8 @@ if (data["waitForStudent"]==true){
   }
 
   assignUserToPlayWithAnotherUser(){
+    
+
     setTimeout(() => {
       // alert('Hello...')
        // Calling out all the users joining this gameId
@@ -355,6 +357,8 @@ if (data["waitForStudent"]==true){
   }, 5000);
    
   }
+
+ 
 
   assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID){
 

@@ -222,7 +222,7 @@ export class ProposerPage {
 
 
 
-              if (res[p].proposerUUID == all["UUID"] && roundnow==professorroundnow && res[p].responderResponse=="" && this.goonce==0 && this.once==0){ //*** hardcoding round
+              if (res[p].proposerUUID == all["UUID"] && roundnow==professorroundnow && res[p].responderResponse=="" && this.goonce==0 && this.once==0 && res[p].proposerAmount==""){ //*** hardcoding round
                 // store proposerData here
 
 
@@ -242,7 +242,7 @@ export class ProposerPage {
                   let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"UUID":res[p].proposerUUID,"Amount":this.range,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid, gameMode: data["gameMode"]};
                   this.presstrue=false;
                   this.storage.set("proposer"+all["UUID"],"true")
-                  clearTimeout(this.timer); 
+                  // clearTimeout(this.timer); 
                   this.navCtrl.setRoot(ResultPage,dict);
                   this.presstrue=false;
                 }
@@ -251,7 +251,7 @@ export class ProposerPage {
                   let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range,"UUID":res[p].proposerUUID,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid, gameMode: data["gameMode"]};
                   this.presstrue=false;
                   this.storage.set("proposer"+all["UUID"],"true")
-                  clearTimeout(this.timer); 
+                  // clearTimeout(this.timer); 
                   this.navCtrl.setRoot(ResultPage,dict);
                   this.presstrue=false;
                 }
@@ -348,7 +348,7 @@ export class ProposerPage {
                             this.storage.set(all.UUID+"EnteredProposal", true);
                             this.storage.set("proposer"+all["UUID"],"true")
                             this.loader.dismiss();
-                            clearTimeout(this.timer); 
+                            // clearTimeout(this.timer); 
                             this.navCtrl.setRoot(ResultPage,dict);
                           }
                           else
@@ -372,7 +372,7 @@ export class ProposerPage {
                               this.storage.set(all.UUID+"EnteredProposal", true);
                               this.storage.set("proposer"+all["UUID"],"true")
                               this.loader.dismiss();
-                              clearTimeout(this.timer); 
+                              // clearTimeout(this.timer); 
                               this.navCtrl.setRoot(ResultPage,dict);
                             }
                       }
@@ -422,6 +422,7 @@ export class ProposerPage {
   }
 
   ionViewDidLeave(){
+    
   // clearTimeout(this.timer); 
   // console.log("Should I leave? Yes"); 
   // return true; 
@@ -434,6 +435,7 @@ export class ProposerPage {
 
    // this.offer.unsubscribe();
   //  this.game.unsubscribe();
+  clearTimeout(this.timer); console.log("Should I leave? Yes"); return true;
   }
 
   ngOnDestroy() {
