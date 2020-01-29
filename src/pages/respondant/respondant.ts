@@ -122,6 +122,10 @@ export class RespondantPage {
         this.proposerUsername = res[0].proposerName;
      }
      //if cannot find the length, we test if its proposer
+     
+   
+ 
+  
 if (res.length==0){
   this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('proposerUUID', '==', all["UUID"]).where('round', '==', parseInt(ress["round"])));
     this.itemm = this.itemDoc.valueChanges();
@@ -130,25 +134,33 @@ if (res.length==0){
      console.log(resss,"RESPRES2")
 this.res=resss;
 console.log(this.res,"RES")
-     for (let p=0;p<this.res.length;p++){
-      if (this.res[p].proposerUUID==all.UUID && this.res[p].round.toString()==ress["round"].toString() && this.res[p].responderResponse=="" && this.res[p].proposerAmount==""){
+for (let p=0;p<this.res.length;p++){
+  let all=this.navParams.data;
+setTimeout(() => {
+    
+      if (this.res[p].proposerUUID==all["UUID"] && this.res[p].round.toString()==ress["round"].toString() && this.res[p].responderResponse=="" && this.res[p].proposerAmount==""  && this.res[p].proposerAmount!=0){
+        console.log("amounthere",this.res[p].proposerAmount)
         let all=this.navParams.data;
         let date=new Date();
     this.datetime=date.toISOString();
         let passnextpg={UUID:this.res[p].proposerUUID,username:this.res[p].proposerName,dateTime:this.datetime,GameId: all["GameId"],once:0, gameMode: all["gameMode"]};
         this.navCtrl.setRoot(ProposerPage,passnextpg);
      }
-     else if (this.res[p].proposerUUID==all.UUID && this.res[p].round.toString()==ress["round"].toString() && this.res[p].proposerAmount!=""){
-      let all=this.navParams.data;
-      let date=new Date();
-  this.datetime=date.toISOString();
-  this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].responderUUID + this.res[p].round
-      // let passnextpg={UUID:res[p].proposerUUID,username:res[p].proposerName,dateTime:this.datetime,GameId: all["GameId"]};
-      let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.res[p].proposerAmount,"GameId":all["GameId"],"Round":this.res[p].round,once:1,UUID:this.res[p].proposerUUID,username:this.res[p].proposerName,dateTime:this.datetime, gameMode: all["gameMode"]};
-      this.navCtrl.setRoot(ResultPage,dict);
-    }
+ 
 
-  }})
+  }  , 5000);
+  if (this.res[p].proposerUUID==all.UUID && this.res[p].round.toString()==ress["round"].toString() && this.res[p].proposerAmount!=""){
+    let all=this.navParams.data;
+    let date=new Date();
+this.datetime=date.toISOString();
+this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].responderUUID + this.res[p].round
+    // let passnextpg={UUID:res[p].proposerUUID,username:res[p].proposerName,dateTime:this.datetime,GameId: all["GameId"]};
+    let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.res[p].proposerAmount,"GameId":all["GameId"],"Round":this.res[p].round,once:1,UUID:this.res[p].proposerUUID,username:this.res[p].proposerName,dateTime:this.datetime, gameMode: all["gameMode"]};
+    this.navCtrl.setRoot(ResultPage,dict);
+  }
+}
+})
+
 //   let all=this.navParams.data;
 //   let date=new Date();
 // this.datetime=date.toISOString();
@@ -638,7 +650,7 @@ console.log(this.res,"RES")
   // }
 
   ionViewDidLeave(){
-  // console.log("Should I leave? Yes"); return true;
+    clearTimeout(this.timer);  console.log("Should I leave? Yes"); return true; 
     //this.subscription.unsubscribe();
 
   }
