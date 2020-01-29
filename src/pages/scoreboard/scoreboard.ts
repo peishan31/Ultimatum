@@ -51,7 +51,11 @@ randomModeTotalRound="";
   }
 
   Home(){
-    this.navCtrl.setRoot(ViewpastornewPage);
+    var result = confirm("Do you really want to leave the game?");
+    if (result == true) {
+      this.navCtrl.setRoot(ViewpastornewPage);
+    }
+
   }
 
 
