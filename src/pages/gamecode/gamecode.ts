@@ -37,6 +37,7 @@ myPerson={};
 errormsg:string;
 inhere=0;
 subscribed=false;
+clickOnce=0;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public afs: AngularFirestore,
@@ -93,9 +94,10 @@ subscribed=false;
 
 
      if (this.errormsg==""){
-     
+
  // let shand = document.getElementsByClassName('hidemsg') as HTMLCollectionOf<HTMLElement>;
     // shand[0].style.display="none";
+
     let data= this.navParams.data;
     this.itemDoc = this.afs.collection<any>('Participant', ref => ref.where('username', '==', data["username"]).where('gameId', '==', this.gamecode));
     this.item = this.itemDoc.valueChanges();
@@ -103,7 +105,10 @@ subscribed=false;
 
       this.subscribed = true;
       if (res.length==0){
-        this.showLoading=true;
+        if (this.clickOnce == 0) {
+
+          this.clickOnce++;
+          this.showLoading=true;
         //means currently no user with same username
         this.loader =  this.loadingCtrl.create({
 
@@ -142,6 +147,8 @@ subscribed=false;
           }
 
         })
+        }
+
       }
 
       else{

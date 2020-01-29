@@ -9,16 +9,16 @@
 //   measurementId: "G-6RQ61HDYPW"
 // };
  // Your web app's Firebase configuration
-// export const firebaseConfig = {
-//    apiKey: "AIzaSyCev4ycC2FpUXua-nJYVLoeoTPr0TZHcbE",
-//    authDomain: "ultimatum-temp.firebaseapp.com",
-//    databaseURL: "https://ultimatum-temp.firebaseio.com",
-//    projectId: "ultimatum-temp",
-//    storageBucket: "ultimatum-temp.appspot.com",
-//    messagingSenderId: "722126898430",
-//    appId: "1:722126898430:web:f5ca3c4aa193d9e65791af",
-//    measurementId: "G-WL3V2ZLXCY"
-//  }
+export const firebaseConfig = {
+   apiKey: "AIzaSyCev4ycC2FpUXua-nJYVLoeoTPr0TZHcbE",
+   authDomain: "ultimatum-temp.firebaseapp.com",
+   databaseURL: "https://ultimatum-temp.firebaseio.com",
+   projectId: "ultimatum-temp",
+   storageBucket: "ultimatum-temp.appspot.com",
+   messagingSenderId: "722126898430",
+   appId: "1:722126898430:web:f5ca3c4aa193d9e65791af",
+   measurementId: "G-WL3V2ZLXCY"
+ }
 //  export const firebaseConfig = {
 //    apiKey: "AIzaSyCeZaKyIEK37DPBgfrAL5ITTML5JR-R0Rg",
 //    authDomain: "library-system-fe78b.firebaseapp.com",

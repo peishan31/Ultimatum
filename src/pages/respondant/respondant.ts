@@ -294,7 +294,7 @@ this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].res
   StartTimer(){
     this.timer = setTimeout(x =>
       {
-          if(this.maxtime <= 0) { }
+          if(this.maxtime <= 0) { this.maxtime=30; }
           this.maxtime -= 1;
 
           if(this.maxtime>0){
@@ -303,7 +303,7 @@ this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].res
           }
 
           else if (this.maxtime==0){
-
+            this.maxtime=30;
            this.Accept();
 
 
@@ -368,9 +368,9 @@ this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].res
                 "UUID": all["UUID"]
               };
               this.storage.set("responder"+all["UUID"],"true")
-              // clearTimeout(this.timer); 
+
               this.navCtrl.setRoot(ResultPage,dict);
-              
+              clearTimeout(this.timer);
 
           //   subject.next(this.firebaseId);
             }
@@ -466,7 +466,7 @@ this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].res
                           };
                           localStorage.setItem("enterGameCode"+all.UUID, "NO");
                           this.storage.set(all.UUID+"EnteredRespondant", true);
-                          // clearTimeout(this.timer); 
+                          clearTimeout(this.timer);
                           this.navCtrl.setRoot(ResultPage, dict);
                         }
                       })
@@ -528,7 +528,7 @@ this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].res
                   gameMode: all["gameMode"],
                   "UUID": all["UUID"]
                 };
-                // clearTimeout(this.timer); 
+                clearTimeout(this.timer);
                 this.navCtrl.setRoot(ResultPage,dict)
 
               }
@@ -606,8 +606,8 @@ this.firebaseId = this.res[p].proposerUUID + this.res[p].round + this.res[p].res
                           // once
                         };
                         localStorage.setItem("enterGameCode"+all.UUID, "NO");
-                        this.storage.set(all.UUID+"EnteredRespondant", true); 
-                        // clearTimeout(this.timer); 
+                        this.storage.set(all.UUID+"EnteredRespondant", true);
+                        clearTimeout(this.timer);
                         this.navCtrl.setRoot(ResultPage,dict)
                       }
 

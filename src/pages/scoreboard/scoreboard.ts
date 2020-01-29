@@ -186,7 +186,48 @@ randomModeTotalRound="";
               // this.proposerUUID, this.proposerName, this.responderUUID, this.responderName --> Swap the placing
               // Insert the data in <<Game>>
               var prevRound = round-1;
-              this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('round', '==', prevRound));
+              this.afs.collection<any>('Game').ref
+              .where('gameId', '==',  this.hi["gameId"])
+              .where('round', '==', prevRound)
+              .get()
+              .then(ress => {
+
+                if (ress.docs.length != 0) {
+
+                  ress.forEach(GameDoc => {
+
+                    // get this.proposerUUID, this.proposerName, this.responderUUID, this.responderName
+                    this.proposerUUID = GameDoc.data().responderUUID;
+                    this.responderUUID = GameDoc.data().proposerUUID;
+                    this.proposerName = GameDoc.data().responderName;
+                    this.responderName = GameDoc.data().proposerName;
+                    console.log("HIIIIIII: " + GameDoc.data().totalround)
+                    var id = this.proposerUUID + round + this.responderUUID + round;
+                    this.afs.collection('Game').doc(id).set({
+                    gameId:this.hi["gameId"],
+                    gameMode: 'Random all players',
+                    round: round,
+                    totalRound: this.randomModeTotalRound,
+                    dateTime: new Date().toISOString(),
+                    proposerUUID: this.proposerUUID,
+                    proposerName: this.proposerName,
+                    responderUUID: this.responderUUID,
+                    responderName: this.responderName,
+                    proposerAmount: "",
+                    responderResponse: "",
+                    proposerStatus: "Not Ready",
+                    responderStatus: "Not Ready",
+                    gameStatus: "Not Ready"
+                    })
+                    .then((data) => {
+                    //console.log("Data: "+data);
+                    }).catch((err) => {
+                    console.log("Err: "+err);
+                    })
+                  })
+                }
+              })
+              /*this.itemDoc = this.afs.collection<any>('Game', ref => ref.where('gameId', '==', this.hi["gameId"]).where('round', '==', prevRound));
               this.item = this.itemDoc.valueChanges();
 
               this.subscription = this.item.subscribe(res=>{
@@ -222,7 +263,7 @@ randomModeTotalRound="";
                       console.log("Err: "+err);
                     })
                 }
-              })
+              })*/
             }
             else { // randomize player
               this.assignUserToPlayWithAnotherUser(round, this.randomModeTotalRound);
@@ -342,69 +383,11 @@ randomModeTotalRound="";
     })
     }
 
-
-
-
-
-  derangementNumber(n) {
-    if(n == 0) {
-      return 1;
-    }
-    var factorial = 1;
-    while(n) {
-      factorial *= n--;
-    }
-    return Math.floor(factorial / Math.E);
-  }
-
-  derange(array) {
-    array = array.slice();
-    var mark = array.map(function() { return false; });
-    for(var i = array.length - 1, u = array.length - 1; u > 0; i--) {
-      if(!mark[i]) {
-        var unmarked = mark.map(function(_, i) { return i; })
-          .filter(function(j) { return !mark[j] && j < i; });
-        var j = unmarked[Math.floor(Math.random() * unmarked.length)];
-
-        var tmp = array[j];
-        array[j] = array[i];
-        array[i] = tmp;
-
-        // this introduces the unbiased random characteristic
-        if(Math.random() < u * this.derangementNumber(u - 1) /  this.derangementNumber(u + 1)) {
-          mark[j] = true;
-          u--;
-        }
-        u--;
-      }
-    }
-    return array;
-  }
-
-  shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-  }
-
   assignUserToPlayWithAnotherUser(currentRound, totalround){
     // Calling out all the users joining this gameId
    this.itemDoc = this.afs.collection<any>('Participant').ref
-             .get()
-             .then(ress => {
+    .get()
+    .then(ress => {
     console.log(ress)
 
       this.studentsList["username"] = [];
@@ -417,7 +400,7 @@ randomModeTotalRound="";
       })*/
 
         //if ((res[i].gameId==this.hi["gameId"]) && (res[i].online == true)){ // must be inside the game & online
-        if ((ProfessorDoc.data().gameId==this.hi["gameId"])){
+        if ((ProfessorDoc.data().gameId==this.hi["gameId"]) && ProfessorDoc.data().online == true){
           // console.log("res[i]: " + JSON.stringify(res[i]));
 
           /*const requestRef = firebase.database().ref(`/` + "User" + `/` + res[i].username + `/`);
@@ -443,6 +426,7 @@ randomModeTotalRound="";
                 this.studentnum=this.studentsList["username"].length;
               }
             })
+            personRefs.off('value');
         }
       })
       this.studentsList["totalRound"] = this.studentsList["username"].length;
@@ -523,7 +507,7 @@ randomModeTotalRound="";
     console.log("Now: (areaB)" + arrangedUsersB);
 
     var totalUser = proposer.length + responder.length;
-    
+
     if (totalUser%2==0) {
       for (var i=0 ; i < arrangedUsersA.length; i++) {
 

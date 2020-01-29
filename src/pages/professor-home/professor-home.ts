@@ -263,41 +263,6 @@ if (data["waitForStudent"]==true){
     })
   }
 
-  derangementNumber(n) {
-    if(n == 0) {
-      return 1;
-    }
-    var factorial = 1;
-    while(n) {
-      factorial *= n--;
-    }
-    return Math.floor(factorial / Math.E);
-  }
-
-  derange(array) {
-    array = array.slice();
-    var mark = array.map(function() { return false; });
-    for(var i = array.length - 1, u = array.length - 1; u > 0; i--) {
-      if(!mark[i]) {
-        var unmarked = mark.map(function(_, i) { return i; })
-          .filter(function(j) { return !mark[j] && j < i; });
-        var j = unmarked[Math.floor(Math.random() * unmarked.length)];
-
-        var tmp = array[j];
-        array[j] = array[i];
-        array[i] = tmp;
-
-        // this introduces the unbiased random characteristic
-        if(Math.random() < u * this.derangementNumber(u - 1) /  this.derangementNumber(u + 1)) {
-          mark[j] = true;
-          u--;
-        }
-        u--;
-      }
-    }
-    return array;
-  }
-
   assignUserToPlayWithAnotherUser(){
     
 
@@ -348,41 +313,15 @@ if (data["waitForStudent"]==true){
     console.log("areaA's id: "+ areaAUUID);
     console.log("areaB's id: "+ areaBUUID);
 
-    this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID);
-    // calculating how many rounds it would take for all users to play against each other in 2 groups.
-    //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
-    //this.assignProposerAndResponder (areaB, areaA,  half_length);
-    }
-  });
-  }, 5000);
-   
-  }
-
- 
-
-  assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID){
-
-    /*var arrangedUsersA = this.derange(proposer);
-    var arrangedUsersB = this.derange(responder);*/
-    /*var firstUserA = proposer.shift();
-    proposer.push(firstUserA);
-    var firstUUIDA = proposerUUID.shift();
-    proposerUUID.push(firstUUIDA);*/
-
-    var arrangedUsersA = proposer;
-    var arrangedUsersB = responder;
-
-    console.log("Before shuffle: (areaA)" + proposer);
-		console.log("Now: (areaA)" + arrangedUsersA);
-
-		console.log("Before shuffle: (areaB)" + responder);
-    console.log("Now: (areaB)" + arrangedUsersB);
+    //this.assignProposerAndResponder(areaA, areaB, areaAUUID, areaBUUID);
+    var arrangedUsersA = areaA;
+    var arrangedUsersB = areaB;
 
     for (var i=0 ; i < arrangedUsersA.length; i++) {
 
       console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
 
-      var id = proposerUUID[i] + "0" + responderUUID[i] + "0";
+      var id = areaAUUID[i] + "0" + areaBUUID[i] + "0";
       //alert(id);
       //alert("ResponderUUID: " + responderUUID);
         this.afs.collection('Game').doc(id).set({
@@ -391,10 +330,10 @@ if (data["waitForStudent"]==true){
           round: 0,
           totalRound: this.rounds,
           dateTime: new Date().toISOString(),
-          proposerUUID: proposerUUID[i],
-          proposerName: proposer[i],
-          responderUUID: responderUUID[i],
-          responderName: responder[i],
+          proposerUUID: areaAUUID[i],
+          proposerName: areaA[i],
+          responderUUID: areaBUUID[i],
+          responderName: areaB[i],
           proposerAmount: "",
           responderResponse: "",
           proposerStatus: "Not Ready",
@@ -402,7 +341,7 @@ if (data["waitForStudent"]==true){
           gameStatus: "Not Ready"
          })
 
-         var id3 = proposerUUID[i];
+         var id3 = areaAUUID[i];
 
             var ref = firebase.database().ref(`/` + "User" + `/` + id3 + `/`);
             ref.update({
@@ -412,7 +351,7 @@ if (data["waitForStudent"]==true){
               inGame: true
             });
 
-          var id2 = responderUUID[i];
+          var id2 = areaBUUID[i];
 
           var ref2 = firebase.database().ref(`/` + "User" + `/` + id2 + `/`);
           ref2.update({
@@ -426,7 +365,77 @@ if (data["waitForStudent"]==true){
 
           })
 		}
+
+    // calculating how many rounds it would take for all users to play against each other in 2 groups.
+    //this.assignProposerAndResponder (areaA, areaB, areaAUUID, areaBUUID, half_length, this.studentsList["totalRound"]);
+    //this.assignProposerAndResponder (areaB, areaA,  half_length);
+    }
+  });
+  }, 2000);
+
   }
+
+  // assignProposerAndResponder (proposer, responder, proposerUUID, responderUUID){
+
+  //   /*var arrangedUsersA = this.derange(proposer);
+  //   var arrangedUsersB = this.derange(responder);*/
+  //   /*var firstUserA = proposer.shift();
+  //   proposer.push(firstUserA);
+  //   var firstUUIDA = proposerUUID.shift();
+  //   proposerUUID.push(firstUUIDA);*/
+
+  //   var arrangedUsersA = proposer;
+  //   var arrangedUsersB = responder;
+
+  //   for (var i=0 ; i < arrangedUsersA.length; i++) {
+
+  //     console.log(arrangedUsersA[i] + " VS " + arrangedUsersB[i]);
+
+  //     var id = proposerUUID[i] + "0" + responderUUID[i] + "0";
+  //     //alert(id);
+  //     //alert("ResponderUUID: " + responderUUID);
+  //       this.afs.collection('Game').doc(id).set({
+  //         gameId:this.code,
+  //         gameMode: 'Random all players',
+  //         round: 0,
+  //         totalRound: this.rounds,
+  //         dateTime: new Date().toISOString(),
+  //         proposerUUID: proposerUUID[i],
+  //         proposerName: proposer[i],
+  //         responderUUID: responderUUID[i],
+  //         responderName: responder[i],
+  //         proposerAmount: "",
+  //         responderResponse: "",
+  //         proposerStatus: "Not Ready",
+  //         responderStatus: "Not Ready",
+  //         gameStatus: "Not Ready"
+  //        })
+
+  //        var id3 = proposerUUID[i];
+
+  //           var ref = firebase.database().ref(`/` + "User" + `/` + id3 + `/`);
+  //           ref.update({
+  //             UUID: id3,
+  //             online: true,
+  //             gameId: this.code,
+  //             inGame: true
+  //           });
+
+  //         var id2 = responderUUID[i];
+
+  //         var ref2 = firebase.database().ref(`/` + "User" + `/` + id2 + `/`);
+  //         ref2.update({
+  //           UUID: id2,
+  //           online: true,
+  //           gameId: this.code,
+  //           inGame: true
+  //         })
+  //       .then((data) => {
+
+
+  //         })
+	// 	}
+  // }
   //yonglin
   assignsameplayers(){
     setTimeout(() => {
@@ -454,7 +463,7 @@ if (data["waitForStudent"]==true){
      this.listassgnsame2.push(this.assgnsame[i])
      this.listusername2.push(this.usernamelist[i]);
    }
-  
+
    let rounds=(this.rounds/2);
    for (let i=0;i<this.listassgnsame1.length;i++){
      for (let u=0;u<rounds;u++){
@@ -481,8 +490,8 @@ if (data["waitForStudent"]==true){
         console.log("Err: "+err);
       })
      }
-  
-  
+
+
    }
    let rounds1=(this.rounds/2)
    for (let i=0;i<this.listassgnsame2.length;i++){
@@ -511,12 +520,12 @@ if (data["waitForStudent"]==true){
       })
      }
     }
-  
-  
+
+
   }
       })
   }, 5000);
-   
+
 
 }
 
