@@ -315,10 +315,10 @@ export class ProposerPage {
                     // alert("Proposer: " + res.docs.length); // there's an error!!
                     if (res.docs.length != 0) {
 
-                      this.loader =  this.loadingCtrl.create({
+                      /*this.loader =  this.loadingCtrl.create({
 
                       });
-                      this.loader.present();
+                      this.loader.present();*/
                       res.forEach(ProposerGameDoc =>{
 
                         if (ProposerGameDoc.data().proposerUUID == all["UUID"]
@@ -354,7 +354,7 @@ export class ProposerPage {
                               console.log("((proposer.ts)): "+ all["UUID"]);
                               this.storage.set(all.UUID+"EnteredProposal", true);
                               this.storage.set("proposer"+all["UUID"],"true")
-                              this.loader.dismiss();
+                              //this.loader.dismiss();
 
                               clearTimeout(this.timer);
 
@@ -382,7 +382,7 @@ export class ProposerPage {
                                 console.log("((proposer.ts)): "+ all["UUID"]);
                                 this.storage.set(all.UUID+"EnteredProposal", true);
                                 this.storage.set("proposer"+all["UUID"],"true")
-                                this.loader.dismiss();
+                                //this.loader.dismiss();
 
                                 clearTimeout(this.timer);
 
