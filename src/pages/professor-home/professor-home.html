@@ -40,7 +40,7 @@
     <p *ngIf="ok" style="color:red;">
       Please choose game mode
     </p></div>
-    
+
   <div *ngIf="code!=0 && waitforstudent!=true && (randomm != false || alllsame != false)">
       <div style="text-align: center;" class="selectable">
         <h2>Game code: <p id="gameId">{{code}}</p> &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
@@ -60,7 +60,7 @@
       <ion-item id="professorHome-list-item-container3">
         <div id="professorHome-markdown3" *ngFor="let u of list" class="show-list-numbers-and-dots">
           <h5 style="margin-top:0px;color:#000000;font-size:17px;">
-            {{u}}
+            <button (click)="myFunction($event, u)" value="{{u}}">{{u}} <ion-icon name="close-circle"></ion-icon></button>
           </h5>
         </div>
       </ion-item>

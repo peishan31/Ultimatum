@@ -99,12 +99,17 @@ clickOnce=0;
     // shand[0].style.display="none";
 
     let data= this.navParams.data;
-    this.itemDoc = this.afs.collection<any>('Participant', ref => ref.where('username', '==', data["username"]).where('gameId', '==', this.gamecode));
+    this.itemDoc = this.afs.collection<any>('Participant', ref =>
+    ref
+    .where('username', '==', data["username"])
+    .where('gameId', '==', this.gamecode));
     this.item = this.itemDoc.valueChanges();
-    this.subscription= this.item.subscribe(res=>{
+    this.subscription= this.item.subscribe(ress=>{
 
       this.subscribed = true;
-      if (res.length==0){
+
+
+      if (ress.length==0){
         if (this.clickOnce == 0) {
 
           this.clickOnce++;
@@ -128,10 +133,27 @@ clickOnce=0;
         this.itemDoc = this.afs.collection<any>('Professor').doc(this.gamecode);
         this.item = this.itemDoc.valueChanges();
         this.subscription=this.item.subscribe(res=>{
+
+          //====================================================================
+          this.itemDoc = this.afs.collection<any>('Participant', ref =>
+          ref
+          .where('username', '==', data["username"])
+          .where('gameId', '==', this.gamecode));
+          this.item = this.itemDoc.valueChanges();
+          this.subscription= this.item.subscribe(ress=>{
+            for (let i=0;i<ress.length;i++){
+              if (ress[i].online==false){
+                this.loader.dismiss();
+                window.open('https://ultimatum-5c5e6.firebaseapp.com/', '_self')
+              }
+            }
+          })
+          //=====================================================================
           console.log(res);
 
           this.userDisconnectState(all);
          res=[res];
+
           for (let p=0;p<res.length;p++){
                if (res[p].professorStatus=='Ready'){
                 // find out if user is a proposer or responder
@@ -249,7 +271,8 @@ clickOnce=0;
         UUID: value.UUID,
         online: true,
         gameId: value.gameId,
-        inGame: false
+        inGame: false,
+        ProfessorKickOut: false
       });
     })
 

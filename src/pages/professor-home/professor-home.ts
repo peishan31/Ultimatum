@@ -42,6 +42,7 @@ retrieveprofessor:any;
 professorcode:any;
 rounds:number;
 validator:string;
+mouseover:boolean;
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
@@ -50,12 +51,42 @@ validator:string;
     public UserPresenceStatusProvider: UserPresenceStatusProvider,
     public menuCtrl: MenuController
     ) {
-let data=this.navParams.data;
-if (data["waitForStudent"]==true){
-  this.waitforstudent=true;
-  this.code="trying to make this not empty";
+      let data=this.navParams.data;
+      if (data["waitForStudent"]==true){
+        this.waitforstudent=true;
+        this.code="trying to make this not empty";
 
-}
+      }
+  }
+
+  myFunction(event, username){
+    this.afs.collection<any>('Participant').ref
+      .where('username', '==', username)
+      .where('gameId', "==", this.code)
+      .get()
+      .then(ress => {
+
+      if (ress.docs.length != 0) {
+
+        ress.forEach(ParticipantDoc => {
+
+          var id = ParticipantDoc.data().UUID;
+          var ref = firebase.database().ref(`/` + "User" + `/` + id + `/`);
+          ref.update({
+            ProfessorKickOut: true
+          });
+
+          this.afs.collection('Participant').doc(id).update({
+            online: false
+          })
+          .then((data) => {
+            //console.log("Data: "+data);
+          }).catch((err) => {
+            console.log("Err: "+err);
+          })
+        })
+      }
+    })
   }
 
   ionViewWillEnter(){
@@ -194,7 +225,7 @@ if (data["waitForStudent"]==true){
           this.myPerson = personSnapshot.val();
           if ((this.myPerson != null) || (this.myPerson != undefined)){
 
-            if (this.myPerson["online"] == true) { // stores only the online users
+            if (this.myPerson["online"] == true && this.myPerson["ProfessorKickOut"] == false) { // stores only the online users
 
               if (res[i].gameId==gameId){
 
