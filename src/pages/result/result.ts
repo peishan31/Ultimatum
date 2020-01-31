@@ -706,7 +706,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
                                         }
                                         else {
                                           alert("Error! User is not assigned to any roles! Please try again!");
-                                          window.open("https://ultimatum-5c5e6.firebaseapp.com/",'_system');
+                                          window.open('https://ultimatum-5c5e6.firebaseapp.com/', '_self')
                                         }
 
                                       })
