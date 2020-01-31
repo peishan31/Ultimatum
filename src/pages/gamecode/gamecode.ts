@@ -8,6 +8,8 @@ import {LoadingController} from 'ionic-angular';
 import * as firebase from 'firebase';
 import { UltimatumPage } from '../ultimatum/ultimatum';
 import { Storage } from '@ionic/storage';
+import { HttpClient } from '@angular/common/http';
+import { Observable, Subject } from 'rxjs';
 // import functions from 'firebase-functions';
 
 /**
@@ -38,14 +40,34 @@ errormsg:string;
 inhere=0;
 subscribed=false;
 clickOnce=0;
+pingStream: Subject<number> = new Subject<number>();
+  ping: number = 0;
+  url: string = "https://cors-test.appspot.com/test";
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public toastCtrl:ToastController,
-    private storage: Storage
+    private storage: Storage,
+    private _http: HttpClient
     ) {
-    console.log(navParams.data);
+      // Observable.interval(1000)
+      // .subscribe((data) => {
+      //   console.log(data)
+      //   let timeStart: number = performance.now();
+
+      //   this._http.get(this.url)
+      //     .subscribe((data) => {
+      //       console.log(data)
+      //       let timeEnd: number = performance.now();
+
+      //       let ping: number = timeEnd - timeStart;
+      //       this.ping = ping;
+      //       this.pingStream.next(ping);
+            
+      //     });
+      // });
+  
   }
 
   ionViewDidLoad() {

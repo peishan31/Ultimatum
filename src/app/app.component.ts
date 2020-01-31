@@ -13,16 +13,43 @@ import { ResetPage } from '../pages/reset/reset';
 import { ViewpastornewPage } from '../pages/viewpastornew/viewpastornew';
 import { AnalyticsPage } from '../pages/analytics/analytics';
 // import { Network } from '@ionic-native/network';
+import { HttpClient } from '@angular/common/http';
+import 'rxjs/add/observable/interval';
+import { Observable, Subject } from 'rxjs';
+import { ToastController } from 'ionic-angular';
 
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
+  pingStream: Subject<number> = new Subject<number>();
+  ping: number = 0;
+  url: string = "https://cors-test.appspot.com/test";
   @ViewChild(Nav) navCtrl: Nav;
     rootPage:any = UltimatumPage;
     public onlineOffline: boolean = navigator.onLine
-  constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,private _http: HttpClient,private toastCtrl: ToastController) {
     platform.ready().then(() => {
+      Observable.interval(5000)
+      .subscribe((data) => {
+        // console.log(data)
+        let timeStart: number = performance.now();
+
+        this._http.get(this.url)
+          .subscribe((data) => {
+            // console.log(data)
+            let timeEnd: number = performance.now();
+
+            let ping: number = timeEnd - timeStart;
+            this.ping = ping/10;
+            // console.log(this.ping);
+            if (this.ping>60){
+            this.presentToast();
+            }
+            this.pingStream.next(ping);
+            
+          });
+      });
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
@@ -38,6 +65,21 @@ export class MyApp {
          alert('back online');
         });
     });
+  }
+
+  presentToast() {
+    let toast = this.toastCtrl.create({
+      message: 'Connection is slow',
+      duration: 5000,
+      position: 'bottom',
+      showCloseButton:true
+    });
+  
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+  
+    toast.present();
   }
   
   goToUltimatum(params){
