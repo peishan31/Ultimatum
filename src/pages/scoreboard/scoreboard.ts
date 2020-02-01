@@ -54,7 +54,8 @@ randomModeTotalRound="";
   Home(){
     var result = confirm("Do you really want to leave the game?");
     if (result == true) {
-      this.navCtrl.setRoot(ViewpastornewPage);
+      window.open('https://ultimatum-5c5e6.firebaseapp.com/', '_self')
+      //this.navCtrl.setRoot(ViewpastornewPage);
     }
 
   }
@@ -147,6 +148,7 @@ randomModeTotalRound="";
                   }
                   else {
                     alert("There is currently only " + ress.docs.length + " students in the game. Game cannot continue as there is odd number of students!");
+                    window.open('https://ultimatum-5c5e6.firebaseapp.com/', '_self')
                   }
                 }
               })
@@ -274,6 +276,7 @@ randomModeTotalRound="";
                   }
                   else {
                     alert("There is currently only " + ress.docs.length + " students in the game. Game cannot continue as there is odd number of students!");
+                    window.open('https://ultimatum-5c5e6.firebaseapp.com/', '_self')
                   }
                 }
               })
@@ -683,9 +686,13 @@ randomModeTotalRound="";
     ngAfterViewInit() {
       this.audio.nativeElement.oncanplaythrough = () => {
         // alert("Can play through video without stopping");
-        
+
         this.audio.nativeElement.play();
       };
+    }
+
+    ngOnDestroy() {
+      if (this.subscription) this.subscription.unsubscribe();
     }
 
 }

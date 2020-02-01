@@ -16,6 +16,7 @@ import { AnalyticsPage } from '../pages/analytics/analytics';
 import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/observable/interval';
 import { Observable, Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ToastController } from 'ionic-angular';
 import { AuthenticationAuthenticationProvider } from '../providers/authentication-authentication/authentication-authentication';
 
@@ -28,7 +29,8 @@ export class MyApp {
   url: string = "https://cors-test.appspot.com/test";
   @ViewChild(Nav) navCtrl: Nav;
     rootPage:any = UltimatumPage;
-    public onlineOffline: boolean = navigator.onLine
+    public onlineOffline: boolean = navigator.onLine;
+    subscription:Subscription
   constructor(
     public presence:UserPresenceStatusProvider,
     private platform: Platform,
@@ -39,12 +41,12 @@ export class MyApp {
     private authenticationService: AuthenticationAuthenticationProvider,
     ) {
     platform.ready().then(() => {
-      Observable.interval(5000)
+      this.subscription = Observable.interval(5000)
       .subscribe((data) => {
         // console.log(data)
         let timeStart: number = performance.now();
 
-        this._http.get(this.url)
+        this.subscription = this._http.get(this.url)
           .subscribe((data) => {
             // console.log(data)
             let timeEnd: number = performance.now();
@@ -83,7 +85,7 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
 
-      this.authenticationService.authenticationState.subscribe(state => {
+      this.subscription = this.authenticationService.authenticationState.subscribe(state => {
         if (state) {
           this.navCtrl.setRoot(ViewpastornewPage);
         } else {
@@ -116,11 +118,11 @@ export class MyApp {
       position: 'bottom',
       showCloseButton:true
     });
-  
+
     toast.onDidDismiss(() => {
       console.log('Dismissed toast');
     });
-  
+
     toast.present();
   }
 
@@ -131,14 +133,14 @@ export class MyApp {
       position: 'bottom',
       showCloseButton:true
     });
-  
+
     toast.onDidDismiss(() => {
       console.log('Dismissed toast');
     });
-  
+
     toast.present();
   }
-  
+
   goToUltimatum(params){
     if (!params) params = {};
     this.authenticationService.logout();
@@ -158,5 +160,9 @@ export class MyApp {
 }analytics(params){
   if (!params) params = {};
   this.navCtrl.setRoot(AnalyticsPage);
+}
+
+ngOnDestroy() {
+  if (this.subscription) this.subscription.unsubscribe();
 }
 }
