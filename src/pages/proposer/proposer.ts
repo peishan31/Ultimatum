@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, ToastController, Loading } from 'ionic-angular';
 import { RespondantPage } from '../respondant/respondant';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -33,6 +33,7 @@ export class ProposerPage {
   addround=0
   loader:Loading;
   username="";
+  @ViewChild("audio") audio;
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
@@ -40,6 +41,14 @@ export class ProposerPage {
     public storage:Storage,
     public toastCtrl:ToastController) {
 
+  }
+
+  ngAfterViewInit() {
+    this.audio.nativeElement.oncanplaythrough = () => {
+      // alert("Can play through video without stopping");
+      
+      this.audio.nativeElement.play();
+    };
   }
 
   StartTimer(){

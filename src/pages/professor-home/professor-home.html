@@ -16,7 +16,16 @@
 }
   </style>
 </ion-header>
-<ion-content id="page4" style="overflow-y: scroll">
+<ion-content id="page4" style="overflow-y: scroll" padding>
+  
+  <ion-icon name="mic" style="float:right;margin-right:20px;color:cornflowerblue;font-size:25px" (click)="stop()" class="stop"></ion-icon>
+  <ion-icon name="mic-off" style="float:right;margin-right:20px;color:cornflowerblue;font-size:25px;display:none" (click)="play()" class="play"></ion-icon>
+  <div>
+    <audio #audio loop>
+      <source src="assets/audio/361217__littlejest__waiting.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
     <!-- <button ion-button (click)="gamecode()"></button> -->
 
   <div *ngIf="code==0" style="text-align: center;"><br><br><br><br><br>
@@ -60,7 +69,7 @@
       <ion-item id="professorHome-list-item-container3">
         <div id="professorHome-markdown3" *ngFor="let u of list" class="show-list-numbers-and-dots">
           <h5 style="margin-top:0px;color:#000000;font-size:17px;">
-            <button (click)="myFunction($event, u)" value="{{u}}">{{u}} <ion-icon name="close-circle"></ion-icon></button>
+            <button (click)="myFunction($event, u)" value="{{u}}" style="background-color: transparent;">{{u}}&nbsp; <ion-icon name="close-circle" style="color:cornflowerblue"></ion-icon></button>
           </h5>
         </div>
       </ion-item>
