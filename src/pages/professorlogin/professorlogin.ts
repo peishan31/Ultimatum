@@ -65,7 +65,7 @@ export class ProfessorloginPage {
 
           if (userAttemptPasswordHash == res[p].PasswordHash && this.Username == res[p].Username) {
             console.log("User has entered the correct password!");
-            this.auth.login();
+            this.auth.login(this.Username);
             this.navCtrl.setRoot(ViewpastornewPage);
           }
           else {
