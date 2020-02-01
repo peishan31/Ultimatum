@@ -615,4 +615,25 @@ mouseover:boolean;
       this.audio.nativeElement.play();
     };
   }
+
+  stop(){
+    this.audio.nativeElement.pause();
+    let shand = document.getElementsByClassName('play') as HTMLCollectionOf<HTMLElement>;
+    shand[0].style.display="";
+
+
+    let shands = document.getElementsByClassName('stop') as HTMLCollectionOf<HTMLElement>;
+    shands[0].style.display="none";
+    
+  }
+
+  play(){
+    this.audio.nativeElement.play();
+    let shand = document.getElementsByClassName('play') as HTMLCollectionOf<HTMLElement>;
+    shand[0].style.display="none";
+
+
+    let shands = document.getElementsByClassName('stop') as HTMLCollectionOf<HTMLElement>;
+    shands[0].style.display="";
+  }
 }
