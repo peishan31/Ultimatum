@@ -52,7 +52,7 @@
 
   <div *ngIf="code!=0 && waitforstudent!=true && (randomm != false || alllsame != false)">
       <div style="text-align: center;" class="selectable">
-        <h2>Game code: <p id="gameId">{{code}}</p> &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
+        <h2 style="text-align: center;">Game code: <p id="gameId">{{code}}</p> &nbsp;<ion-icon name="refresh" (click)="gamecode()" style="color:cornflowerblue;font-size:25px"></ion-icon></h2>
 
       </div>
 
@@ -69,7 +69,7 @@
       <ion-item id="professorHome-list-item-container3">
         <div id="professorHome-markdown3" *ngFor="let u of list" class="show-list-numbers-and-dots">
           <h5 style="margin-top:0px;color:#000000;font-size:17px;">
-            <button (click)="myFunction($event, u)" value="{{u}}" style="background-color: transparent;">{{u}}&nbsp; <ion-icon name="close-circle" style="color:cornflowerblue"></ion-icon></button>
+            <button (click)="myFunction($event, u)" value="{{u}}" style="background-color: transparent;"><span style="font-size: 20px">{{u}}&nbsp; <ion-icon name="close-circle" style="color:cornflowerblue"></ion-icon></span></button>
           </h5>
         </div>
       </ion-item>
