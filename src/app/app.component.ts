@@ -36,7 +36,7 @@ export class MyApp {
     private splashScreen: SplashScreen,
     private _http: HttpClient,
     private toastCtrl: ToastController,
-    private authenticationService: AuthenticationAuthenticationProvider
+    private authenticationService: AuthenticationAuthenticationProvider,
     ) {
     platform.ready().then(() => {
       Observable.interval(5000)
@@ -113,6 +113,7 @@ export class MyApp {
 
   goToUltimatum(params){
     if (!params) params = {};
+    this.authenticationService.logout();
     this.navCtrl.setRoot(UltimatumPage);
   }newgame(params){
     if (!params) params = {};

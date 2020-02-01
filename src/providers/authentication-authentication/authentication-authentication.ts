@@ -28,7 +28,7 @@ export class AuthenticationAuthenticationProvider {
     console.log('Hello AuthenticationAuthenticationProvider Provider');
   }
 
-  checkToken() {
+  checkToken() { // **** add expired check
     this.storage.get(TOKEN_KEY).then(res => {
       if (res) {
         this.authenticationState.next(true);
@@ -37,7 +37,7 @@ export class AuthenticationAuthenticationProvider {
   }
 
   login() {
-    return this.storage.set(TOKEN_KEY, 'Bearer 1234567').then(() => {
+    return this.storage.set(TOKEN_KEY, 'Bearer 1234567').then(() => { // set other token key // **** set expiry date
       this.authenticationState.next(true);
     });
   }
