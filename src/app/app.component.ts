@@ -30,7 +30,7 @@ export class MyApp {
     public onlineOffline: boolean = navigator.onLine
   constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,private _http: HttpClient,private toastCtrl: ToastController) {
     platform.ready().then(() => {
-      Observable.interval(5000)
+      Observable.interval(10000)
       .subscribe((data) => {
         // console.log(data)
         let timeStart: number = performance.now();
