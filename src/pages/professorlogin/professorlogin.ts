@@ -6,9 +6,9 @@ import { ProfessorHomePage } from '../professor-home/professor-home';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import * as Crypto from "crypto-browserify";
 import { ViewpastornewPage } from '../viewpastornew/viewpastornew';
-/**
- * Generated class for the ProfessorloginPage page.
- *
+import { Injectable } from '@angular/core';
+import { AuthenticationAuthenticationProvider } from '../../providers/authentication-authentication/authentication-authentication';
+ /*
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
@@ -31,7 +31,7 @@ export class ProfessorloginPage {
     public afs: AngularFirestore,
     private _FB: FormBuilder,
     public navParams: NavParams,
-
+    public auth: AuthenticationAuthenticationProvider
     ) {
       this.validations_form = this._FB.group({
         'email'        : ['', Validators.required],
@@ -65,6 +65,7 @@ export class ProfessorloginPage {
 
           if (userAttemptPasswordHash == res[p].PasswordHash && this.Username == res[p].Username) {
             console.log("User has entered the correct password!");
+            this.auth.login();
             this.navCtrl.setRoot(ViewpastornewPage);
           }
           else {
@@ -76,6 +77,10 @@ export class ProfessorloginPage {
       }
 
     })
+  }
+
+  canActivate(): boolean {
+    return this.auth.isAuthenticated();
   }
 
   back(){

@@ -17,6 +17,7 @@ import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/observable/interval';
 import { Observable, Subject } from 'rxjs';
 import { ToastController } from 'ionic-angular';
+import { AuthenticationAuthenticationProvider } from '../providers/authentication-authentication/authentication-authentication';
 
 @Component({
   templateUrl: 'app.html'
@@ -28,7 +29,15 @@ export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
     rootPage:any = UltimatumPage;
     public onlineOffline: boolean = navigator.onLine
-  constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,private _http: HttpClient,private toastCtrl: ToastController) {
+  constructor(
+    public presence:UserPresenceStatusProvider,
+    private platform: Platform,
+    private statusBar: StatusBar,
+    private splashScreen: SplashScreen,
+    private _http: HttpClient,
+    private toastCtrl: ToastController,
+    private authenticationService: AuthenticationAuthenticationProvider
+    ) {
     platform.ready().then(() => {
       Observable.interval(5000)
       .subscribe((data) => {
@@ -47,7 +56,7 @@ export class MyApp {
             this.presentToast();
             }
             this.pingStream.next(ping);
-            
+
           });
       });
       // Okay, so the platform is ready and our plugins are available.
@@ -65,6 +74,24 @@ export class MyApp {
          alert('back online');
         });
     });
+
+    this.initializeApp();
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+
+      this.authenticationService.authenticationState.subscribe(state => {
+        if (state) {
+          this.navCtrl.setRoot(ViewpastornewPage);
+        } else {
+          this.navCtrl.setRoot(UltimatumPage);
+        }
+      });
+
+    });
   }
 
   presentToast() {
@@ -74,14 +101,16 @@ export class MyApp {
       position: 'bottom',
       showCloseButton:true
     });
-  
+
     toast.onDidDismiss(() => {
       console.log('Dismissed toast');
     });
-  
+
     toast.present();
   }
-  
+
+
+
   goToUltimatum(params){
     if (!params) params = {};
     this.navCtrl.setRoot(UltimatumPage);
