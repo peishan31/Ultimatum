@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component,ViewChild } from '@angular/core';
 import { NavController, DateTime, MenuController } from 'ionic-angular';
 import { ProposerPage } from '../proposer/proposer';
 import { ProfessorHomePage } from '../professor-home/professor-home';
@@ -18,7 +18,7 @@ import 'rxjs/add/observable/interval';
   templateUrl: 'ultimatum.html'
 })
 export class UltimatumPage {
-
+  @ViewChild("audio") audio;
   Username:string;
   datetime:string;
   random:string;
@@ -32,6 +32,14 @@ export class UltimatumPage {
     public menuCtrl: MenuController,
     private _http: HttpClient
     ) {
+      // var audio = new Audio("assets/audio/361217__littlejest__waiting.mp3");
+      //   audio.play();
+      // setTimeout(() => {
+      //   var audio = new Audio("assets/audio/361217__littlejest__waiting.mp3");
+      //   audio.play();
+      
+      // },14000);
+      
       // Observable.interval(1000)
       // .subscribe((data) => {
       //   console.log(data)
@@ -49,6 +57,14 @@ export class UltimatumPage {
       //     });
       // });
   
+  }
+
+  ngAfterViewInit() {
+    this.audio.nativeElement.oncanplaythrough = () => {
+      // alert("Can play through video without stopping");
+      
+      this.audio.nativeElement.play();
+    };
   }
 
   ionViewWillEnter() {

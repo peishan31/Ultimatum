@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, Loading } from 'ionic-angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Subscription } from 'rxjs';
@@ -47,6 +47,7 @@ export class ResultPage {
   loader:Loading;
   showgobklogin:Boolean;
   firstcome = 0;
+  @ViewChild("audio") audio;
   constructor(public navCtrl: NavController, public navParams: NavParams,public afs: AngularFirestore, public storage:Storage, public loadingCtrl:LoadingController) {
 
     var val = this.navCtrl.last().name;
@@ -899,4 +900,12 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
         if (this.professorcode) this.professorcode.unsubscribe();
       }
     }
+
+    // ngAfterViewInit() {
+    //   this.audio.nativeElement.oncanplaythrough = () => {
+    //     // alert("Can play through video without stopping");
+        
+    //     this.audio.nativeElement.play();
+    //   };
+    // }
 }

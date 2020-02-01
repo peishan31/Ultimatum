@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Alert } from 'ionic-angular';
 import { ScoreboardPage } from '../scoreboard/scoreboard';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
   templateUrl: 'professor-home.html'
 })
 export class ProfessorHomePage {
+@ViewChild("audio") audio;
 code="";
 ok=false;
 studentnum=0;
@@ -605,5 +606,13 @@ mouseover:boolean;
   ngOnDestroy() {
     if (this.subscription) this.subscription.unsubscribe();
 
+  }
+
+  ngAfterViewInit() {
+    this.audio.nativeElement.oncanplaythrough = () => {
+      // alert("Can play through video without stopping");
+      
+      this.audio.nativeElement.play();
+    };
   }
 }

@@ -59,10 +59,10 @@ export class MyApp {
       alert("Offline");
         }
         window.addEventListener('offline', () => {
-          alert("offline")
+         this.presentofflineToast();
           });
         window.addEventListener('online', () => {
-         alert('back online');
+          this.presentOnlineToast();
         });
     });
   }
@@ -70,6 +70,36 @@ export class MyApp {
   presentToast() {
     let toast = this.toastCtrl.create({
       message: 'Connection is slow',
+      duration: 5000,
+      position: 'bottom',
+      showCloseButton:true
+    });
+  
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+  
+    toast.present();
+  }
+
+  presentofflineToast() {
+    let toast = this.toastCtrl.create({
+      message: 'You are offline!',
+      duration: 5000,
+      position: 'bottom',
+      showCloseButton:true
+    });
+  
+    toast.onDidDismiss(() => {
+      console.log('Dismissed toast');
+    });
+  
+    toast.present();
+  }
+
+  presentOnlineToast() {
+    let toast = this.toastCtrl.create({
+      message: 'You are online!!',
       duration: 5000,
       position: 'bottom',
       showCloseButton:true

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, NavOptions, Loading } from 'ionic-angular';
 import { ProfessorHomePage } from '../professor-home/professor-home';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -14,6 +14,7 @@ import { snapshotChanges } from '@angular/fire/database';
   templateUrl: 'scoreboard.html'
 })
 export class ScoreboardPage {
+@ViewChild("audio") audio;
 mode:string;
 hi:any;
 item:any;
@@ -677,6 +678,14 @@ randomModeTotalRound="";
       this.roundselect(round+1);
       this.roundsselectedfilter=parseInt(round)+1;
 
+    }
+
+    ngAfterViewInit() {
+      this.audio.nativeElement.oncanplaythrough = () => {
+        // alert("Can play through video without stopping");
+        
+        this.audio.nativeElement.play();
+      };
     }
 
 }
