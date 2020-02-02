@@ -41,7 +41,7 @@ export class MyApp {
     private authenticationService: AuthenticationAuthenticationProvider,
     ) {
     platform.ready().then(() => {
-      Observable.interval(10000)
+      Observable.interval(15000)
       .subscribe((data) => {
         // console.log(data)
         let timeStart: number = performance.now();
