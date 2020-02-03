@@ -18,7 +18,6 @@ import 'rxjs/add/observable/interval';
   templateUrl: 'ultimatum.html'
 })
 export class UltimatumPage {
-  @ViewChild("audio") audio;
   Username:string;
   datetime:string;
   random:string;
@@ -59,13 +58,6 @@ export class UltimatumPage {
   
   }
 
-  ngAfterViewInit() {
-    this.audio.nativeElement.oncanplaythrough = () => {
-      // alert("Can play through video without stopping");
-      
-      this.audio.nativeElement.play();
-    };
-  }
 
   ionViewWillEnter() {
     this.pingStream.subscribe(ping => {

@@ -35,7 +35,6 @@ export class RespondantPage {
   gohereonceagn=0;
   loader:Loading;
   username="";
-  @ViewChild("audio") audio;
 
   constructor(public navCtrl: NavController,
     public loadingCtrl:LoadingController,
@@ -44,14 +43,6 @@ export class RespondantPage {
     public storage:Storage,
     public toastCtrl:ToastController) {
 
-  }
-
-  ngAfterViewInit() {
-    this.audio.nativeElement.oncanplaythrough = () => {
-      // alert("Can play through video without stopping");
-      
-      this.audio.nativeElement.play();
-    };
   }
 
   /*CheckIfProposerStatusChange(){
