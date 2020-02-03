@@ -14,7 +14,6 @@ import { snapshotChanges } from '@angular/fire/database';
   templateUrl: 'scoreboard.html'
 })
 export class ScoreboardPage {
-@ViewChild("audio") audio;
 mode:string;
 hi:any;
 item:any;
@@ -54,7 +53,7 @@ randomModeTotalRound="";
   Home(){
     var result = confirm("Do you really want to leave the game?");
     if (result == true) {
-      window.open('https://ultimatum-5c5e6.firebaseapp.com/', '_self')
+      window.open('https://ultimatum-f9099.firebaseapp.com/', '_self')
       //this.navCtrl.setRoot(ViewpastornewPage);
     }
 
@@ -683,14 +682,7 @@ randomModeTotalRound="";
 
     }
 
-    ngAfterViewInit() {
-      this.audio.nativeElement.oncanplaythrough = () => {
-        // alert("Can play through video without stopping");
-
-        this.audio.nativeElement.play();
-      };
-    }
-
+    
     ngOnDestroy() {
       if (this.subscription) this.subscription.unsubscribe();
     }

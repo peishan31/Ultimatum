@@ -16,16 +16,11 @@ margin-bottom: 10px;
 </style>
 </ion-header>
 <ion-content padding id="page2" *ngIf="dontshow!=true">
-  <div>
-    <audio #audio loop>
-      <source src="assets/audio/489035__michael-db__game-music-01.wav" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
+
   <!-- <countdown units="Seconds"  end="July 22, 2019"></countdown> -->
   <h5>Hello {{username}}</h5>
   <h3 id="proposer-heading5" style="color:#000000;">
-    Amount: 100 EUR
+    Amount: 100&#8364;
   </h3>
   <form id="proposer-form7">
     <h5 id="proposer-heading4" style="color:#000000;">
@@ -35,7 +30,7 @@ margin-bottom: 10px;
     <ion-item id="proposer-range2">
       <ion-range min="0" max="100" step="1" color="positive" value="50" pin="true" [(ngModel)]="range" [ngModelOptions]="{standalone:true}">
         <ion-label range-right *ngIf="range!=null || range!=undefined">
-         {{range}} EUR
+         {{range}}&#8364;
         </ion-label>
         <ion-label range-left >
           Amount:

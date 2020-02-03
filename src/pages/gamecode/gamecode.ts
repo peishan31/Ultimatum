@@ -42,7 +42,6 @@ subscribed=false;
 clickOnce=0;
 pingStream: Subject<number> = new Subject<number>();
   ping: number = 0;
-  @ViewChild("audio") audio;
   url: string = "https://cors-test.appspot.com/test";
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -69,14 +68,6 @@ pingStream: Subject<number> = new Subject<number>();
       //     });
       // });
   
-  }
-
-  ngAfterViewInit() {
-    this.audio.nativeElement.oncanplaythrough = () => {
-      // alert("Can play through video without stopping");
-      
-      this.audio.nativeElement.play();
-    };
   }
 
   ionViewDidLoad() {
