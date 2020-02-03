@@ -16,7 +16,9 @@ import { AnalyticsPage } from '../pages/analytics/analytics';
 import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/observable/interval';
 import { Observable, Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ToastController } from 'ionic-angular';
+import { AuthenticationAuthenticationProvider } from '../providers/authentication-authentication/authentication-authentication';
 
 @Component({
   templateUrl: 'app.html'
@@ -27,15 +29,24 @@ export class MyApp {
   url: string = "https://cors-test.appspot.com/test";
   @ViewChild(Nav) navCtrl: Nav;
     rootPage:any = UltimatumPage;
-    public onlineOffline: boolean = navigator.onLine
-  constructor(public presence:UserPresenceStatusProvider, platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,private _http: HttpClient,private toastCtrl: ToastController) {
+    public onlineOffline: boolean = navigator.onLine;
+    subscription:Subscription
+  constructor(
+    public presence:UserPresenceStatusProvider,
+    private platform: Platform,
+    private statusBar: StatusBar,
+    private splashScreen: SplashScreen,
+    private _http: HttpClient,
+    private toastCtrl: ToastController,
+    private authenticationService: AuthenticationAuthenticationProvider,
+    ) {
     platform.ready().then(() => {
-      Observable.interval(10000)
+      Observable.interval(15000)
       .subscribe((data) => {
         // console.log(data)
         let timeStart: number = performance.now();
 
-        this._http.get(this.url)
+        this.subscription = this._http.get(this.url)
           .subscribe((data) => {
             // console.log(data)
             let timeEnd: number = performance.now();
@@ -47,7 +58,7 @@ export class MyApp {
             this.presentToast();
             }
             this.pingStream.next(ping);
-            
+
           });
       });
       // Okay, so the platform is ready and our plugins are available.
@@ -65,6 +76,24 @@ export class MyApp {
           this.presentOnlineToast();
         });
     });
+
+    this.initializeApp();
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+
+      this.subscription = this.authenticationService.authenticationState.subscribe(state => {
+        if (state) {
+          this.navCtrl.setRoot(ViewpastornewPage);
+        } else {
+          this.navCtrl.setRoot(UltimatumPage);
+        }
+      });
+
+    });
   }
 
   presentToast() {
@@ -74,11 +103,11 @@ export class MyApp {
       position: 'bottom',
       showCloseButton:true
     });
-  
+
     toast.onDidDismiss(() => {
       console.log('Dismissed toast');
     });
-  
+
     toast.present();
   }
 
@@ -89,11 +118,11 @@ export class MyApp {
       position: 'bottom',
       showCloseButton:true
     });
-  
+
     toast.onDidDismiss(() => {
       console.log('Dismissed toast');
     });
-  
+
     toast.present();
   }
 
@@ -104,16 +133,17 @@ export class MyApp {
       position: 'bottom',
       showCloseButton:true
     });
-  
+
     toast.onDidDismiss(() => {
       console.log('Dismissed toast');
     });
-  
+
     toast.present();
   }
-  
+
   goToUltimatum(params){
     if (!params) params = {};
+    this.authenticationService.logout();
     this.navCtrl.setRoot(UltimatumPage);
   }newgame(params){
     if (!params) params = {};
@@ -130,5 +160,9 @@ export class MyApp {
 }analytics(params){
   if (!params) params = {};
   this.navCtrl.setRoot(AnalyticsPage);
+}
+
+ngOnDestroy() {
+  if (this.subscription) this.subscription.unsubscribe();
 }
 }

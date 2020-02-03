@@ -525,7 +525,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
 
                         this.firstcome+=1;
                         this.loader =  this.loadingCtrl.create({
-                          duration: 5000
+                          duration: 3000
                         });
 
                         this.loader.present();
@@ -904,7 +904,7 @@ let passnextpg={UUID:res["proposerUUID"],username:res["proposerName"],dateTime:t
     // ngAfterViewInit() {
     //   this.audio.nativeElement.oncanplaythrough = () => {
     //     // alert("Can play through video without stopping");
-        
+
     //     this.audio.nativeElement.play();
     //   };
     // }
