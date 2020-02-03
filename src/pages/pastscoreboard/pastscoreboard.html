@@ -76,7 +76,7 @@
 
     <ol *ngIf="scorefilter=='Score- Low to High'">
       <li *ngFor="let u of arr?.slice()?.reverse()">
-        <mark *ngIf="selecting!='Individual round'">{{u.username}}  <span class="badge badge-success" style="background-color: green;" *ngIf="selecting!='Accumulated rounds'">+{{u.scorethisround}} pts</span></mark>
+        <mark *ngIf="selecting!='Individual round'">{{u.username}}  <span class="badge badge-success" style="background-color: green;" *ngIf="selecting!='Accumulated rounds'">+{{u.scorethisround}} &#8364;</span></mark>
         <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Accept' && u.role=='Responder'"><span class="badge badge-secondary" style="background-color: green;">{{u.result}}ed {{u.amt}}</span></mark>
         <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Decline' && u.role=='Responder'"><span class="badge badge-secondary" style="background-color: red;">{{u.result}}d {{u.amt}}</span></mark>
         <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Decline' && u.role=='Proposer'"><span class="badge badge-secondary" style="background-color: red;">Proposed {{u.amt}} ({{u.result}})</span></mark>
@@ -87,7 +87,7 @@
     </ol>
     <ol *ngIf="scorefilter!='Score- Low to High'">
       <li *ngFor="let u of arr">
-        <mark *ngIf="selecting!='Individual round'">{{u.username}}  <span class="badge badge-success" style="background-color: green;" *ngIf="selecting!='Accumulated rounds'">+{{u.scorethisround}} pts</span></mark>
+        <mark *ngIf="selecting!='Individual round'">{{u.username}}  <span class="badge badge-success" style="background-color: green;" *ngIf="selecting!='Accumulated rounds'">+{{u.scorethisround}} &#8364;</span></mark>
         <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Accept' && u.role=='Responder'"><span class="badge badge-secondary" style="background-color: green;">{{u.result}}ed {{u.amt}}</span></mark>
         <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Decline' && u.role=='Responder'"><span class="badge badge-secondary" style="background-color: red;">{{u.result}}d {{u.amt}}</span></mark>
         <mark style="text-align: center;" *ngIf="selecting=='Individual round' && u.result=='Decline' && u.role=='Proposer'"><span class="badge badge-secondary" style="background-color: red;">Proposed {{u.amt}} ({{u.result}})</span></mark>

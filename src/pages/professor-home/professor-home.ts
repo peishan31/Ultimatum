@@ -13,7 +13,6 @@ import { Subscription } from 'rxjs';
   templateUrl: 'professor-home.html'
 })
 export class ProfessorHomePage {
-@ViewChild("audio") audio;
 code="";
 ok=false;
 studentnum=0;
@@ -608,32 +607,5 @@ mouseover:boolean;
 
   }
 
-  ngAfterViewInit() {
-    this.audio.nativeElement.oncanplaythrough = () => {
-      // alert("Can play through video without stopping");
-      
-      this.audio.nativeElement.play();
-    };
-  }
 
-  stop(){
-    this.audio.nativeElement.pause();
-    let shand = document.getElementsByClassName('play') as HTMLCollectionOf<HTMLElement>;
-    shand[0].style.display="";
-
-
-    let shands = document.getElementsByClassName('stop') as HTMLCollectionOf<HTMLElement>;
-    shands[0].style.display="none";
-    
-  }
-
-  play(){
-    this.audio.nativeElement.play();
-    let shand = document.getElementsByClassName('play') as HTMLCollectionOf<HTMLElement>;
-    shand[0].style.display="none";
-
-
-    let shands = document.getElementsByClassName('stop') as HTMLCollectionOf<HTMLElement>;
-    shands[0].style.display="";
-  }
 }
