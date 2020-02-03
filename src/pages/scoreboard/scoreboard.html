@@ -7,8 +7,8 @@
       Scoreboard
     </ion-title>
   </ion-navbar>
- 
-  
+
+
 </ion-header>
 <ion-content id="page5" padding  style="overflow-y: scroll"><br>
   <div>
@@ -22,7 +22,7 @@
       <ion-col>
         <ion-item>
           <ion-label>Game code: {{hi["gameId"]}}</ion-label>
-         
+
         </ion-item>
       </ion-col>
       <ion-col *ngIf="currentround==totalround">
@@ -31,7 +31,7 @@
           <ion-select placeholder="Select One" [(ngModel)]="selecting" (ionChange)="onSelectChange($event)">
             <ion-option>Individual round</ion-option>
             <ion-option>Accumulated rounds</ion-option>
-          
+
           </ion-select>
         </ion-item>
       </ion-col>
@@ -65,23 +65,23 @@
       </ion-col>
     </ion-row>
     </ion-grid>
-  
+
 <br>
     <h1 style="text-align: center;font-size:18px;">Game mode: {{mode}}</h1>
       <!-- <label for="gender1" class="col-sm-1 control-label">Sort by: &nbsp;<ion-icon name="swap" style="color:cornflowerblue"></ion-icon></label>
       <div class="col-sm-3">
         <ion-select class="form-control" (ionChange)="scorefiltering($event)">
     <option>Speed- Fastest to Slowest</option>
-          <option>Speed- Slowest to Fastest</option> 
-      <ion-option>-</ion-option>    
+          <option>Speed- Slowest to Fastest</option>
+      <ion-option>-</ion-option>
       <ion-option>Score- High to Low</ion-option>
       <ion-option>Score- Low to High</ion-option>
-      
-        </ion-select>          
-          
+
+        </ion-select>
+
         </div> -->
 
-        
+
 
  <br>
 <br><br><br><br>
