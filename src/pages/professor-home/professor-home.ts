@@ -7,6 +7,7 @@ import {LoadingController,ToastController, MenuController} from 'ionic-angular';
 import * as firebase from 'firebase';
 import { UserPresenceStatusProvider } from '../../providers/user-presence-status/user-presence-status';
 import { Subscription } from 'rxjs';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-professor-home',
@@ -43,13 +44,17 @@ professorcode:any;
 rounds:number;
 validator:string;
 mouseover:boolean;
+allsameroles:boolean;
+alldifferentroles:boolean;
   constructor(public navCtrl: NavController,
     public afs: AngularFirestore,
     public loadingCtrl:LoadingController,
     public toastCtrl:ToastController,
     public navParams:NavParams,
     public UserPresenceStatusProvider: UserPresenceStatusProvider,
-    public menuCtrl: MenuController
+    public menuCtrl: MenuController,
+    public storage:Storage
+
     ) {
       let data=this.navParams.data;
       if (data["waitForStudent"]==true){
@@ -100,7 +105,15 @@ mouseover:boolean;
      //choosing all same player mode
     if (this.alllsame==true){
       this.mode="All same opponents";
-      this.assignsameplayers();
+      if (this.allsameroles==true){ 
+        this.assignallsameroles();
+        let data=this.navParams.data;
+        
+      }
+      else if (this.alldifferentroles==true){
+        this.assignsameplayers();
+      }
+     
     }
     else{
       this.mode="Random all players";
@@ -472,6 +485,71 @@ mouseover:boolean;
   //         })
 	// 	}
   // }
+
+
+  //yonglin
+  assignallsameroles(){
+     setTimeout(() => {
+      // alert('Hello...')
+      this.itemDoc = this.afs.collection<any>('Participant', ref => ref
+      .where("gameId", "==", this.code)
+      .where("online", "==" , true));
+      this.item = this.itemDoc.valueChanges();
+      this.didsubscribed=true;
+      this.subscription=this.item.subscribe(res=>{
+        for (let i=0; i<res.length;i++){
+          if (res[i].gameId==this.code){
+            this.assgnsame.push(res[i].UUID);
+            this.usernamelist.push(res[i].username)
+    }
+  }
+  console.log(this.assgnsame);
+  if (this.assgnsame.length%2==0){
+    let lengthdivide=this.assgnsame.length/2
+    for (let i=0;i<lengthdivide;i++){
+      this.listassgnsame1.push(this.assgnsame[i]);
+      this.listusername1.push(this.usernamelist[i]);
+    }
+   for (let i=lengthdivide;i<this.assgnsame.length;i++){
+     this.listassgnsame2.push(this.assgnsame[i])
+     this.listusername2.push(this.usernamelist[i]);
+   }
+
+   let rounds=(this.rounds);
+   for (let i=0;i<this.listassgnsame1.length;i++){
+     for (let u=0;u<rounds;u++){
+      let id=this.listassgnsame1[i]+u.toString()+this.listassgnsame2[i]+u.toString();
+      this.afs.collection('Game').doc(id).set({
+        gameId:this.code,
+        gameMode: 'All same opponents',
+        round: u,
+        role:"Same role",
+        totalRound: this.rounds,
+        dateTime: new Date().toISOString(),
+        proposerUUID: this.listassgnsame1[i],
+        proposerName: this.listusername1[i],
+        responderUUID: this.listassgnsame2[i],
+        responderName: this.listusername2[i],
+        proposerAmount: "",
+        responderResponse: "",
+        proposerStatus: "Not Ready",
+        responderStatus: "Not Ready",
+        gameStatus: "Not Ready"
+       })
+      .then((data) => {
+        //console.log("Data: "+data);
+      }).catch((err) => {
+        console.log("Err: "+err);
+      })
+     }
+
+
+   }
+
+  }
+      })
+  }, 5000);
+  }
   //yonglin
   assignsameplayers(){
     setTimeout(() => {
@@ -507,6 +585,7 @@ mouseover:boolean;
       this.afs.collection('Game').doc(id).set({
         gameId:this.code,
         gameMode: 'All same opponents',
+        role:"Different roles",
         round: u,
         totalRound: this.rounds,
         dateTime: new Date().toISOString(),
@@ -538,6 +617,7 @@ mouseover:boolean;
         gameMode: 'All same opponents',
         round: u,
         totalRound: this.rounds,
+        role:"Different roles",
         dateTime: new Date().toISOString(),
         proposerUUID: this.listassgnsame2[i],
         proposerName: this.listusername2[i],
@@ -610,6 +690,8 @@ mouseover:boolean;
 
     this.randomm=false;
     this.alllsame=true;
+    this.allsameroles=true;
+    this.alldifferentroles=false;
   }
 
   alldifferentrole(){
@@ -623,6 +705,8 @@ mouseover:boolean;
 
     this.randomm=false;
     this.alllsame=true;
+    this.allsameroles=false;
+    this.alldifferentroles=true;
   }
 
   ionViewDidLeave(){

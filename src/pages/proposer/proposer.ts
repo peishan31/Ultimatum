@@ -184,7 +184,6 @@ export class ProposerPage {
   }
 
   submitProposerOffer(){
-
     let all=this.navParams.data;
     this.storage.get("proposer"+all["UUID"]).then((val) => {
       if (val=="false"){
@@ -243,7 +242,8 @@ export class ProposerPage {
                   let nextroundfirebaseid= res[p].proposerUUID + addround +  res[p].responderUUID + addround;
                   let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"UUID":res[p].proposerUUID,"Amount":this.range,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid, gameMode: data["gameMode"]};
                   this.presstrue=false;
-                  this.storage.set("proposer"+all["UUID"],"true")
+                  this.storage.set("proposer"+all["UUID"],"true");
+     
                   // clearTimeout(this.timer); 
                   this.navCtrl.setRoot(ResultPage,dict);
                   this.presstrue=false;
@@ -253,6 +253,7 @@ export class ProposerPage {
                   let dict={"Role":"Proposer","FirebaseId":this.firebaseId,"Amount":this.range,"UUID":res[p].proposerUUID,"GameId":all["GameId"],"Round":res[p].round,"once":1,"nextroundfirebaseid":nextroundfirebaseid, gameMode: data["gameMode"]};
                   this.presstrue=false;
                   this.storage.set("proposer"+all["UUID"],"true")
+                  
                   // clearTimeout(this.timer); 
                   this.navCtrl.setRoot(ResultPage,dict);
                   this.presstrue=false;
