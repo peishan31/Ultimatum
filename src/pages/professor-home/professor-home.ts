@@ -303,7 +303,7 @@ mouseover:boolean;
   }
 
   assignUserToPlayWithAnotherUser(){
-    
+
 
     setTimeout(() => {
       // alert('Hello...')
@@ -581,6 +581,8 @@ mouseover:boolean;
 
    this.randomm=true;
    this.alllsame=false;
+
+   document.getElementById('roleItem').style.display = 'none';
   }
 
   allsame(){
@@ -589,6 +591,34 @@ mouseover:boolean;
     shand[0].style.color="white";
 
     let shands = document.getElementsByClassName('randomall') as HTMLCollectionOf<HTMLElement>;
+    shands[0].style.backgroundColor="transparent";
+    shands[0].style.color="cornflowerblue";
+
+    this.randomm=false;
+    this.alllsame=true;
+
+    document.getElementById('roleItem').style.display = '';
+  }
+
+  allsamerole(){
+    let shand = document.getElementsByClassName('allsamerole') as HTMLCollectionOf<HTMLElement>;
+    shand[0].style.backgroundColor="cornflowerblue";
+    shand[0].style.color="white";
+
+    let shands = document.getElementsByClassName('alldifferentrole') as HTMLCollectionOf<HTMLElement>;
+    shands[0].style.backgroundColor="transparent";
+    shands[0].style.color="cornflowerblue";
+
+    this.randomm=false;
+    this.alllsame=true;
+  }
+
+  alldifferentrole(){
+    let shand = document.getElementsByClassName('alldifferentrole') as HTMLCollectionOf<HTMLElement>;
+    shand[0].style.backgroundColor="cornflowerblue";
+    shand[0].style.color="white";
+
+    let shands = document.getElementsByClassName('allsamerole') as HTMLCollectionOf<HTMLElement>;
     shands[0].style.backgroundColor="transparent";
     shands[0].style.color="cornflowerblue";
 
@@ -611,7 +641,7 @@ mouseover:boolean;
   ngAfterViewInit() {
     this.audio.nativeElement.oncanplaythrough = () => {
       // alert("Can play through video without stopping");
-      
+
       this.audio.nativeElement.play();
     };
   }
@@ -624,7 +654,7 @@ mouseover:boolean;
 
     let shands = document.getElementsByClassName('stop') as HTMLCollectionOf<HTMLElement>;
     shands[0].style.display="none";
-    
+
   }
 
   play(){

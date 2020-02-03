@@ -35,6 +35,11 @@
     <button ion-button style="background-color: transparent;color:cornflowerblue;" item-right outline class="randomall" (click)="randomall()">Random all players</button>
     <button ion-button style="background-color: transparent;color:cornflowerblue;" item-right outline class="allsame" (click)="allsame()">All same opponents</button><br>
   </ion-item>
+  <ion-item id="roleItem" style="display: none;">
+    <ion-label style="color: darkgray;">Role:</ion-label>
+    <button ion-button style="background-color: transparent;color:cornflowerblue;" item-right outline class="allsamerole" (click)="allsamerole()">Same role</button><br>
+    <button ion-button style="background-color: transparent;color:cornflowerblue;" item-right outline class="alldifferentrole" (click)="alldifferentrole()">Different role</button><br>
+  </ion-item>
       <ion-item>
         <ion-label>No. of rounds:</ion-label>
         <ion-input type="number" [(ngModel)]="rounds" required="true" clearInput=true min="2" max="10" step="2"></ion-input>
